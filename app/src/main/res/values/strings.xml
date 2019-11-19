@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Task Manager</string>
+
+    <string name="inbox">Входящие</string>
+    <string name="active">Активные</string>
+    <string name="postponed">Отложенные</string>
+    <string name="completed">Завершенные</string>
+
+
+</resources>
