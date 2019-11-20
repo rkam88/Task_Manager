@@ -10,8 +10,8 @@ public enum TaskViewType {
     ACTIVE(R.string.active, 1),
     POSTPONED(R.string.postponed, 2),
     COMPLETED(R.string.completed, 3);
-//		+Today
-//		+This week
+//todo: add Today
+//todo:	add This week
 
     @StringRes
     private final int mTitle;

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -16,8 +17,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import net.rusnet.taskmanager.R;
+import net.rusnet.taskmanager.model.Task;
+import net.rusnet.taskmanager.model.TasksRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TasksDisplayActivity extends AppCompatActivity implements TasksDisplayContract.View {
@@ -37,12 +41,20 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     private TasksDisplayContract.Presenter mTaskDisplayPresenter;
 
+    //todo: replace with recycler view
+    private TextView mRecyclerPlaceholder;
 
     /////////////////////////////////////* PUBLIC methods */////////////////////////////////////
     @Override
     public void updateTasksViewType(@NonNull TaskViewType type) {
         mTaskViewType = type;
         setTitle(type.getTitle());
+    }
+
+    @Override
+    public void updateTaskList(@Nullable List<Task> taskList) {
+        //todo: replace with recycler view update
+        if (!taskList.isEmpty()) mRecyclerPlaceholder.setText(taskList.get(0).getName());
     }
 
     @Override
@@ -78,9 +90,10 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         }
         type = (type == null) ? DEFAULT_TASK_VIEW_TYPE : type;
 
-        //todo: init recycler
-        //todo: init presenter
-        mTaskDisplayPresenter = new TasksDisplayPresenter(this, type);
+        //todo: replace with recycler view init
+        mRecyclerPlaceholder = findViewById(R.id.text_view_recycler_placeholder);
+
+        initPresenter(type);
 
     }
 
@@ -90,8 +103,8 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         super.onSaveInstanceState(outState);
     }
 
-    /////////////////////////////////////* PRIVATE methods */////////////////////////////////////
 
+    /////////////////////////////////////* PRIVATE methods */////////////////////////////////////
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white);
@@ -142,6 +155,13 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         MenuItem menuItem = menu.findItem(menuItemId);
         View actionView = menuItem.getActionView();
         return actionView.findViewById(R.id.text_view_task_count);
+    }
+
+    private void initPresenter(TaskViewType type) {
+        mTaskDisplayPresenter = new TasksDisplayPresenter(
+                this,
+                TasksRepository.getRepository(getApplication()),
+                type);
     }
 
 }
