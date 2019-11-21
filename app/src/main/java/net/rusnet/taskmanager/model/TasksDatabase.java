@@ -9,8 +9,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import net.rusnet.taskmanager.tasksdisplay.TaskViewType;
-
 @Database(entities = {Task.class}, version = 1)
 public abstract class TasksDatabase extends RoomDatabase {
 
@@ -56,10 +54,10 @@ public abstract class TasksDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             if (dao.getAllTasks().length < 1) {
-                dao.insertTask(new Task("Not completed Inbox example task", TaskViewType.INBOX.getType()));
-                dao.insertTask(new Task("Completed Inbox example task", TaskViewType.INBOX.getType(), true));
-                dao.insertTask(new Task("Active example task", TaskViewType.ACTIVE.getType()));
-                dao.insertTask(new Task("Postponed example task", TaskViewType.POSTPONED.getType()));
+                dao.insertTask(new Task("Not completed Inbox example task", TaskType.INBOX.getType()));
+                dao.insertTask(new Task("Completed Inbox example task", TaskType.INBOX.getType(), true));
+                dao.insertTask(new Task("Active example task", TaskType.ACTIVE.getType()));
+                dao.insertTask(new Task("Postponed example task", TaskType.POSTPONED.getType()));
             }
             return null;
         }

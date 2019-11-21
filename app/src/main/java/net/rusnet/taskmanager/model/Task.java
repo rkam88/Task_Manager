@@ -17,13 +17,14 @@ public class Task {
     @ColumnInfo(name = "name")
     private String mName;
 
+    @NonNull
     @ColumnInfo(name = "type")
-    private int mType;
+    private String mType;
 
     @ColumnInfo(name = "is_completed")
     private boolean mIsCompleted;
 
-    public Task(long id, @NonNull String name, int type, boolean isCompleted) {
+    public Task(long id, @NonNull String name, @NonNull String type, boolean isCompleted) {
         mId = id;
         mName = name;
         mType = type;
@@ -31,14 +32,14 @@ public class Task {
     }
 
     @Ignore
-    public Task(@NonNull String name, int type) {
+    public Task(@NonNull String name, @NonNull String type) {
         mName = name;
         mType = type;
         mIsCompleted = false;
     }
 
     @Ignore
-    public Task(@NonNull String name, int type, boolean isCompleted) {
+    public Task(@NonNull String name, @NonNull String type, boolean isCompleted) {
         mName = name;
         mType = type;
         mIsCompleted = isCompleted;
@@ -55,7 +56,8 @@ public class Task {
         return mName;
     }
 
-    public int getType() {
+    @NonNull
+    public String getType() {
         return mType;
     }
 

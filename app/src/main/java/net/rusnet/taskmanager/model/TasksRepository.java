@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
-import net.rusnet.taskmanager.tasksdisplay.TaskViewType;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,22 +29,48 @@ public class TasksRepository implements TaskDataSource {
     }
 
     @Override
-    public void loadTasks(@NonNull final LoadTasksCallback callback, @NonNull final TaskViewType type) {
+    public void loadIncompleteTasks(@NonNull final LoadTasksCallback callback, @NonNull final TaskType requestedTaskType) {
+        loadAllTasksFromDB(new LoadTasksCallback() {
+            @Override
+            public void onTasksLoaded(List<Task> tasks) {
+                List<Task> tasksToShow = new ArrayList<>();
+                for (Task task : tasks) {
+                    if (task.getType().equals(requestedTaskType.getType()) && !task.isCompleted())
+                        tasksToShow.add(task);
+                }
+                callback.onTasksLoaded(tasksToShow);
+            }
+        });
+
+        new loadTasksAsyncTask(mTasksDao, new LoadTasksCallback() {
+            @Override
+            public void onTasksLoaded(List<Task> tasks) {
+
+
+            }
+        }).execute();
+    }
+
+    @Override
+    public void loadCompleteTasks(@NonNull final LoadTasksCallback callback) {
+        loadAllTasksFromDB(new LoadTasksCallback() {
+            @Override
+            public void onTasksLoaded(List<Task> tasks) {
+                List<Task> tasksToShow = new ArrayList<>();
+                for (Task task : tasks) {
+                    if (task.isCompleted()) tasksToShow.add(task);
+                }
+                callback.onTasksLoaded(tasksToShow);
+            }
+        });
+    }
+
+    private void loadAllTasksFromDB(@NonNull final LoadTasksCallback callback) {
         new loadTasksAsyncTask(mTasksDao, new LoadTasksCallback() {
             @Override
             public void onTasksLoaded(List<Task> tasks) {
                 mAllTasksList = new ArrayList<>(tasks);
-                List<Task> tasksToShow = new ArrayList<>();
-                if (type == TaskViewType.COMPLETED) {
-                    for (Task task : tasks) {
-                        if (task.isCompleted()) tasksToShow.add(task);
-                    }
-                }
-                for (Task task : tasks) {
-                    if (task.getType() == type.getType() && !task.isCompleted())
-                        tasksToShow.add(task);
-                }
-                callback.onTasksLoaded(tasksToShow);
+                callback.onTasksLoaded(tasks);
             }
         }).execute();
     }
