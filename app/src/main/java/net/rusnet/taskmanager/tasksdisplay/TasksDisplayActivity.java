@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -41,10 +42,11 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     private TasksDisplayContract.Presenter mTaskDisplayPresenter;
 
-    //todo: replace with recycler view
-    private TextView mRecyclerPlaceholder;
+    private RecyclerView mTasksRecyclerView;
+    private TasksAdapter mTasksAdapter;
 
     /////////////////////////////////////* PUBLIC methods */////////////////////////////////////
+
     @Override
     public void updateTasksViewType(@NonNull TaskViewType type) {
         mTaskViewType = type;
@@ -53,8 +55,8 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     @Override
     public void updateTaskList(@Nullable List<Task> taskList) {
-        //todo: replace with recycler view update
-        if (!taskList.isEmpty()) mRecyclerPlaceholder.setText(taskList.get(0).getName());
+        mTasksAdapter.setTasks(taskList);
+        mTasksAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -81,19 +83,8 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
         initToolbar();
         initNavigationDrawer();
-
-        TaskViewType type = null;
-        if (savedInstanceState != null) {
-            type = (TaskViewType) savedInstanceState.getSerializable(TASK_VIEW_TYPE);
-        } else {
-            mNavigationViewDrawer.getMenu().findItem(R.id.nav_inbox).setChecked(true);
-        }
-        type = (type == null) ? DEFAULT_TASK_VIEW_TYPE : type;
-
-        //todo: replace with recycler view init
-        mRecyclerPlaceholder = findViewById(R.id.text_view_recycler_placeholder);
-
-        initPresenter(type);
+        initRecycler();
+        initPresenter(savedInstanceState);
 
     }
 
@@ -103,8 +94,8 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         super.onSaveInstanceState(outState);
     }
 
-
     /////////////////////////////////////* PRIVATE methods */////////////////////////////////////
+
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white);
@@ -157,7 +148,21 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         return actionView.findViewById(R.id.text_view_task_count);
     }
 
-    private void initPresenter(TaskViewType type) {
+    private void initRecycler() {
+        mTasksRecyclerView = findViewById(R.id.recycler_view_tasks);
+        mTasksAdapter = new TasksAdapter(null);
+        mTasksRecyclerView.setAdapter(mTasksAdapter);
+    }
+
+    private void initPresenter(@Nullable Bundle savedInstanceState) {
+        TaskViewType type = null;
+        if (savedInstanceState != null) {
+            type = (TaskViewType) savedInstanceState.getSerializable(TASK_VIEW_TYPE);
+        } else {
+            mNavigationViewDrawer.getMenu().findItem(R.id.nav_inbox).setChecked(true);
+        }
+        type = (type == null) ? DEFAULT_TASK_VIEW_TYPE : type;
+
         mTaskDisplayPresenter = new TasksDisplayPresenter(
                 this,
                 TasksRepository.getRepository(getApplication()),
