@@ -27,23 +27,22 @@ import java.util.Map;
 
 public class TasksDisplayActivity extends AppCompatActivity implements TasksDisplayContract.View {
 
-    public static final String TAG = "TasksDisplayActivity";
+    public static final String TAG = "TAG_TasksDisplayActivity";
 
     private static final String TASK_VIEW_TYPE = "TASK_VIEW_TYPE";
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
 
-    private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+
+    private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationViewDrawer;
-
     private Map<TaskViewType, TextView> mTaskCountMap = new HashMap<>();
-
-    private TaskViewType mTaskViewType;
-
-    private TasksDisplayContract.Presenter mTaskDisplayPresenter;
 
     private RecyclerView mTasksRecyclerView;
     private TasksAdapter mTasksAdapter;
+
+    private TasksDisplayContract.Presenter mTaskDisplayPresenter;
+    private TaskViewType mTaskViewType;
 
     /////////////////////////////////////* PUBLIC methods */////////////////////////////////////
 

@@ -14,7 +14,6 @@ public class TasksRepository implements TaskDataSource {
     private static TasksRepository INSTANCE = null;
 
     private TasksDao mTasksDao;
-    private List<Task> mAllTasksList;
 
     private TasksRepository(Application application) {
         TasksDatabase db = TasksDatabase.getDatabase(application);
@@ -44,7 +43,7 @@ public class TasksRepository implements TaskDataSource {
         private boolean mIsCompleted;
         private LoadTasksCallback mCallback;
 
-        public loadTasksAsyncTask(TasksDao tasksDao, TaskType taskType, boolean isCompleted, LoadTasksCallback callback) {
+        loadTasksAsyncTask(TasksDao tasksDao, TaskType taskType, boolean isCompleted, LoadTasksCallback callback) {
             mTasksDao = tasksDao;
             mTaskType = taskType;
             mIsCompleted = isCompleted;
@@ -69,7 +68,7 @@ public class TasksRepository implements TaskDataSource {
         private boolean mIsCompleted;
         private LoadTasksCountCallback mCallback;
 
-        public loadTasksCount(TasksDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCountCallback callback) {
+        loadTasksCount(TasksDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCountCallback callback) {
             mTaskDao = taskDao;
             mTaskType = taskType;
             mIsCompleted = isCompleted;

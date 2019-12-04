@@ -5,21 +5,20 @@ import androidx.annotation.NonNull;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskDataSource;
 import net.rusnet.taskmanager.model.TaskType;
-import net.rusnet.taskmanager.model.TasksRepository;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
-    public static final String COUNT_99_PLUS = "99+";
+    private static final String COUNT_99_PLUS = "99+";
 
     private WeakReference<TasksDisplayActivity> mTasksDisplayActivityWeakReference;
-    private TasksRepository mTasksRepository;
+    private TaskDataSource mTasksRepository;
     private TaskViewType mTaskViewType;
 
     public TasksDisplayPresenter(@NonNull TasksDisplayActivity tasksDisplayActivity,
-                                 @NonNull TasksRepository tasksRepository) {
+                                 @NonNull TaskDataSource tasksRepository) {
         mTasksDisplayActivityWeakReference = new WeakReference<>(tasksDisplayActivity);
         mTasksRepository = tasksRepository;
     }

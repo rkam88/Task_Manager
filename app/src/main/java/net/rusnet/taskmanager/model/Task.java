@@ -45,8 +45,6 @@ public class Task {
         mIsCompleted = isCompleted;
     }
 
-    //getters todo: remove this comment
-
     public long getId() {
         return mId;
     }

@@ -16,10 +16,10 @@ import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTaskNameTextView;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        TextView mTaskNameTextView;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             mTaskNameTextView = itemView.findViewById(R.id.text_view_task_name);
@@ -28,7 +28,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
     private List<Task> mTasks;
 
-    public TasksAdapter(List<Task> tasks) {
+    TasksAdapter(List<Task> tasks) {
         mTasks = tasks;
     }
 
@@ -38,7 +38,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View contactView = inflater.inflate(R.layout.item_task, parent, false);
+        View contactView = inflater.inflate(R.layout.tasks_display_item_task, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(contactView);
         return viewHolder;
