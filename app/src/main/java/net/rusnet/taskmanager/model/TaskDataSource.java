@@ -15,11 +15,13 @@ public interface TaskDataSource {
         void onTasksCountLoaded(int tasksCount);
     }
 
-    void loadIncompleteTasks(@NonNull final TaskType taskType, @NonNull final LoadTasksCallback callback);
+    void loadTasks(
+            @Nullable final TaskType taskType,
+            final boolean isCompleted,
+            @NonNull final LoadTasksCallback callback);
 
-    void loadCompleteTasks(@NonNull final LoadTasksCallback callback);
-
-    void loadTasksCount(@Nullable final TaskType taskType,
-                        final boolean isCompleted,
-                        @NonNull final LoadTasksCountCallback callback);
+    void loadTasksCount(
+            @Nullable final TaskType taskType,
+            final boolean isCompleted,
+            @NonNull final LoadTasksCountCallback callback);
 }

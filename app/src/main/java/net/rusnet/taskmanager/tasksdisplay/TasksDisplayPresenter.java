@@ -78,28 +78,16 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     }
 
     private void loadTasks(@NonNull TaskViewType taskViewType) {
-        switch (taskViewType) {
-            case COMPLETED:
-                mTasksRepository.loadCompleteTasks(new TaskDataSource.LoadTasksCallback() {
+        mTasksRepository.loadTasks(
+                getTaskType(taskViewType),
+                (taskViewType.equals(TaskViewType.COMPLETED)),
+                new TaskDataSource.LoadTasksCallback() {
                     @Override
                     public void onTasksLoaded(List<Task> tasks) {
                         updateView(tasks);
                     }
-                });
-                break;
-            case INBOX:
-            case ACTIVE:
-            case POSTPONED:
-                TaskType taskType = getTaskType(taskViewType);
-                mTasksRepository.loadIncompleteTasks(taskType,
-                        new TaskDataSource.LoadTasksCallback() {
-                            @Override
-                            public void onTasksLoaded(List<Task> tasks) {
-                                updateView(tasks);
-                            }
-                        });
-                break;
-        }
+                }
+        );
     }
 
     private TaskType getTaskType(@NonNull TaskViewType taskViewType) {
@@ -109,8 +97,9 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
             case POSTPONED:
                 return TaskType.POSTPONED;
             case INBOX:
-            default:
                 return TaskType.INBOX;
+            default:
+                return TaskType.ANY;
         }
     }
 
