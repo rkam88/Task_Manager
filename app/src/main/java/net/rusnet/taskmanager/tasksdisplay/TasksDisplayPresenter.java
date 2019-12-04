@@ -17,12 +17,9 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     private TaskViewType mTaskViewType;
 
     public TasksDisplayPresenter(@NonNull TasksDisplayActivity tasksDisplayActivity,
-                                 @NonNull TasksRepository tasksRepository,
-                                 @NonNull TaskViewType taskViewType) {
+                                 @NonNull TasksRepository tasksRepository) {
         mTasksDisplayActivityWeakReference = new WeakReference<>(tasksDisplayActivity);
         mTasksRepository = tasksRepository;
-
-        setTasksViewType(taskViewType);
     }
 
     @Override

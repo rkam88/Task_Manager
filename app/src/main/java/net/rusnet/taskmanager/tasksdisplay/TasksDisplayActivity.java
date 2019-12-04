@@ -165,8 +165,9 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
         mTaskDisplayPresenter = new TasksDisplayPresenter(
                 this,
-                TasksRepository.getRepository(getApplication()),
-                type);
+                TasksRepository.getRepository(getApplication()));
+
+        mTaskDisplayPresenter.setTasksViewType(type);
     }
 
 }
