@@ -1,5 +1,6 @@
 package net.rusnet.taskmanager.tasksdisplay;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,9 +16,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import net.rusnet.taskmanager.R;
+import net.rusnet.taskmanager.edittask.EditTaskActivity;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TasksRepository;
 
@@ -43,6 +46,8 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     private TasksDisplayContract.Presenter mTaskDisplayPresenter;
     private TaskViewType mTaskViewType;
+
+    private FloatingActionButton mAddTaskFAB;
 
     /////////////////////////////////////* PUBLIC methods */////////////////////////////////////
 
@@ -85,6 +90,19 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         initNavigationDrawer();
         initRecycler();
         initPresenter(savedInstanceState);
+
+        mAddTaskFAB = findViewById(R.id.fab_add_task);
+        mAddTaskFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(
+                        TasksDisplayActivity.this,
+                        EditTaskActivity.class
+                );
+                intent.putExtra(EditTaskActivity.EXTRA_IS_TASK_NEW, true);
+                startActivity(intent);
+            }
+        });
 
     }
 

@@ -6,5 +6,8 @@
     <string name="postponed">Отложенные</string>
     <string name="completed">Завершенные</string>
 
+    <string name="create_new_task">Создать задачу</string>
+    <string name="edit_task">Редактировать задачу</string>
+<!--    <string name="discard_changes">Отменить изменения?</string>-->
 
 </resources>
