@@ -1,8 +1,11 @@
 package net.rusnet.taskmanager.edittask;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,6 +20,27 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
 
     private Toolbar mToolbar;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_task_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.miSave:
+                //todo: implement task saving (check fields!)
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //todo: show dialog for confirmation ("discard changes?") if user started editing
+        super.onBackPressed();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,11 +64,5 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
                 onBackPressed();
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        //todo: show dialog for confirmation ("discard changes?") if user started editing
-        super.onBackPressed();
     }
 }
