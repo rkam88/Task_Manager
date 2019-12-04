@@ -61,8 +61,9 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     @Override
     public void updateTaskCount(@NonNull TaskViewType type, @NonNull String newCount) {
+        //noinspection ConstantConditions
         mTaskCountMap.get(type).setText(newCount);
-    }//todo: handle setText() possible NPE???
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -168,6 +169,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
                 TasksRepository.getRepository(getApplication()));
 
         mTaskDisplayPresenter.setTasksViewType(type);
+        mTaskDisplayPresenter.updateAllTaskCount();
     }
 
 }

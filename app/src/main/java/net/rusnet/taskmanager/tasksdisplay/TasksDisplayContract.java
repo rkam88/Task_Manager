@@ -19,5 +19,7 @@ public interface TasksDisplayContract {
 
     interface Presenter {
         void setTasksViewType(@NonNull TaskViewType type);
+
+        void updateAllTaskCount();
     }
 }

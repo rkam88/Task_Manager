@@ -12,6 +12,8 @@ import java.util.List;
 
 public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
+    public static final String COUNT_99_PLUS = "99+";
+
     private WeakReference<TasksDisplayActivity> mTasksDisplayActivityWeakReference;
     private TasksRepository mTasksRepository;
     private TaskViewType mTaskViewType;
@@ -35,6 +37,46 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
         loadTasks(taskViewType);
     }
 
+    @Override
+    public void updateAllTaskCount() {
+        mTasksRepository.loadTasksCount(
+                TaskType.INBOX,
+                false,
+                new TaskDataSource.LoadTasksCountCallback() {
+                    @Override
+                    public void onTasksCountLoaded(int tasksCount) {
+                        updateTasksCountInView(TaskViewType.INBOX, tasksCount);
+                    }
+                });
+        mTasksRepository.loadTasksCount(
+                TaskType.ACTIVE,
+                false,
+                new TaskDataSource.LoadTasksCountCallback() {
+                    @Override
+                    public void onTasksCountLoaded(int tasksCount) {
+                        updateTasksCountInView(TaskViewType.ACTIVE, tasksCount);
+                    }
+                });
+        mTasksRepository.loadTasksCount(
+                TaskType.POSTPONED,
+                false,
+                new TaskDataSource.LoadTasksCountCallback() {
+                    @Override
+                    public void onTasksCountLoaded(int tasksCount) {
+                        updateTasksCountInView(TaskViewType.POSTPONED, tasksCount);
+                    }
+                });
+        mTasksRepository.loadTasksCount(
+                TaskType.ANY,
+                true,
+                new TaskDataSource.LoadTasksCountCallback() {
+                    @Override
+                    public void onTasksCountLoaded(int tasksCount) {
+                        updateTasksCountInView(TaskViewType.COMPLETED, tasksCount);
+                    }
+                });
+    }
+
     private void loadTasks(@NonNull TaskViewType taskViewType) {
         switch (taskViewType) {
             case COMPLETED:
@@ -49,12 +91,13 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
             case ACTIVE:
             case POSTPONED:
                 TaskType taskType = getTaskType(taskViewType);
-                mTasksRepository.loadIncompleteTasks(new TaskDataSource.LoadTasksCallback() {
-                    @Override
-                    public void onTasksLoaded(List<Task> tasks) {
-                        updateView(tasks);
-                    }
-                }, taskType);
+                mTasksRepository.loadIncompleteTasks(taskType,
+                        new TaskDataSource.LoadTasksCallback() {
+                            @Override
+                            public void onTasksLoaded(List<Task> tasks) {
+                                updateView(tasks);
+                            }
+                        });
                 break;
         }
     }
@@ -75,8 +118,19 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
         TasksDisplayActivity view = mTasksDisplayActivityWeakReference.get();
         if (view != null) {
             //todo: hide loading screen
-            //todo: update view with data result (recycler contents and task counts in nav bar) or show "no tasks" screen
+            //todo: add an if statement to update recycler or show "no tasks" screen
             view.updateTaskList(tasks);
+        }
+    }
+
+    private void updateTasksCountInView(@NonNull TaskViewType taskViewType, int count) {
+        TasksDisplayActivity view = mTasksDisplayActivityWeakReference.get();
+        if (view != null) {
+            if (count < 100) {
+                view.updateTaskCount(taskViewType, String.valueOf(count));
+            } else {
+                view.updateTaskCount(taskViewType, COUNT_99_PLUS);
+            }
         }
     }
 }

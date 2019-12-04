@@ -4,6 +4,7 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ public class TasksRepository implements TaskDataSource {
     }
 
     @Override
-    public void loadIncompleteTasks(@NonNull final LoadTasksCallback callback, @NonNull final TaskType requestedTaskType) {
+    public void loadIncompleteTasks(@NonNull final TaskType requestedTaskType, @NonNull final LoadTasksCallback callback) {
         loadAllTasksFromDB(new LoadTasksCallback() {
             @Override
             public void onTasksLoaded(List<Task> tasks) {
@@ -65,6 +66,11 @@ public class TasksRepository implements TaskDataSource {
         });
     }
 
+    @Override
+    public void loadTasksCount(@Nullable TaskType taskType, boolean isCompleted, @NonNull LoadTasksCountCallback callback) {
+        new loadTasksCount(mTasksDao, taskType, isCompleted, callback).execute();
+    }
+
     private void loadAllTasksFromDB(@NonNull final LoadTasksCallback callback) {
         new loadTasksAsyncTask(mTasksDao, new LoadTasksCallback() {
             @Override
@@ -85,14 +91,42 @@ public class TasksRepository implements TaskDataSource {
         }
 
         @Override
+        protected List<Task> doInBackground(Void... voids) {
+            return Arrays.asList(mTasksDao.getAllTasks());
+        }
+
+        @Override
         protected void onPostExecute(List<Task> tasks) {
             super.onPostExecute(tasks);
             mCallback.onTasksLoaded(tasks);
         }
+    }
+
+    private static class loadTasksCount extends AsyncTask<Void, Void, Integer> {
+        private TasksDao mTaskDao;
+        private LoadTasksCountCallback mCallback;
+        private TaskType mTaskType;
+        private boolean mIsCompleted;
+
+        public loadTasksCount(TasksDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCountCallback callback) {
+            mTaskDao = taskDao;
+            mTaskType = taskType;
+            mIsCompleted = isCompleted;
+            mCallback = callback;
+        }
 
         @Override
-        protected List<Task> doInBackground(Void... voids) {
-            return Arrays.asList(mTasksDao.getAllTasks());
+        protected Integer doInBackground(Void... voids) {
+            return mTaskDao.getTasksCount(
+                    mTaskType.getType(),
+                    mIsCompleted
+            );
+        }
+
+        @Override
+        protected void onPostExecute(Integer tasksCount) {
+            mCallback.onTasksCountLoaded(tasksCount);
         }
     }
+
 }
