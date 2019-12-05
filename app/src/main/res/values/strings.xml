@@ -10,6 +10,7 @@
     <string name="edit_task">Редактировать задачу</string>
     <string name="save">Сохранить</string>
     <string name="enter_task_name">Введите название задачи</string>
+    <string name="please_enter_a_task_name">Пожайлуйста, укажите имя для задачи!</string>
     <string-array name="task_categories">
         <item>@string/inbox</item>
         <item>@string/active</item>

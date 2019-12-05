@@ -34,6 +34,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     private static final String TASK_VIEW_TYPE = "TASK_VIEW_TYPE";
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
+    private static final int REQUEST_CODE_ADD_NEW_TASK = 1;
 
     private Toolbar mToolbar;
 
@@ -100,10 +101,21 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
                         EditTaskActivity.class
                 );
                 intent.putExtra(EditTaskActivity.EXTRA_IS_TASK_NEW, true);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_ADD_NEW_TASK);
             }
         });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_ADD_NEW_TASK) {
+            if (resultCode == RESULT_OK) {
+                mTaskDisplayPresenter.setTasksViewType(mTaskViewType);
+                mTaskDisplayPresenter.updateAllTaskCount();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

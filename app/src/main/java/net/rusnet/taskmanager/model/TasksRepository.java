@@ -37,6 +37,11 @@ public class TasksRepository implements TaskDataSource {
         new loadTasksCount(mTasksDao, taskType, isCompleted, callback).execute();
     }
 
+    @Override
+    public void createNewTask(@NonNull Task task, @NonNull CreateNewTaskCallback callback) {
+        new createNewTaskAsyncTask(mTasksDao, callback).execute(task);
+    }
+
     private static class loadTasksAsyncTask extends AsyncTask<Void, Void, List<Task>> {
         private TasksDao mTasksDao;
         private TaskType mTaskType;
@@ -86,6 +91,27 @@ public class TasksRepository implements TaskDataSource {
         @Override
         protected void onPostExecute(Integer tasksCount) {
             mCallback.onTasksCountLoaded(tasksCount);
+        }
+    }
+
+    private static class createNewTaskAsyncTask extends AsyncTask<Task, Void, Void> {
+        private TasksDao mTaskDao;
+        private CreateNewTaskCallback mCallback;
+
+        createNewTaskAsyncTask(TasksDao taskDao, CreateNewTaskCallback callback) {
+            mTaskDao = taskDao;
+            mCallback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Task... tasks) {
+            mTaskDao.insertTask(tasks[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mCallback.onTaskCreated();
         }
     }
 

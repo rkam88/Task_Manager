@@ -15,6 +15,10 @@ public interface TaskDataSource {
         void onTasksCountLoaded(int tasksCount);
     }
 
+    interface CreateNewTaskCallback {
+        void onTaskCreated();
+    }
+
     void loadTasks(
             @Nullable final TaskType taskType,
             final boolean isCompleted,
@@ -24,4 +28,9 @@ public interface TaskDataSource {
             @Nullable final TaskType taskType,
             final boolean isCompleted,
             @NonNull final LoadTasksCountCallback callback);
+
+    void createNewTask(
+            @NonNull final Task task,
+            @NonNull final CreateNewTaskCallback callback);
+
 }
