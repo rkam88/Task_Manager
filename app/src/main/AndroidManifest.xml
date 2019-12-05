@@ -18,7 +18,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".edittask.EditTaskActivity" />
+        <activity
+            android:name=".edittask.EditTaskActivity"
+            android:windowSoftInputMode="stateUnchanged" />
 
     </application>
 
