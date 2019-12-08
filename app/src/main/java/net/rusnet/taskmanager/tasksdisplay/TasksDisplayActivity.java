@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class TasksDisplayActivity extends AppCompatActivity implements TasksDisplayContract.View {
 
-    public static final String TAG = "TAG_TasksDisplayActivity";
+    public static final String TAG = "TAG_TasksDisplay";
 
     private static final String TASK_VIEW_TYPE = "TASK_VIEW_TYPE";
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
@@ -162,8 +162,21 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     }
 
     private void initRecycler() {
-        mTasksRecyclerView = findViewById(R.id.recycler_view_tasks);
         mTasksAdapter = new TasksAdapter(null);
+        mTasksAdapter.setOnItemClickListener(new TasksAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClicked(long taskId) {
+                //todo: implement opening task in EditTask
+            }
+        });
+        mTasksAdapter.setOnItemLongClickListener(new TasksAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClicked(long taskId) {
+                //todo: implement menu and task deletion
+            }
+        });
+
+        mTasksRecyclerView = findViewById(R.id.recycler_view_tasks);
         mTasksRecyclerView.setAdapter(mTasksAdapter);
     }
 

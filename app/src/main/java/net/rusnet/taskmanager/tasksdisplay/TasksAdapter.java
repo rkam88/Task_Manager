@@ -18,6 +18,25 @@ import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
+    private OnItemClickListener mClickListener;
+    private OnItemLongClickListener mLongClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClicked(long taskId);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClicked(long taskId);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mClickListener = listener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        mLongClickListener = listener;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTaskNameTextView;
 
@@ -25,6 +44,34 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
             super(itemView);
 
             mTaskNameTextView = itemView.findViewById(R.id.text_view_task_name);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mClickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            long taskId = mTasks.get(position).getId();
+                            mClickListener.onItemClicked(taskId);
+                        }
+                    }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mLongClickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            long taskId = mTasks.get(position).getId();
+                            mLongClickListener.onItemLongClicked(taskId);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
         }
     }
 
