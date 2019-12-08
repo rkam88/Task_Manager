@@ -2,7 +2,6 @@ package net.rusnet.taskmanager.edittask;
 
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +50,6 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
                 } else {
                     String name = mTaskNameEditText.getText().toString();
                     TaskType type = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
-                    //noinspection ConstantConditions
                     mEditTaskPresenter.createNewTask(name, type);
                 }
                 return true;
@@ -111,7 +109,7 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
 
         mTaskCategorySpinner = findViewById(R.id.spinner_task_category);
 
-        if (mIsTaskNew & savedInstanceState == null) {
+        if (mIsTaskNew && savedInstanceState == null) {
             if (mTaskNameEditText.requestFocus()) {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
@@ -122,6 +120,7 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
         }
     }
 
+    @NonNull
     private TaskType getTaskType(String text) {
         if (text.equals(getString(R.string.inbox))) {
             return TaskType.INBOX;
@@ -130,6 +129,6 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
         } else if (text.equals(getString(R.string.postponed))) {
             return TaskType.POSTPONED;
         }
-        return null;
+        throw new IllegalArgumentException(text);
     }
 }

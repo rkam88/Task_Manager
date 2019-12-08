@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.model.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
@@ -28,8 +30,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
     private List<Task> mTasks;
 
-    TasksAdapter(List<Task> tasks) {
-        mTasks = tasks;
+    TasksAdapter(@Nullable List<Task> tasks) {
+        mTasks = (tasks == null) ? null : new ArrayList<>(tasks);
     }
 
     @NonNull
@@ -59,7 +61,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         } else return 0;
     }
 
-    public void setTasks(List<Task> tasks) {
-        mTasks = tasks;
+    public void setTasks(@NonNull List<Task> tasks) {
+        mTasks = new ArrayList<>(tasks);
     }
 }

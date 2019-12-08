@@ -89,6 +89,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
         );
     }
 
+    @NonNull
     private TaskType getTaskType(@NonNull TaskViewType taskViewType) {
         switch (taskViewType) {
             case ACTIVE:
@@ -97,9 +98,10 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 return TaskType.POSTPONED;
             case INBOX:
                 return TaskType.INBOX;
-            default:
+            case COMPLETED:
                 return TaskType.ANY;
         }
+        throw new IllegalArgumentException(taskViewType.toString());
     }
 
     private void updateView(@NonNull List<Task> tasks) {
@@ -114,11 +116,8 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     private void updateTasksCountInView(@NonNull TaskViewType taskViewType, int count) {
         TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
         if (view != null) {
-            if (count < 100) {
-                view.updateTaskCount(taskViewType, String.valueOf(count));
-            } else {
-                view.updateTaskCount(taskViewType, COUNT_99_PLUS);
-            }
+            String countAsString = count < 100 ? String.valueOf(count) : COUNT_99_PLUS;
+            view.updateTaskCount(taskViewType, countAsString);
         }
     }
 }

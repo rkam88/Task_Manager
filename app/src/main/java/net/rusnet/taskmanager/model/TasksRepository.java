@@ -13,11 +13,11 @@ public class TasksRepository implements TaskDataSource {
 
     private static TasksRepository INSTANCE = null;
 
-    private TasksDao mTasksDao;
+    private TaskDao mTaskDao;
 
     private TasksRepository(Application application) {
         TasksDatabase db = TasksDatabase.getDatabase(application);
-        mTasksDao = db.taskDao();
+        mTaskDao = db.taskDao();
     }
 
     public static TasksRepository getRepository(Application application) {
@@ -29,27 +29,27 @@ public class TasksRepository implements TaskDataSource {
 
     @Override
     public void loadTasks(@Nullable TaskType taskType, boolean isCompleted, @NonNull LoadTasksCallback callback) {
-        new loadTasksAsyncTask(mTasksDao, taskType, isCompleted, callback).execute();
+        new LoadTasksAsyncTask(mTaskDao, taskType, isCompleted, callback).execute();
     }
 
     @Override
     public void loadTasksCount(@Nullable TaskType taskType, boolean isCompleted, @NonNull LoadTasksCountCallback callback) {
-        new loadTasksCount(mTasksDao, taskType, isCompleted, callback).execute();
+        new LoadTasksCountAsyncTask(mTaskDao, taskType, isCompleted, callback).execute();
     }
 
     @Override
     public void createNewTask(@NonNull Task task, @NonNull CreateNewTaskCallback callback) {
-        new createNewTaskAsyncTask(mTasksDao, callback).execute(task);
+        new CreateNewTaskAsyncTask(mTaskDao, callback).execute(task);
     }
 
-    private static class loadTasksAsyncTask extends AsyncTask<Void, Void, List<Task>> {
-        private TasksDao mTasksDao;
+    private static class LoadTasksAsyncTask extends AsyncTask<Void, Void, List<Task>> {
+        private TaskDao mTaskDao;
         private TaskType mTaskType;
         private boolean mIsCompleted;
         private LoadTasksCallback mCallback;
 
-        loadTasksAsyncTask(TasksDao tasksDao, TaskType taskType, boolean isCompleted, LoadTasksCallback callback) {
-            mTasksDao = tasksDao;
+        LoadTasksAsyncTask(TaskDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCallback callback) {
+            mTaskDao = taskDao;
             mTaskType = taskType;
             mIsCompleted = isCompleted;
             mCallback = callback;
@@ -57,7 +57,7 @@ public class TasksRepository implements TaskDataSource {
 
         @Override
         protected List<Task> doInBackground(Void... voids) {
-            return Arrays.asList(mTasksDao.getTasks(mTaskType.getType(), mIsCompleted));
+            return Arrays.asList(mTaskDao.getTasks(mTaskType.getType(), mIsCompleted));
         }
 
         @Override
@@ -67,13 +67,13 @@ public class TasksRepository implements TaskDataSource {
         }
     }
 
-    private static class loadTasksCount extends AsyncTask<Void, Void, Integer> {
-        private TasksDao mTaskDao;
+    private static class LoadTasksCountAsyncTask extends AsyncTask<Void, Void, Integer> {
+        private TaskDao mTaskDao;
         private TaskType mTaskType;
         private boolean mIsCompleted;
         private LoadTasksCountCallback mCallback;
 
-        loadTasksCount(TasksDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCountCallback callback) {
+        LoadTasksCountAsyncTask(TaskDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCountCallback callback) {
             mTaskDao = taskDao;
             mTaskType = taskType;
             mIsCompleted = isCompleted;
@@ -94,11 +94,11 @@ public class TasksRepository implements TaskDataSource {
         }
     }
 
-    private static class createNewTaskAsyncTask extends AsyncTask<Task, Void, Void> {
-        private TasksDao mTaskDao;
+    private static class CreateNewTaskAsyncTask extends AsyncTask<Task, Void, Void> {
+        private TaskDao mTaskDao;
         private CreateNewTaskCallback mCallback;
 
-        createNewTaskAsyncTask(TasksDao taskDao, CreateNewTaskCallback callback) {
+        CreateNewTaskAsyncTask(TaskDao taskDao, CreateNewTaskCallback callback) {
             mTaskDao = taskDao;
             mCallback = callback;
         }

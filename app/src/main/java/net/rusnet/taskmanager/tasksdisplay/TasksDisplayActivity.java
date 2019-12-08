@@ -50,8 +50,6 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     private FloatingActionButton mAddTaskFAB;
 
-    /////////////////////////////////////* PUBLIC methods */////////////////////////////////////
-
     @Override
     public void updateTasksViewType(@NonNull TaskViewType type) {
         mTaskViewType = type;
@@ -80,8 +78,6 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         return super.onOptionsItemSelected(item);
     }
 
-    /////////////////////////////////////* PROTECTED methods */////////////////////////////////////
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,19 +87,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         initNavigationDrawer();
         initRecycler();
         initPresenter(savedInstanceState);
-
-        mAddTaskFAB = findViewById(R.id.fab_add_task);
-        mAddTaskFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(
-                        TasksDisplayActivity.this,
-                        EditTaskActivity.class
-                );
-                intent.putExtra(EditTaskActivity.EXTRA_IS_TASK_NEW, true);
-                startActivityForResult(intent, REQUEST_CODE_ADD_NEW_TASK);
-            }
-        });
+        initFAB();
 
     }
 
@@ -123,8 +107,6 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         outState.putSerializable(TASK_VIEW_TYPE, mTaskViewType);
         super.onSaveInstanceState(outState);
     }
-
-    /////////////////////////////////////* PRIVATE methods */////////////////////////////////////
 
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
@@ -171,6 +153,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         mDrawerLayout.closeDrawers();
     }
 
+    @NonNull
     private TextView getTextViewCounter(@IdRes int menuItemId) {
         Menu menu = mNavigationViewDrawer.getMenu();
         MenuItem menuItem = menu.findItem(menuItemId);
@@ -199,6 +182,21 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
         mTaskDisplayPresenter.setTasksViewType(type);
         mTaskDisplayPresenter.updateAllTaskCount();
+    }
+
+    private void initFAB() {
+        mAddTaskFAB = findViewById(R.id.fab_add_task);
+        mAddTaskFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(
+                        TasksDisplayActivity.this,
+                        EditTaskActivity.class
+                );
+                intent.putExtra(EditTaskActivity.EXTRA_IS_TASK_NEW, true);
+                startActivityForResult(intent, REQUEST_CODE_ADD_NEW_TASK);
+            }
+        });
     }
 
 }

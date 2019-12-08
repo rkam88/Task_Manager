@@ -15,6 +15,7 @@ public enum TaskType {
         mType = type;
     }
 
+    @Nullable
     public String getType() {
         return mType;
     }

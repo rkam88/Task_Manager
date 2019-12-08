@@ -12,15 +12,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 @Database(entities = {Task.class}, version = 1)
 public abstract class TasksDatabase extends RoomDatabase {
 
-    public abstract TasksDao taskDao();
+    public abstract TaskDao taskDao();
 
     private static TasksDatabase INSTANCE;
 
     private static final String NAME = "tasks.db";
-    private static final Object sLock = new Object();
+    private static final Object LOCK = new Object();
 
     public static TasksDatabase getDatabase(Context context) {
-        synchronized (sLock) {
+        synchronized (LOCK) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(
                         context.getApplicationContext(),
@@ -45,7 +45,7 @@ public abstract class TasksDatabase extends RoomDatabase {
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final TasksDao dao;
+        private final TaskDao dao;
 
         PopulateDbAsync(TasksDatabase db) {
             dao = db.taskDao();

@@ -8,7 +8,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 @Dao
-public interface TasksDao {
+public interface TaskDao {
 
     @Query("SELECT * FROM task_table WHERE task_id = :taskId")
     Task getById(int taskId);
