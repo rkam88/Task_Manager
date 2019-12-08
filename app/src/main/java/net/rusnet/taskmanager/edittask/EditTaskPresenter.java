@@ -10,12 +10,12 @@ import java.lang.ref.WeakReference;
 
 public class EditTaskPresenter implements EditTaskContract.Presenter {
 
-    private WeakReference<EditTaskActivity> mEditTaskActivityWeakReference;
+    private WeakReference<EditTaskContract.View> mEditTaskViewWeakReference;
     private TaskDataSource mTasksRepository;
 
-    public EditTaskPresenter(@NonNull EditTaskActivity editTaskActivity,
-                                 @NonNull TaskDataSource tasksRepository) {
-        mEditTaskActivityWeakReference = new WeakReference<>(editTaskActivity);
+    public EditTaskPresenter(@NonNull EditTaskContract.View editTaskView,
+                             @NonNull TaskDataSource tasksRepository) {
+        mEditTaskViewWeakReference = new WeakReference<>(editTaskView);
         mTasksRepository = tasksRepository;
     }
 
@@ -26,7 +26,7 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
                 new TaskDataSource.CreateNewTaskCallback() {
                     @Override
                     public void onTaskCreated() {
-                        EditTaskActivity view = mEditTaskActivityWeakReference.get();
+                        EditTaskContract.View view = mEditTaskViewWeakReference.get();
                         if (view != null) {
                             view.onTaskCreated();
                         }

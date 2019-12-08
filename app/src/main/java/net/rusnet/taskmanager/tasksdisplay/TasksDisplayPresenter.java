@@ -13,13 +13,13 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     private static final String COUNT_99_PLUS = "99+";
 
-    private WeakReference<TasksDisplayActivity> mTasksDisplayActivityWeakReference;
+    private WeakReference<TasksDisplayContract.View> mTasksDisplayViewWeakReference;
     private TaskDataSource mTasksRepository;
     private TaskViewType mTaskViewType;
 
-    public TasksDisplayPresenter(@NonNull TasksDisplayActivity tasksDisplayActivity,
+    public TasksDisplayPresenter(@NonNull TasksDisplayContract.View tasksDisplayView,
                                  @NonNull TaskDataSource tasksRepository) {
-        mTasksDisplayActivityWeakReference = new WeakReference<>(tasksDisplayActivity);
+        mTasksDisplayViewWeakReference = new WeakReference<>(tasksDisplayView);
         mTasksRepository = tasksRepository;
     }
 
@@ -28,7 +28,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
         //todo: show loading screen
         mTaskViewType = taskViewType;
 
-        TasksDisplayActivity view = mTasksDisplayActivityWeakReference.get();
+        TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
         if (view != null) {
             view.updateTasksViewType(taskViewType);
         }
@@ -103,7 +103,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     }
 
     private void updateView(@NonNull List<Task> tasks) {
-        TasksDisplayActivity view = mTasksDisplayActivityWeakReference.get();
+        TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
         if (view != null) {
             //todo: hide loading screen
             //todo: add an if statement to update recycler or show "no tasks" screen
@@ -112,7 +112,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     }
 
     private void updateTasksCountInView(@NonNull TaskViewType taskViewType, int count) {
-        TasksDisplayActivity view = mTasksDisplayActivityWeakReference.get();
+        TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
         if (view != null) {
             if (count < 100) {
                 view.updateTaskCount(taskViewType, String.valueOf(count));
