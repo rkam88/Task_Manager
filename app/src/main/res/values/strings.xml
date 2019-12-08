@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Task Manager</string>
+
+    <string name="inbox">Входящие</string>
+    <string name="active">Активные</string>
+    <string name="postponed">Отложенные</string>
+    <string name="completed">Завершенные</string>
+
+    <string name="create_new_task">Создать задачу</string>
+    <string name="edit_task">Редактировать задачу</string>
+    <string name="save">Сохранить</string>
+    <string name="enter_task_name">Введите название задачи</string>
+    <string name="please_enter_a_task_name">Пожайлуйста, укажите имя для задачи!</string>
+    <string-array name="task_categories">
+        <item>@string/inbox</item>
+        <item>@string/active</item>
+        <item>@string/postponed</item>
+    </string-array>
+
+    <!--    <string name="discard_changes">Отменить изменения?</string>-->
+
+</resources>
