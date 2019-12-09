@@ -17,6 +17,8 @@
         <item>@string/postponed</item>
     </string-array>
 
+    <string name="complete">Завершить</string>
+
     <!--    <string name="discard_changes">Отменить изменения?</string>-->
 
 </resources>

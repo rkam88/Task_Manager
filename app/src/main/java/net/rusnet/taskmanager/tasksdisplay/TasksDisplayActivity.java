@@ -1,6 +1,7 @@
 package net.rusnet.taskmanager.tasksdisplay;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,6 +38,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
     private static final int REQUEST_CODE_ADD_NEW_TASK = 1;
     private static final int REQUEST_CODE_EDIT_TASK = 2;
+    private static final int NO_DRAG_DIRS = 0;
 
     private Toolbar mToolbar;
 
@@ -188,6 +191,70 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
         mTasksRecyclerView = findViewById(R.id.recycler_view_tasks);
         mTasksRecyclerView.setAdapter(mTasksAdapter);
+
+        addSwipeToCompleteTaskCallback();
+    }
+
+    private void addSwipeToCompleteTaskCallback() {
+        ItemTouchHelper helper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(
+                        NO_DRAG_DIRS,
+                        ItemTouchHelper.LEFT) {
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView recyclerView,
+                                          @NonNull RecyclerView.ViewHolder viewHolder,
+                                          @NonNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isItemViewSwipeEnabled() {
+                        return mTaskViewType != TaskViewType.COMPLETED;
+                    }
+
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder,
+                                         int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                        Task task = mTasksAdapter.getTaskAtPosition(position);
+                        mTaskDisplayPresenter.markTaskAsCompleted(task);
+                    }
+
+                    @Override
+                    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                        final View foregroundView = ((TasksAdapter.ViewHolder) viewHolder).mForegroundView;
+                        getDefaultUIUtil().clearView(foregroundView);
+                    }
+
+                    @Override
+                    public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                        if (viewHolder != null) {
+                            final View foregroundView = ((TasksAdapter.ViewHolder) viewHolder).mForegroundView;
+                            getDefaultUIUtil().onSelected(foregroundView);
+                        }
+                    }
+
+                    @Override
+                    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                            @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                            int actionState, boolean isCurrentlyActive) {
+                        final View foregroundView = ((TasksAdapter.ViewHolder) viewHolder).mForegroundView;
+                        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
+                                actionState, isCurrentlyActive);
+                    }
+
+                    @Override
+                    public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                                                RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                                int actionState, boolean isCurrentlyActive) {
+                        final View foregroundView = ((TasksAdapter.ViewHolder) viewHolder).mForegroundView;
+                        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
+                                actionState, isCurrentlyActive);
+                    }
+
+                });
+
+        helper.attachToRecyclerView(mTasksRecyclerView);
     }
 
     private void initPresenter(@Nullable Bundle savedInstanceState) {

@@ -21,5 +21,7 @@ public interface TasksDisplayContract {
         void setTasksViewType(@NonNull TaskViewType type);
 
         void updateAllTaskCount();
+
+        void markTaskAsCompleted(@NonNull Task task);
     }
 }

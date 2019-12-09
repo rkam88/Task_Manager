@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
@@ -39,11 +40,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTaskNameTextView;
+        ConstraintLayout mForegroundView, mBackgroundView;
 
         ViewHolder(View itemView) {
             super(itemView);
 
             mTaskNameTextView = itemView.findViewById(R.id.text_view_task_name);
+            mBackgroundView = itemView.findViewById(R.id.view_background);
+            mForegroundView = itemView.findViewById(R.id.view_foreground);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,5 +114,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
     public void setTasks(@Nullable List<Task> tasks) {
         mTasks = (tasks == null) ? null : new ArrayList<>(tasks);
+    }
+
+    public Task getTaskAtPosition(int position) {
+        return mTasks.get(position);
     }
 }

@@ -76,6 +76,20 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 });
     }
 
+    @Override
+    public void markTaskAsCompleted(@NonNull Task task) {
+        task.setCompleted(true);
+        mTasksRepository.updateTask(
+                task,
+                new TaskDataSource.UpdateTaskCallback() {
+                    @Override
+                    public void onTaskUpdated() {
+                        updateAllTaskCount();
+                        loadTasks(mTaskViewType);
+                    }
+                });
+    }
+
     private void loadTasks(@NonNull TaskViewType taskViewType) {
         mTasksRepository.loadTasks(
                 getTaskType(taskViewType),
