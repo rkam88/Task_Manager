@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import net.rusnet.taskmanager.R;
+import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 import net.rusnet.taskmanager.model.TasksRepository;
 
@@ -25,8 +26,15 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     public static final String TAG = "TAG_EditTaskActivity";
 
     public static final String EXTRA_IS_TASK_NEW = "net.rusnet.taskmanager.AddTaskActivity.IsTaskNew";
+    public static final String EXTRA_TASK_ID = "net.rusnet.taskmanager.AddTaskActivity.TaskId";
+
+    private static final int NO_TASK_ID = -1;
+    private static final int SPINNER_POSITION_INBOX = 0;
+    private static final int SPINNER_POSITION_ACTIVE = 1;
+    private static final int SPINNER_POSITION_POSTPONED = 2;
 
     private boolean mIsTaskNew;
+    private long mTaskId;
 
     private Toolbar mToolbar;
 
@@ -34,6 +42,8 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
 
     private EditText mTaskNameEditText;
     private Spinner mTaskCategorySpinner;
+
+    private Task mTask;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,7 +60,13 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
                 } else {
                     String name = mTaskNameEditText.getText().toString();
                     TaskType type = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
-                    mEditTaskPresenter.createNewTask(name, type);
+                    if (mIsTaskNew) {
+                        mEditTaskPresenter.createNewTask(name, type);
+                    } else {
+                        mTask.setName(name);
+                        mTask.setType(type.toString());
+                        mEditTaskPresenter.updateTask(mTask);
+                    }
                 }
                 return true;
         }
@@ -64,9 +80,17 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     }
 
     @Override
-    public void onTaskCreated() {
+    public void onTaskSavingFinished() {
         setResult(RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void updateView(Task task) {
+        mTask = task;
+        mTaskNameEditText.setText(mTask.getName());
+        int position = getSpinnerPosition(mTask.getType());
+        mTaskCategorySpinner.setSelection(position);
     }
 
     @Override
@@ -75,7 +99,8 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
         setContentView(R.layout.activity_edit_task);
 
         mIsTaskNew = getIntent().getBooleanExtra(EXTRA_IS_TASK_NEW, true);
-        //todo: if task is not new get Task ID to load it
+        if (!mIsTaskNew) mTaskId = getIntent().getLongExtra(EXTRA_TASK_ID, NO_TASK_ID);
+        if (mTaskId == NO_TASK_ID) mIsTaskNew = true;
 
         initToolbar();
         initPresenter();
@@ -114,9 +139,7 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         } else {
-            //todo: load data for task
-            //update mTaskNameEditText
-            //update mTaskCategorySpinner
+            mEditTaskPresenter.loadTask(mTaskId);
         }
     }
 
@@ -131,4 +154,16 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
         }
         throw new IllegalArgumentException(text);
     }
+
+    private int getSpinnerPosition(String type) {
+        if (type.equals(TaskType.INBOX.toString())) {
+            return SPINNER_POSITION_INBOX;
+        } else if (type.equals(TaskType.ACTIVE.toString())) {
+            return SPINNER_POSITION_ACTIVE;
+        } else if (type.equals(TaskType.POSTPONED.toString())) {
+            return SPINNER_POSITION_POSTPONED;
+        }
+        throw new IllegalArgumentException(type);
+    }
+
 }

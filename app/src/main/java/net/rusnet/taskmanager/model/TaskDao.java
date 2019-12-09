@@ -11,7 +11,7 @@ import androidx.room.Update;
 public interface TaskDao {
 
     @Query("SELECT * FROM task_table WHERE task_id = :taskId")
-    Task getById(int taskId);
+    Task getById(long taskId);
 
     @Update
     void updateTask(Task task);

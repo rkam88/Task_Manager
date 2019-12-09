@@ -62,4 +62,16 @@ public class Task {
     public boolean isCompleted() {
         return mIsCompleted;
     }
+
+    public void setName(@NonNull String name) {
+        mName = name;
+    }
+
+    public void setType(@NonNull String type) {
+        mType = type;
+    }
+
+    public void setCompleted(boolean completed) {
+        mIsCompleted = completed;
+    }
 }

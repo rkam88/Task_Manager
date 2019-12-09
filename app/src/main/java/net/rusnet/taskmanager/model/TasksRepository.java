@@ -42,6 +42,16 @@ public class TasksRepository implements TaskDataSource {
         new CreateNewTaskAsyncTask(mTaskDao, callback).execute(task);
     }
 
+    @Override
+    public void loadTask(long taskId, @NonNull LoadTaskCallback callback) {
+        new LoadTaskAsyncTask(mTaskDao, callback).execute(taskId);
+    }
+
+    @Override
+    public void updateTask(@NonNull Task task, @NonNull UpdateTaskCallback callback) {
+        new UpdateTaskAsyncTask(mTaskDao, callback).execute(task);
+    }
+
     private static class LoadTasksAsyncTask extends AsyncTask<Void, Void, List<Task>> {
         private TaskDao mTaskDao;
         private TaskType mTaskType;
@@ -114,5 +124,48 @@ public class TasksRepository implements TaskDataSource {
             mCallback.onTaskCreated();
         }
     }
+
+    private static class LoadTaskAsyncTask extends AsyncTask<Long, Void, Task> {
+        private TaskDao mTaskDao;
+        private LoadTaskCallback mCallback;
+
+        LoadTaskAsyncTask(TaskDao taskDao, LoadTaskCallback callback) {
+            mTaskDao = taskDao;
+            mCallback = callback;
+        }
+
+        @Override
+        protected Task doInBackground(Long... longs) {
+            return mTaskDao.getById(longs[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Task task) {
+            mCallback.onTaskLoaded(task);
+        }
+
+    }
+
+    private static class UpdateTaskAsyncTask extends AsyncTask<Task, Void, Void> {
+        private TaskDao mTaskDao;
+        private UpdateTaskCallback mCallback;
+
+        UpdateTaskAsyncTask(TaskDao taskDao, UpdateTaskCallback callback) {
+            mTaskDao = taskDao;
+            mCallback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Task... tasks) {
+            mTaskDao.updateTask(tasks[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mCallback.onTaskUpdated();
+        }
+    }
+
 
 }

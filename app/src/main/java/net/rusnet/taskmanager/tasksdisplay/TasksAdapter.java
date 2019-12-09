@@ -108,7 +108,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         } else return 0;
     }
 
-    public void setTasks(@NonNull List<Task> tasks) {
-        mTasks = new ArrayList<>(tasks);
+    public void setTasks(@Nullable List<Task> tasks) {
+        mTasks = (tasks == null) ? null : new ArrayList<>(tasks);
     }
 }

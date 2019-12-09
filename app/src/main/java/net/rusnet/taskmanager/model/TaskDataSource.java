@@ -19,6 +19,14 @@ public interface TaskDataSource {
         void onTaskCreated();
     }
 
+    interface LoadTaskCallback {
+        void onTaskLoaded(Task task);
+    }
+
+    interface UpdateTaskCallback {
+        void onTaskUpdated();
+    }
+
     void loadTasks(
             @Nullable final TaskType taskType,
             final boolean isCompleted,
@@ -33,4 +41,11 @@ public interface TaskDataSource {
             @NonNull final Task task,
             @NonNull final CreateNewTaskCallback callback);
 
+    void loadTask(
+            final long taskId,
+            @NonNull final LoadTaskCallback callback);
+
+    void updateTask(
+            @NonNull final Task task,
+            @NonNull final UpdateTaskCallback callback);
 }

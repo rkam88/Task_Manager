@@ -35,6 +35,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     private static final String TASK_VIEW_TYPE = "TASK_VIEW_TYPE";
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
     private static final int REQUEST_CODE_ADD_NEW_TASK = 1;
+    private static final int REQUEST_CODE_EDIT_TASK = 2;
 
     private Toolbar mToolbar;
 
@@ -93,10 +94,13 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_CODE_ADD_NEW_TASK) {
-            if (resultCode == RESULT_OK) {
-                mTaskDisplayPresenter.setTasksViewType(mTaskViewType);
-                mTaskDisplayPresenter.updateAllTaskCount();
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_ADD_NEW_TASK:
+                case REQUEST_CODE_EDIT_TASK:
+                    mTaskDisplayPresenter.setTasksViewType(mTaskViewType);
+                    mTaskDisplayPresenter.updateAllTaskCount();
+                    break;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -166,7 +170,13 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         mTasksAdapter.setOnItemClickListener(new TasksAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(long taskId) {
-                //todo: implement opening task in EditTask
+                Intent intent = new Intent(
+                        TasksDisplayActivity.this,
+                        EditTaskActivity.class
+                );
+                intent.putExtra(EditTaskActivity.EXTRA_IS_TASK_NEW, false);
+                intent.putExtra(EditTaskActivity.EXTRA_TASK_ID, taskId);
+                startActivityForResult(intent, REQUEST_CODE_EDIT_TASK);
             }
         });
         mTasksAdapter.setOnItemLongClickListener(new TasksAdapter.OnItemLongClickListener() {

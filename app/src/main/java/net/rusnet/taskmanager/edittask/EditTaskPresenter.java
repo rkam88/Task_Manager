@@ -28,9 +28,35 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
                     public void onTaskCreated() {
                         EditTaskContract.View view = mEditTaskViewWeakReference.get();
                         if (view != null) {
-                            view.onTaskCreated();
+                            view.onTaskSavingFinished();
                         }
                     }
                 });
+    }
+
+    @Override
+    public void loadTask(long taskId) {
+        mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
+            @Override
+            public void onTaskLoaded(Task task) {
+                EditTaskContract.View view = mEditTaskViewWeakReference.get();
+                if (view != null) {
+                    view.updateView(task);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updateTask(@NonNull Task task) {
+        mTasksRepository.updateTask(task, new TaskDataSource.UpdateTaskCallback() {
+            @Override
+            public void onTaskUpdated() {
+                EditTaskContract.View view = mEditTaskViewWeakReference.get();
+                if (view != null) {
+                    view.onTaskSavingFinished();
+                }
+            }
+        });
     }
 }
