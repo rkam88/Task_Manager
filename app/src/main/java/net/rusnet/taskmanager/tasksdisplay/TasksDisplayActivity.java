@@ -12,6 +12,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -26,19 +27,24 @@ import net.rusnet.taskmanager.edittask.EditTaskActivity;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TasksRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TasksDisplayActivity extends AppCompatActivity implements TasksDisplayContract.View {
 
     public static final String TAG = "TAG_TasksDisplay";
 
-    private static final String TASK_VIEW_TYPE = "TASK_VIEW_TYPE";
+    private static final String KEY_TASK_VIEW_TYPE = "KEY_TASK_VIEW_TYPE";
+    private static final String KEY_SELECTED_TASKS_POSITIONS_LIST = "KEY_SELECTED_TASKS_POSITIONS_LIST";
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
     private static final int REQUEST_CODE_ADD_NEW_TASK = 1;
     private static final int REQUEST_CODE_EDIT_TASK = 2;
     private static final int NO_DRAG_DIRS = 0;
+    private static final int ZERO = 0;
 
     private Toolbar mToolbar;
 
@@ -53,6 +59,10 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     private TaskViewType mTaskViewType;
 
     private FloatingActionButton mAddTaskFAB;
+
+    private ActionMode.Callback mSelectTasksActionModeCallback;
+    private ActionMode mCurrentActionMode;
+    private Set<Integer> mSelectedTasksPositions;
 
     @Override
     public void updateTasksViewType(@NonNull TaskViewType type) {
@@ -92,6 +102,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         initRecycler();
         initPresenter(savedInstanceState);
         initFAB();
+        initContextualMenu(savedInstanceState);
 
     }
 
@@ -111,7 +122,13 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putSerializable(TASK_VIEW_TYPE, mTaskViewType);
+        outState.putSerializable(KEY_TASK_VIEW_TYPE, mTaskViewType);
+
+        if (mCurrentActionMode != null) {
+            ArrayList<Integer> positionsList = new ArrayList<>(mSelectedTasksPositions);
+            outState.putIntegerArrayList(KEY_SELECTED_TASKS_POSITIONS_LIST, positionsList);
+        }
+
         super.onSaveInstanceState(outState);
     }
 
@@ -172,20 +189,28 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         mTasksAdapter = new TasksAdapter(null);
         mTasksAdapter.setOnItemClickListener(new TasksAdapter.OnItemClickListener() {
             @Override
-            public void onItemClicked(long taskId) {
-                Intent intent = new Intent(
-                        TasksDisplayActivity.this,
-                        EditTaskActivity.class
-                );
-                intent.putExtra(EditTaskActivity.EXTRA_IS_TASK_NEW, false);
-                intent.putExtra(EditTaskActivity.EXTRA_TASK_ID, taskId);
-                startActivityForResult(intent, REQUEST_CODE_EDIT_TASK);
+            public void onItemClicked(int position) {
+                if (mCurrentActionMode == null) {
+                    Intent intent = new Intent(
+                            TasksDisplayActivity.this,
+                            EditTaskActivity.class
+                    );
+                    long taskId = mTasksAdapter.getTaskAtPosition(position).getId();
+                    intent.putExtra(EditTaskActivity.EXTRA_IS_TASK_NEW, false);
+                    intent.putExtra(EditTaskActivity.EXTRA_TASK_ID, taskId);
+                    startActivityForResult(intent, REQUEST_CODE_EDIT_TASK);
+                } else {
+                    updateRecyclerViewSelection(position);
+                }
             }
         });
         mTasksAdapter.setOnItemLongClickListener(new TasksAdapter.OnItemLongClickListener() {
             @Override
-            public void onItemLongClicked(long taskId) {
-                //todo: implement menu and task deletion
+            public void onItemLongClicked(int position) {
+                if (mCurrentActionMode == null) {
+                    mCurrentActionMode = startSupportActionMode(mSelectTasksActionModeCallback);
+                    updateRecyclerViewSelection(position);
+                }
             }
         });
 
@@ -193,6 +218,31 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         mTasksRecyclerView.setAdapter(mTasksAdapter);
 
         addSwipeToCompleteTaskCallback();
+    }
+
+    private void updateRecyclerViewSelection(int position) {
+        if (mSelectedTasksPositions.contains(position)) {
+            mSelectedTasksPositions.remove(position);
+        } else {
+            mSelectedTasksPositions.add(position);
+        }
+
+        mTasksAdapter.setSelectedTasksPositions(mSelectedTasksPositions);
+        mTasksAdapter.notifyItemChanged(position);
+
+        if (mSelectedTasksPositions.size() == ZERO) {
+            mCurrentActionMode.finish();
+        } else {
+            updateContextualToolbarTitle();
+        }
+    }
+
+    private void updateContextualToolbarTitle() {
+        String title = getResources().getQuantityString(
+                R.plurals.n_tasks_selected,
+                mSelectedTasksPositions.size(),
+                mSelectedTasksPositions.size());
+        mCurrentActionMode.setTitle(title);
     }
 
     private void addSwipeToCompleteTaskCallback() {
@@ -260,7 +310,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     private void initPresenter(@Nullable Bundle savedInstanceState) {
         TaskViewType type = null;
         if (savedInstanceState != null) {
-            type = (TaskViewType) savedInstanceState.getSerializable(TASK_VIEW_TYPE);
+            type = (TaskViewType) savedInstanceState.getSerializable(KEY_TASK_VIEW_TYPE);
         } else {
             mNavigationViewDrawer.getMenu().findItem(R.id.nav_inbox).setChecked(true);
         }
@@ -289,4 +339,60 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         });
     }
 
+    private void initContextualMenu(@Nullable Bundle savedInstanceState) {
+        mSelectTasksActionModeCallback = new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.tasks_display_contextual_menu, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                mAddTaskFAB.hide();
+
+                mSelectedTasksPositions = new HashSet<>();
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
+                        //TODO: Delete tasks from DB
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                mTasksAdapter.setSelectedTasksPositions(new HashSet<Integer>());
+                for (Integer selectedTask : mSelectedTasksPositions) {
+                    mTasksAdapter.notifyItemChanged(selectedTask);
+                }
+                mSelectedTasksPositions = new HashSet<>();
+                mCurrentActionMode = null;
+
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mAddTaskFAB.show();
+            }
+        };
+
+        if (savedInstanceState != null) {
+            ArrayList<Integer> positionsList = savedInstanceState.getIntegerArrayList(KEY_SELECTED_TASKS_POSITIONS_LIST);
+            if (positionsList != null) {
+                mCurrentActionMode = startSupportActionMode(mSelectTasksActionModeCallback);
+                mSelectedTasksPositions = new HashSet<>(positionsList);
+                mTasksAdapter.setSelectedTasksPositions(mSelectedTasksPositions);
+                for (Integer selectedTasksPosition : mSelectedTasksPositions) {
+                    mTasksAdapter.notifyItemChanged(selectedTasksPosition);
+                }
+                updateContextualToolbarTitle();
+            }
+        }
+    }
 }

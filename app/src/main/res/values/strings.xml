@@ -18,6 +18,14 @@
     </string-array>
 
     <string name="complete">Завершить</string>
+    <string name="delete">Удалить</string>
+    <plurals name="n_tasks_selected">
+        <item quantity="one">Выбрана %d задача</item>
+        <item quantity="two">Выбраны %d задачи</item>
+        <item quantity="few">Выбраны %d задачи</item>
+        <item quantity="many">Выбрано %d задач</item>
+        <item quantity="other">Выбрано %d задач</item>
+    </plurals>
 
     <!--    <string name="discard_changes">Отменить изменения?</string>-->
 

@@ -15,7 +15,9 @@ import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.model.Task;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
@@ -23,11 +25,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     private OnItemLongClickListener mLongClickListener;
 
     public interface OnItemClickListener {
-        void onItemClicked(long taskId);
+        void onItemClicked(int position);
     }
 
     public interface OnItemLongClickListener {
-        void onItemLongClicked(long taskId);
+        void onItemLongClicked(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -55,8 +57,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
                     if (mClickListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            long taskId = mTasks.get(position).getId();
-                            mClickListener.onItemClicked(taskId);
+                            mClickListener.onItemClicked(position);
                         }
                     }
                 }
@@ -68,8 +69,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
                     if (mLongClickListener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            long taskId = mTasks.get(position).getId();
-                            mLongClickListener.onItemLongClicked(taskId);
+                            mLongClickListener.onItemLongClicked(position);
                             return true;
                         }
                     }
@@ -80,9 +80,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     }
 
     private List<Task> mTasks;
+    private Set<Integer> mSelectedTasksPositions;
 
     TasksAdapter(@Nullable List<Task> tasks) {
         mTasks = (tasks == null) ? null : new ArrayList<>(tasks);
+        mSelectedTasksPositions = new HashSet<>();
     }
 
     @NonNull
@@ -103,6 +105,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
         TextView textViewTaskName = holder.mTaskNameTextView;
         textViewTaskName.setText(task.getName());
+
+        if (mSelectedTasksPositions.contains(position)) {
+            holder.mForegroundView.setBackgroundResource(R.color.colorItemSelectedBackground);
+        } else {
+            holder.mForegroundView.setBackgroundResource(R.color.colorItemBackground);
+        }
+
     }
 
     @Override
@@ -119,4 +128,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     public Task getTaskAtPosition(int position) {
         return mTasks.get(position);
     }
+
+    public void setSelectedTasksPositions(@NonNull Set<Integer> selectedTasksPositions) {
+        mSelectedTasksPositions = new HashSet<>(selectedTasksPositions);
+    }
+
 }
