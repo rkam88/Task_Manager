@@ -3,6 +3,7 @@ package net.rusnet.taskmanager.tasksdisplay;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -40,6 +42,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     private static final String KEY_TASK_VIEW_TYPE = "KEY_TASK_VIEW_TYPE";
     private static final String KEY_SELECTED_TASKS_POSITIONS_LIST = "KEY_SELECTED_TASKS_POSITIONS_LIST";
+    public static final String KEY_LAYOUT_MANAGER_STATE = "KEY_LAYOUT_MANAGER_STATE";
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
     private static final int REQUEST_CODE_ADD_NEW_TASK = 1;
     private static final int REQUEST_CODE_EDIT_TASK = 2;
@@ -64,6 +67,8 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     private ActionMode mCurrentActionMode;
     private Set<Integer> mSelectedTasksPositions;
 
+    private Parcelable mLayoutManagerSavedState;
+
     @Override
     public void updateTasksViewType(@NonNull TaskViewType type) {
         mTaskViewType = type;
@@ -74,6 +79,14 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     public void updateTaskList(@Nullable List<Task> taskList) {
         mTasksAdapter.setTasks(taskList);
         mTasksAdapter.notifyDataSetChanged();
+
+        if (mLayoutManagerSavedState != null) {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) mTasksRecyclerView.getLayoutManager();
+            if (layoutManager != null) {
+                layoutManager.onRestoreInstanceState(mLayoutManagerSavedState);
+                mLayoutManagerSavedState = null;
+            }
+        }
     }
 
     @Override
@@ -129,7 +142,24 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
             outState.putIntegerArrayList(KEY_SELECTED_TASKS_POSITIONS_LIST, positionsList);
         }
 
+        LinearLayoutManager layoutManager = (LinearLayoutManager) mTasksRecyclerView.getLayoutManager();
+        if (layoutManager != null) {
+            Parcelable state = layoutManager.onSaveInstanceState();
+            outState.putParcelable(KEY_LAYOUT_MANAGER_STATE, state);
+        }
+
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) mTasksRecyclerView.getLayoutManager();
+        if (layoutManager != null) {
+            mLayoutManagerSavedState = savedInstanceState.getParcelable(KEY_LAYOUT_MANAGER_STATE);
+            layoutManager.onRestoreInstanceState(mLayoutManagerSavedState);
+        }
+
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void initToolbar() {
