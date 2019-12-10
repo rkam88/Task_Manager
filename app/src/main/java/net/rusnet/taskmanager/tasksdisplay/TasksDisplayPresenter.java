@@ -90,6 +90,17 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 });
     }
 
+    @Override
+    public void deleteTasks(@NonNull List<Task> tasks) {
+        mTasksRepository.deleteTasks(tasks, new TaskDataSource.DeleteTasksCallback() {
+            @Override
+            public void onTasksDeleted() {
+                updateAllTaskCount();
+                loadTasks(mTaskViewType);
+            }
+        });
+    }
+
     private void loadTasks(@NonNull TaskViewType taskViewType) {
         mTasksRepository.loadTasks(
                 getTaskType(taskViewType),

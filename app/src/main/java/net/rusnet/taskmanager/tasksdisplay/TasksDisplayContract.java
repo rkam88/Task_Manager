@@ -23,5 +23,7 @@ public interface TasksDisplayContract {
         void updateAllTaskCount();
 
         void markTaskAsCompleted(@NonNull Task task);
+
+        void deleteTasks(@NonNull List<Task> tasks);
     }
 }

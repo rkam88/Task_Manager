@@ -390,7 +390,11 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_delete:
-                        //TODO: Delete tasks from DB
+                        List<Task> tasksToDelete = new ArrayList<>();
+                        for (Integer position : mSelectedTasksPositions) {
+                            tasksToDelete.add(mTasksAdapter.getTaskAtPosition(position));
+                        }
+                        mTaskDisplayPresenter.deleteTasks(tasksToDelete);
                         mode.finish();
                         return true;
                     default:
