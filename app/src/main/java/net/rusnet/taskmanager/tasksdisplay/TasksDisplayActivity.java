@@ -289,7 +289,7 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
                     @Override
                     public boolean isItemViewSwipeEnabled() {
-                        return mTaskViewType != TaskViewType.COMPLETED;
+                        return (mTaskViewType != TaskViewType.COMPLETED && mCurrentActionMode == null);
                     }
 
                     @Override
