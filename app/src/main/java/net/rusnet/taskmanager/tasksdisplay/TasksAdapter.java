@@ -12,6 +12,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
+import net.rusnet.taskmanager.model.Date;
+import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 
 import java.util.ArrayList;
@@ -42,12 +44,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTaskNameTextView;
+        TextView mTaskDateTextView;
         ConstraintLayout mForegroundView, mBackgroundView;
 
         ViewHolder(View itemView) {
             super(itemView);
 
             mTaskNameTextView = itemView.findViewById(R.id.text_view_task_name);
+            mTaskDateTextView = itemView.findViewById(R.id.text_view_task_date);
             mBackgroundView = itemView.findViewById(R.id.view_background);
             mForegroundView = itemView.findViewById(R.id.view_foreground);
 
@@ -105,6 +109,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
         TextView textViewTaskName = holder.mTaskNameTextView;
         textViewTaskName.setText(task.getName());
+
+        TextView textViewTaskDate = holder.mTaskDateTextView;
+        if (task.getDateType() == DateType.NO_DATE) {
+            textViewTaskDate.setText(textViewTaskDate.getContext().getString(R.string.without_date));
+        } else {
+            Date date = task.getEndDate();
+            if (date != null) textViewTaskDate.setText(task.getEndDate().toString());
+        }
 
         if (mSelectedTasksPositions.contains(position)) {
             holder.mForegroundView.setBackgroundResource(R.color.colorItemSelectedBackground);
