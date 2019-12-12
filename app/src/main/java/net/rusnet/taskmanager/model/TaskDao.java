@@ -33,10 +33,10 @@ public interface TaskDao {
     @Query("SELECT * from task_table")
     Task[] getAllTasks();
 
-    @Query("SELECT * FROM task_table WHERE (type = :taskType OR :taskType IS NULL) AND is_completed = :isCompleted")
+    @Query("SELECT * FROM task_table WHERE (task_type = :taskType OR :taskType = 'ANY') AND is_completed = :isCompleted")
     Task[] getTasks(String taskType, boolean isCompleted);
 
-    @Query("SELECT COUNT(*) FROM task_table WHERE (type = :taskType OR :taskType IS NULL) AND is_completed = :isCompleted")
+    @Query("SELECT COUNT(*) FROM task_table WHERE (task_type = :taskType OR :taskType = 'ANY') AND is_completed = :isCompleted")
     Integer getTasksCount(String taskType, boolean isCompleted);
 
 }

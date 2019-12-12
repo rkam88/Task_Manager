@@ -21,8 +21,8 @@ public class Task {
     private String mName;
 
     @NonNull
-    @ColumnInfo(name = "type")
-    private String mType;
+    @ColumnInfo(name = "task_type")
+    private TaskType mTaskType;
 
     @NonNull
     @ColumnInfo(name = "date_type")
@@ -35,19 +35,19 @@ public class Task {
     @ColumnInfo(name = "is_completed")
     private boolean mIsCompleted;
 
-    public Task(long id, @NonNull String name, @NonNull String type, @NonNull DateType dateType, @Nullable Date endDate, boolean isCompleted) {
+    public Task(long id, @NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, boolean isCompleted) {
         mId = id;
         mName = name;
-        mType = type;
+        mTaskType = taskType;
         mDateType = dateType;
         mEndDate = endDate;
         mIsCompleted = isCompleted;
     }
 
     @Ignore
-    public Task(@NonNull String name, @NonNull String type, @NonNull DateType dateType, @Nullable Date endDate) {
+    public Task(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate) {
         mName = name;
-        mType = type;
+        mTaskType = taskType;
         mDateType = dateType;
         mEndDate = endDate;
         mIsCompleted = false;
@@ -67,12 +67,12 @@ public class Task {
     }
 
     @NonNull
-    public String getType() {
-        return mType;
+    public TaskType getTaskType() {
+        return mTaskType;
     }
 
-    public void setType(@NonNull String type) {
-        mType = type;
+    public void setTaskType(@NonNull TaskType taskType) {
+        mTaskType = taskType;
     }
 
     @NonNull
@@ -100,5 +100,4 @@ public class Task {
     public void setCompleted(boolean completed) {
         mIsCompleted = completed;
     }
-
 }

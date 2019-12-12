@@ -72,7 +72,7 @@ public class TasksRepository implements TaskDataSource {
 
         @Override
         protected List<Task> doInBackground(Void... voids) {
-            return Arrays.asList(mTaskDao.getTasks(mTaskType.getType(), mIsCompleted));
+            return Arrays.asList(mTaskDao.getTasks(mTaskType.getTypeAsString(), mIsCompleted));
         }
 
         @Override
@@ -98,7 +98,7 @@ public class TasksRepository implements TaskDataSource {
         @Override
         protected Integer doInBackground(Void... voids) {
             return mTaskDao.getTasksCount(
-                    mTaskType.getType(),
+                    mTaskType.getTypeAsString(),
                     mIsCompleted
             );
         }

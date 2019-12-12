@@ -1,22 +1,30 @@
 package net.rusnet.taskmanager.model;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 public enum TaskType {
 
-    ANY(null),
+    ANY("ANY"),
     INBOX("INBOX"),
     ACTIVE("ACTIVE"),
     POSTPONED("POSTPONED");
 
     private final String mType;
 
-    TaskType(@Nullable String type) {
+    TaskType(@NonNull String type) {
         mType = type;
     }
 
-    @Nullable
-    public String getType() {
+    @NonNull
+    public String getTypeAsString() {
         return mType;
+    }
+
+    @NonNull
+    static TaskType getTaskTypeByString(@NonNull String type) {
+        if (type.equals(INBOX.getTypeAsString())) return INBOX;
+        if (type.equals(ACTIVE.getTypeAsString())) return ACTIVE;
+        if (type.equals(POSTPONED.getTypeAsString())) return POSTPONED;
+        throw new IllegalArgumentException();
     }
 }

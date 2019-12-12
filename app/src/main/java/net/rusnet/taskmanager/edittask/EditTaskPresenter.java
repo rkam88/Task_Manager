@@ -23,9 +23,9 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     }
 
     @Override
-    public void createNewTask(@NonNull String name, @NonNull TaskType type, @NonNull DateType dateType, @Nullable Date endDate) {
+    public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate) {
         mTasksRepository.createNewTask(
-                new Task(name, type.getType(), dateType, endDate),
+                new Task(name, taskType, dateType, endDate),
                 new TaskDataSource.CreateNewTaskCallback() {
                     @Override
                     public void onTaskCreated() {

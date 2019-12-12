@@ -18,7 +18,7 @@ public interface EditTaskContract {
 
     interface Presenter {
         void createNewTask(@NonNull String name,
-                           @NonNull TaskType type,
+                           @NonNull TaskType taskType,
                            @NonNull DateType dateType,
                            @Nullable Date endDate);
 

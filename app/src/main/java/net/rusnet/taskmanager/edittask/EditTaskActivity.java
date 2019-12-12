@@ -80,15 +80,15 @@ public class EditTaskActivity extends AppCompatActivity
                     Toast.makeText(EditTaskActivity.this, R.string.please_enter_a_task_name, Toast.LENGTH_SHORT).show();
                 } else {
                     String name = mTaskNameEditText.getText().toString();
-                    TaskType type = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
+                    TaskType taskType = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
                     DateType dateType = (DateType) findViewById(mCheckedRadioButtonId).getTag();
                     Date endDate = (dateType == DateType.NO_DATE) ? null :
                             Date.parseString(mTaskDateTextView.getText().toString());
                     if (mIsTaskNew) {
-                        mEditTaskPresenter.createNewTask(name, type, dateType, endDate);
+                        mEditTaskPresenter.createNewTask(name, taskType, dateType, endDate);
                     } else {
                         mTask.setName(name);
-                        mTask.setType(type.toString());
+                        mTask.setTaskType(taskType);
                         mTask.setDateType(dateType);
                         mTask.setEndDate(endDate);
                         mEditTaskPresenter.updateTask(mTask);
@@ -117,7 +117,7 @@ public class EditTaskActivity extends AppCompatActivity
 
         mTaskNameEditText.setText(mTask.getName());
 
-        int position = getSpinnerPosition(mTask.getType());
+        int position = getSpinnerPosition(mTask.getTaskType());
         mTaskCategorySpinner.setSelection(position);
         ((RadioButton) mTaskDateRadioGroup.findViewWithTag(mTask.getDateType())).setChecked(true);
         mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
@@ -286,15 +286,15 @@ public class EditTaskActivity extends AppCompatActivity
         throw new IllegalArgumentException(text);
     }
 
-    private int getSpinnerPosition(String type) {
-        if (type.equals(TaskType.INBOX.toString())) {
+    private int getSpinnerPosition(TaskType type) {
+        if (type.equals(TaskType.INBOX)) {
             return SPINNER_POSITION_INBOX;
-        } else if (type.equals(TaskType.ACTIVE.toString())) {
+        } else if (type.equals(TaskType.ACTIVE)) {
             return SPINNER_POSITION_ACTIVE;
-        } else if (type.equals(TaskType.POSTPONED.toString())) {
+        } else if (type.equals(TaskType.POSTPONED)) {
             return SPINNER_POSITION_POSTPONED;
         }
-        throw new IllegalArgumentException(type);
+        throw new IllegalArgumentException();
     }
 
 }

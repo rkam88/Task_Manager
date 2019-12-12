@@ -5,6 +5,16 @@ import androidx.room.TypeConverter;
 public final class Converters {
 
     @TypeConverter
+    public static String fromTaskType(TaskType taskType) {
+        return taskType.getTypeAsString();
+    }
+
+    @TypeConverter
+    public static TaskType toTaskType(String taskTypeAsString) {
+        return TaskType.getTaskTypeByString(taskTypeAsString);
+    }
+
+    @TypeConverter
     public static String fromDateType(DateType dateType) {
         return dateType.getTypeAsString();
     }
