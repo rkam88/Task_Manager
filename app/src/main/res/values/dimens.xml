@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="padding_item_default">16dp</dimen>
-    <dimen name="margin_outer">16dp</dimen>
-    <dimen name="margin_inner">8dp</dimen>
-    <!--    <dimen name="margin_item_default">8dp</dimen>-->
+    <dimen name="margin_standard">16dp</dimen>
+    <dimen name="margin_half">8dp</dimen>
+
+    <dimen name="edit_task_icon_size">36dp</dimen>
+
+    <dimen name="edit_task_padding_spinner_item">8dp</dimen>
+    <dimen name="edit_task_margin_spinner_start">8dp</dimen>
+
+    <dimen name="tasks_display_margin_end_completed">8dp</dimen>
+
 </resources>

@@ -1,14 +1,22 @@
 package net.rusnet.taskmanager.edittask;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,11 +25,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import net.rusnet.taskmanager.R;
+import net.rusnet.taskmanager.model.Date;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 import net.rusnet.taskmanager.model.TasksRepository;
 
-public class EditTaskActivity extends AppCompatActivity implements EditTaskContract.View {
+import java.util.Calendar;
+
+public class EditTaskActivity extends AppCompatActivity
+        implements EditTaskContract.View,
+        DatePickerFragment.OnDatePickerDialogResultListener {
 
     public static final String TAG = "TAG_EditTaskActivity";
 
@@ -32,6 +45,10 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     private static final int SPINNER_POSITION_INBOX = 0;
     private static final int SPINNER_POSITION_ACTIVE = 1;
     private static final int SPINNER_POSITION_POSTPONED = 2;
+    private static final String DATE_PICKER_TAG = "datePicker";
+    private static final String KEY_SELECTED_DATE_TYPE = "KEY_SELECTED_DATE_TYPE";
+    private static final String KEY_DATE = "KEY_DATE";
+    private static final int NO_SAVED_ID = -1;
 
     private boolean mIsTaskNew;
     private long mTaskId;
@@ -42,6 +59,9 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
 
     private EditText mTaskNameEditText;
     private Spinner mTaskCategorySpinner;
+    private TextView mTaskDateTextView;
+    private RadioGroup mTaskDateRadioGroup;
+    private int mCheckedRadioButtonId = NO_SAVED_ID;
 
     private Task mTask;
 
@@ -88,9 +108,48 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     @Override
     public void updateView(Task task) {
         mTask = task;
+
         mTaskNameEditText.setText(mTask.getName());
+
         int position = getSpinnerPosition(mTask.getType());
         mTaskCategorySpinner.setSelection(position);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Date date = new Date(true, year, month, dayOfMonth);
+        mTaskDateTextView.setText(date.toString());
+        mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
+    }
+
+    public void onRadioButtonClicked(View view) {
+        mTaskNameEditText.clearFocus();
+
+        if (((RadioButton) view).isChecked()) {
+            switch (view.getId()) {
+                case R.id.radio_button_no_date:
+                    mTaskDateTextView.setText(R.string.without_date);
+                    mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
+                    break;
+                case R.id.radio_button_fixed_date:
+                case R.id.radio_button_deadline:
+                    DatePickerFragment newFragment;
+                    String taskDate = mTaskDateTextView.getText().toString();
+                    if (taskDate.equals(getString(R.string.without_date))) {
+                        newFragment = DatePickerFragment.newInstance();
+                    } else {
+                        Calendar currentDate = Date.parseString(taskDate).toCalendar();
+                        newFragment = DatePickerFragment.newInstance(currentDate);
+                    }
+                    newFragment.show(getSupportFragmentManager(), DATE_PICKER_TAG);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onDatePickerDialogCancelClick() {
+        mTaskDateRadioGroup.check(mCheckedRadioButtonId);
     }
 
     @Override
@@ -106,6 +165,19 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
         initPresenter();
         initViews(savedInstanceState);
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(KEY_SELECTED_DATE_TYPE, mCheckedRadioButtonId);
+        outState.putString(KEY_DATE, mTaskDateTextView.getText().toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        mCheckedRadioButtonId = savedInstanceState.getInt(KEY_SELECTED_DATE_TYPE);
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void initToolbar() {
@@ -128,19 +200,63 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     }
 
     private void initViews(@Nullable Bundle savedInstanceState) {
-        mTaskNameEditText = findViewById(R.id.edit_text_task_name);
-        mTaskNameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        mTaskNameEditText.setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        initTaskNameInput();
 
-        mTaskCategorySpinner = findViewById(R.id.spinner_task_category);
+        initTaskCategoryInput();
+
+        initDatePickerInput();
 
         if (mIsTaskNew && savedInstanceState == null) {
             if (mTaskNameEditText.requestFocus()) {
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
+        } else if (savedInstanceState != null) {
+            mTaskDateRadioGroup.check(mCheckedRadioButtonId);
+            mTaskDateTextView.setText(savedInstanceState.getString(KEY_DATE));
         } else {
             mEditTaskPresenter.loadTask(mTaskId);
         }
+    }
+
+    private void initTaskNameInput() {
+        mTaskNameEditText = findViewById(R.id.edit_text_task_name);
+        mTaskNameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        mTaskNameEditText.setRawInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        mTaskNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) EditTaskActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    if (imm != null)
+                        imm.hideSoftInputFromWindow(mTaskNameEditText.getWindowToken(), 0);
+                }
+            }
+        });
+    }
+
+    private void initTaskCategoryInput() {
+        String[] list = getResources().getStringArray(R.array.task_categories);
+        mTaskCategorySpinner = findViewById(R.id.spinner_task_category);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                R.layout.edit_task_category_spinner_item,
+                list);
+        mTaskCategorySpinner.setAdapter(adapter);
+        mTaskCategorySpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mTaskNameEditText.clearFocus();
+                v.performClick();
+                return true;
+            }
+        });
+    }
+
+    private void initDatePickerInput() {
+        mTaskDateTextView = findViewById(R.id.text_view_task_date);
+        mTaskDateRadioGroup = findViewById(R.id.radio_group_date_type);
+        if (mCheckedRadioButtonId == NO_SAVED_ID)
+            mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
     }
 
     @NonNull

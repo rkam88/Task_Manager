@@ -6,6 +6,16 @@
     <string name="postponed">Отложенные</string>
     <string name="completed">Завершенные</string>
 
+    <string name="complete">Завершить</string>
+    <string name="delete">Удалить</string>
+    <plurals name="n_tasks_selected">
+        <item quantity="one">Выбрана %d задача</item>
+        <item quantity="two">Выбраны %d задачи</item>
+        <item quantity="few">Выбраны %d задачи</item>
+        <item quantity="many">Выбраны %d задач</item>
+        <item quantity="other">Выбраны %d задач</item>
+    </plurals>
+
     <string name="create_new_task">Создать задачу</string>
     <string name="edit_task">Редактировать задачу</string>
     <string name="save">Сохранить</string>
@@ -16,16 +26,9 @@
         <item>@string/active</item>
         <item>@string/postponed</item>
     </string-array>
-
-    <string name="complete">Завершить</string>
-    <string name="delete">Удалить</string>
-    <plurals name="n_tasks_selected">
-        <item quantity="one">Выбрана %d задача</item>
-        <item quantity="two">Выбраны %d задачи</item>
-        <item quantity="few">Выбраны %d задачи</item>
-        <item quantity="many">Выбрано %d задач</item>
-        <item quantity="other">Выбрано %d задач</item>
-    </plurals>
+    <string name="without_date">Без даты</string>
+    <string name="fixed_date">Фиксированная дата</string>
+    <string name="deadline">Дедлайн</string>
 
     <!--    <string name="discard_changes">Отменить изменения?</string>-->
 
