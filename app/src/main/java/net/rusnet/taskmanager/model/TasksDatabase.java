@@ -7,9 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(entities = {Task.class}, version = 1)
+@TypeConverters({Converters.class})
 public abstract class TasksDatabase extends RoomDatabase {
 
     public abstract TaskDao taskDao();
@@ -55,8 +57,10 @@ public abstract class TasksDatabase extends RoomDatabase {
         protected Void doInBackground(final Void... params) {
             if (dao.getAllTasks().length < 1) {
                 dao.insertTask(new Task("INBOX incomplete 1", TaskType.INBOX, DateType.NO_DATE, null));
-                dao.insertTask(new Task("ACTIVE incomplete 1", TaskType.ACTIVE, DateType.FIXED, Date.parseString("2019.12.12")));
-                dao.insertTask(new Task("ACTIVE incomplete 2", TaskType.ACTIVE, DateType.DEADLINE, Date.parseString("2019.12.16")));
+                dao.insertTask(new Task("ACTIVE 1", TaskType.ACTIVE, DateType.NO_DATE, null));
+                dao.insertTask(new Task("ACTIVE 2", TaskType.ACTIVE, DateType.FIXED, Date.today()));
+                dao.insertTask(new Task("ACTIVE 3", TaskType.ACTIVE, DateType.FIXED, Date.today()));
+                dao.insertTask(new Task("ACTIVE 4", TaskType.ACTIVE, DateType.DEADLINE, Date.aWeekFromToday()));
                 for (int i = 1; i <= 100; i++) {
                     dao.insertTask(new Task("POSTPONED incomplete " + i, TaskType.POSTPONED, DateType.NO_DATE, null));
                 }

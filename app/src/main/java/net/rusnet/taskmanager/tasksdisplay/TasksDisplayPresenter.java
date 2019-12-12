@@ -2,6 +2,7 @@ package net.rusnet.taskmanager.tasksdisplay;
 
 import androidx.annotation.NonNull;
 
+import net.rusnet.taskmanager.model.Date;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskDataSource;
 import net.rusnet.taskmanager.model.TaskType;
@@ -50,10 +51,34 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
         mTasksRepository.loadTasksCount(
                 TaskType.ACTIVE,
                 false,
+                true,
+                Date.START_DATE,
+                Date.today(),
                 new TaskDataSource.LoadTasksCountCallback() {
                     @Override
                     public void onTasksCountLoaded(int tasksCount) {
-                        updateTasksCountInView(TaskViewType.ACTIVE, tasksCount);
+                        updateTasksCountInView(TaskViewType.TODAY, tasksCount);
+                    }
+                });
+        mTasksRepository.loadTasksCount(
+                TaskType.ACTIVE,
+                false,
+                true,
+                Date.START_DATE,
+                Date.aWeekFromToday(),
+                new TaskDataSource.LoadTasksCountCallback() {
+                    @Override
+                    public void onTasksCountLoaded(int tasksCount) {
+                        updateTasksCountInView(TaskViewType.THIS_WEEK, tasksCount);
+                    }
+                });
+        mTasksRepository.loadTasksCount(
+                TaskType.ACTIVE,
+                false,
+                new TaskDataSource.LoadTasksCountCallback() {
+                    @Override
+                    public void onTasksCountLoaded(int tasksCount) {
+                        updateTasksCountInView(TaskViewType.ACTIVE_ALL, tasksCount);
                     }
                 });
         mTasksRepository.loadTasksCount(
@@ -102,9 +127,22 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     }
 
     private void loadTasks(@NonNull TaskViewType taskViewType) {
+        boolean useDateRange = false;
+        Date startDate = Date.START_DATE;
+        Date endDate = null;
+        if (taskViewType == TaskViewType.TODAY) {
+            useDateRange = true;
+            endDate = Date.today();
+        } else if (taskViewType == TaskViewType.THIS_WEEK) {
+            useDateRange = true;
+            endDate = Date.aWeekFromToday();
+        }
         mTasksRepository.loadTasks(
-                getTaskType(taskViewType),
+                TaskViewType.getTaskType(taskViewType),
                 (taskViewType.equals(TaskViewType.COMPLETED)),
+                useDateRange,
+                startDate,
+                endDate,
                 new TaskDataSource.LoadTasksCallback() {
                     @Override
                     public void onTasksLoaded(List<Task> tasks) {
@@ -112,21 +150,6 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                     }
                 }
         );
-    }
-
-    @NonNull
-    private TaskType getTaskType(@NonNull TaskViewType taskViewType) {
-        switch (taskViewType) {
-            case ACTIVE:
-                return TaskType.ACTIVE;
-            case POSTPONED:
-                return TaskType.POSTPONED;
-            case INBOX:
-                return TaskType.INBOX;
-            case COMPLETED:
-                return TaskType.ANY;
-        }
-        throw new IllegalArgumentException(taskViewType.toString());
     }
 
     private void updateView(@NonNull List<Task> tasks) {

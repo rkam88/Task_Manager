@@ -16,7 +16,11 @@ public class Date {
     private static final int DAY_POSITION = 2;
     private static final int MIN_DAY = 1;
     private static final int MAX_DAY = 31;
+    private static final int MIN_MONTH = Calendar.JANUARY + CALENDAR_MONTH_OFFSET;
+    private static final int MAX_MONTH = Calendar.DECEMBER + CALENDAR_MONTH_OFFSET;
     private static final int MIN_YEAR = 1970;
+
+    public static final Date START_DATE = new Date(false, MIN_YEAR, MIN_MONTH, MIN_DAY);
 
     private int mYear;
     private int mMonth;
@@ -32,6 +36,13 @@ public class Date {
             mMonth = month;
             mDay = day;
         }
+    }
+
+    public Date(Calendar calendar) {
+        this(true,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @NonNull
@@ -57,8 +68,8 @@ public class Date {
         int month = Integer.parseInt(s[MONTH_POSITION]);
         int day = Integer.parseInt(s[DAY_POSITION]);
 
-        if (month < Calendar.JANUARY + CALENDAR_MONTH_OFFSET ||
-                month > Calendar.DECEMBER + CALENDAR_MONTH_OFFSET ||
+        if (month < MIN_MONTH ||
+                month > MAX_MONTH ||
                 day < MIN_DAY ||
                 day > MAX_DAY ||
                 year < MIN_YEAR)
@@ -68,4 +79,13 @@ public class Date {
 
     }
 
+    public static Date today() {
+        return new Date(Calendar.getInstance());
+    }
+
+    public static Date aWeekFromToday() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+        return new Date(calendar);
+    }
 }

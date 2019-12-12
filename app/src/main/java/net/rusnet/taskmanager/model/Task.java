@@ -6,10 +6,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
 @Entity(tableName = "task_table")
-@TypeConverters({Converters.class})
 public class Task {
 
     @PrimaryKey(autoGenerate = true)

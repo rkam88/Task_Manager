@@ -182,7 +182,9 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
                 });
 
         mTaskCountMap.put(TaskViewType.INBOX, getTextViewCounter(R.id.nav_inbox));
-        mTaskCountMap.put(TaskViewType.ACTIVE, getTextViewCounter(R.id.nav_active));
+        mTaskCountMap.put(TaskViewType.TODAY, getTextViewCounter(R.id.nav_active_today));
+        mTaskCountMap.put(TaskViewType.THIS_WEEK, getTextViewCounter(R.id.nav_active_this_week));
+        mTaskCountMap.put(TaskViewType.ACTIVE_ALL, getTextViewCounter(R.id.nav_active_all));
         mTaskCountMap.put(TaskViewType.POSTPONED, getTextViewCounter(R.id.nav_postponed));
         mTaskCountMap.put(TaskViewType.COMPLETED, getTextViewCounter(R.id.nav_completed));
     }
@@ -192,8 +194,14 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
             case R.id.nav_inbox:
                 mTaskDisplayPresenter.setTasksViewType(TaskViewType.INBOX);
                 break;
-            case R.id.nav_active:
-                mTaskDisplayPresenter.setTasksViewType(TaskViewType.ACTIVE);
+            case R.id.nav_active_today:
+                mTaskDisplayPresenter.setTasksViewType(TaskViewType.TODAY);
+                break;
+            case R.id.nav_active_this_week:
+                mTaskDisplayPresenter.setTasksViewType(TaskViewType.THIS_WEEK);
+                break;
+            case R.id.nav_active_all:
+                mTaskDisplayPresenter.setTasksViewType(TaskViewType.ACTIVE_ALL);
                 break;
             case R.id.nav_postponed:
                 mTaskDisplayPresenter.setTasksViewType(TaskViewType.POSTPONED);
@@ -203,7 +211,6 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
                 break;
         }
 
-        menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
     }
 
@@ -341,8 +348,6 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         TaskViewType type = null;
         if (savedInstanceState != null) {
             type = (TaskViewType) savedInstanceState.getSerializable(KEY_TASK_VIEW_TYPE);
-        } else {
-            mNavigationViewDrawer.getMenu().findItem(R.id.nav_inbox).setChecked(true);
         }
         type = (type == null) ? DEFAULT_TASK_VIEW_TYPE : type;
 

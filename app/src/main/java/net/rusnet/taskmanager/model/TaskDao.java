@@ -33,10 +33,18 @@ public interface TaskDao {
     @Query("SELECT * from task_table")
     Task[] getAllTasks();
 
-    @Query("SELECT * FROM task_table WHERE (task_type = :taskType OR :taskType = 'ANY') AND is_completed = :isCompleted")
-    Task[] getTasks(String taskType, boolean isCompleted);
+    @Query("SELECT * " +
+            "FROM task_table " +
+            "WHERE (task_type = :taskType OR :taskType = 'ANY') " +
+            "AND is_completed = :isCompleted " +
+            "AND ((:useDateRange = 0) OR (end_date BETWEEN :dateRangeStart AND :dateRangeEnd))")
+    Task[] getTasks(String taskType, boolean isCompleted, boolean useDateRange, Date dateRangeStart, Date dateRangeEnd);
 
-    @Query("SELECT COUNT(*) FROM task_table WHERE (task_type = :taskType OR :taskType = 'ANY') AND is_completed = :isCompleted")
-    Integer getTasksCount(String taskType, boolean isCompleted);
+    @Query("SELECT COUNT(*) " +
+            "FROM task_table " +
+            "WHERE (task_type = :taskType OR :taskType = 'ANY') " +
+            "AND is_completed = :isCompleted " +
+            "AND ((:useDateRange = 0) OR (end_date BETWEEN :dateRangeStart AND :dateRangeEnd))")
+    Integer getTasksCount(String taskType, boolean isCompleted, boolean useDateRange, Date dateRangeStart, Date dateRangeEnd);
 
 }

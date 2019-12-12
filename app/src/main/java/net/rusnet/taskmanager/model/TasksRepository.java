@@ -29,12 +29,22 @@ public class TasksRepository implements TaskDataSource {
 
     @Override
     public void loadTasks(@Nullable TaskType taskType, boolean isCompleted, @NonNull LoadTasksCallback callback) {
-        new LoadTasksAsyncTask(mTaskDao, taskType, isCompleted, callback).execute();
+        new LoadTasksAsyncTask(mTaskDao, taskType, isCompleted, false, null, null, callback).execute();
+    }
+
+    @Override
+    public void loadTasks(@Nullable TaskType taskType, boolean isCompleted, boolean useDateRange, Date startDate, Date endDate, @NonNull LoadTasksCallback callback) {
+        new LoadTasksAsyncTask(mTaskDao, taskType, isCompleted, useDateRange, startDate, endDate, callback).execute();
     }
 
     @Override
     public void loadTasksCount(@Nullable TaskType taskType, boolean isCompleted, @NonNull LoadTasksCountCallback callback) {
-        new LoadTasksCountAsyncTask(mTaskDao, taskType, isCompleted, callback).execute();
+        loadTasksCount(taskType, isCompleted, false, null, null, callback);
+    }
+
+    @Override
+    public void loadTasksCount(@Nullable TaskType taskType, boolean isCompleted, boolean useDateRange, Date startDate, Date endDate, @NonNull LoadTasksCountCallback callback) {
+        new LoadTasksCountAsyncTask(mTaskDao, taskType, isCompleted, useDateRange, startDate, endDate, callback).execute();
     }
 
     @Override
@@ -61,18 +71,34 @@ public class TasksRepository implements TaskDataSource {
         private TaskDao mTaskDao;
         private TaskType mTaskType;
         private boolean mIsCompleted;
+        private boolean mUseDateRange;
+        private Date mStartDate;
+        private Date mEndDate;
         private LoadTasksCallback mCallback;
 
-        LoadTasksAsyncTask(TaskDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCallback callback) {
+        LoadTasksAsyncTask(TaskDao taskDao,
+                           TaskType taskType,
+                           boolean isCompleted,
+                           boolean useDateRange,
+                           Date startDate, Date endDate,
+                           LoadTasksCallback callback) {
             mTaskDao = taskDao;
             mTaskType = taskType;
             mIsCompleted = isCompleted;
+            mUseDateRange = useDateRange;
+            mStartDate = startDate;
+            mEndDate = endDate;
             mCallback = callback;
         }
 
         @Override
         protected List<Task> doInBackground(Void... voids) {
-            return Arrays.asList(mTaskDao.getTasks(mTaskType.getTypeAsString(), mIsCompleted));
+            return Arrays.asList(mTaskDao.getTasks(
+                    mTaskType.getTypeAsString(),
+                    mIsCompleted,
+                    mUseDateRange,
+                    mStartDate,
+                    mEndDate));
         }
 
         @Override
@@ -86,12 +112,24 @@ public class TasksRepository implements TaskDataSource {
         private TaskDao mTaskDao;
         private TaskType mTaskType;
         private boolean mIsCompleted;
+        private boolean mUseDateRange;
+        private Date mStartDate;
+        private Date mEndDate;
         private LoadTasksCountCallback mCallback;
 
-        LoadTasksCountAsyncTask(TaskDao taskDao, TaskType taskType, boolean isCompleted, LoadTasksCountCallback callback) {
+        LoadTasksCountAsyncTask(TaskDao taskDao,
+                                TaskType taskType,
+                                boolean isCompleted,
+                                boolean useDateRange,
+                                Date startDate,
+                                Date endDate,
+                                LoadTasksCountCallback callback) {
             mTaskDao = taskDao;
             mTaskType = taskType;
             mIsCompleted = isCompleted;
+            mUseDateRange = useDateRange;
+            mStartDate = startDate;
+            mEndDate = endDate;
             mCallback = callback;
         }
 
@@ -99,7 +137,10 @@ public class TasksRepository implements TaskDataSource {
         protected Integer doInBackground(Void... voids) {
             return mTaskDao.getTasksCount(
                     mTaskType.getTypeAsString(),
-                    mIsCompleted
+                    mIsCompleted,
+                    mUseDateRange,
+                    mStartDate,
+                    mEndDate
             );
         }
 

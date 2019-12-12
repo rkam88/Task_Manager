@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_inbox"
-            android:icon="@drawable/ic_folder_black"
-            android:title="@string/inbox"
-            app:actionLayout="@layout/tasks_display_drawer_task_count" />
-        <item
-            android:id="@+id/nav_active"
-            android:icon="@drawable/ic_folder_black"
-            android:title="@string/active"
-            app:actionLayout="@layout/tasks_display_drawer_task_count" />
+
+    <item
+        android:id="@+id/nav_inbox"
+        android:icon="@drawable/ic_folder_black"
+        android:title="@string/inbox"
+        app:actionLayout="@layout/tasks_display_drawer_task_count" />
+
+    <item android:title="@string/active">
+        <menu>
+            <group android:id="@+id/group_active">
+                <item
+                    android:id="@+id/nav_active_today"
+                    android:icon="@drawable/ic_folder_black"
+                    android:title="@string/today"
+                    app:actionLayout="@layout/tasks_display_drawer_task_count" />
+                <item
+                    android:id="@+id/nav_active_this_week"
+                    android:icon="@drawable/ic_folder_black"
+                    android:title="@string/this_week"
+                    app:actionLayout="@layout/tasks_display_drawer_task_count" />
+                <item
+                    android:id="@+id/nav_active_all"
+                    android:icon="@drawable/ic_folder_black"
+                    android:title="@string/all"
+                    app:actionLayout="@layout/tasks_display_drawer_task_count" />
+            </group>
+        </menu>
+    </item>
+
+    <group android:id="@+id/group_other">
         <item
             android:id="@+id/nav_postponed"
             android:icon="@drawable/ic_folder_black"

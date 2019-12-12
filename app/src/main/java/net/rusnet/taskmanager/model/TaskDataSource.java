@@ -36,9 +36,25 @@ public interface TaskDataSource {
             final boolean isCompleted,
             @NonNull final LoadTasksCallback callback);
 
+    void loadTasks(
+            @Nullable final TaskType taskType,
+            final boolean isCompleted,
+            final boolean useDateRange,
+            final Date startDate,
+            final Date endDate,
+            @NonNull final LoadTasksCallback callback);
+
     void loadTasksCount(
             @Nullable final TaskType taskType,
             final boolean isCompleted,
+            @NonNull final LoadTasksCountCallback callback);
+
+    void loadTasksCount(
+            @Nullable final TaskType taskType,
+            final boolean isCompleted,
+            final boolean useDateRange,
+            final Date startDate,
+            final Date endDate,
             @NonNull final LoadTasksCountCallback callback);
 
     void createNewTask(
