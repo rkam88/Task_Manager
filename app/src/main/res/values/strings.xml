@@ -29,10 +29,10 @@
     <string name="without_date">Без даты</string>
     <string name="fixed_date">Фиксированная дата</string>
     <string name="deadline">Дедлайн</string>
+    <string name="before">до</string>
     <string name="today">Сегодня</string>
     <string name="this_week">На этой неделе</string>
     <string name="all">Все</string>
-
 
     <!--    <string name="discard_changes">Отменить изменения?</string>-->
 

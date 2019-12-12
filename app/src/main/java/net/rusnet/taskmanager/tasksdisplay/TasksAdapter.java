@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.model.Date;
-import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import java.util.Set;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
+    private static final String SPACE = " ";
     private OnItemClickListener mClickListener;
     private OnItemLongClickListener mLongClickListener;
 
@@ -111,12 +111,22 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         textViewTaskName.setText(task.getName());
 
         TextView textViewTaskDate = holder.mTaskDateTextView;
-        if (task.getDateType() == DateType.NO_DATE) {
-            textViewTaskDate.setText(textViewTaskDate.getContext().getString(R.string.without_date));
-        } else {
-            Date date = task.getEndDate();
-            if (date != null) textViewTaskDate.setText(task.getEndDate().toString());
+        String text = "";
+        switch (task.getDateType()) {
+            case NO_DATE:
+                text = textViewTaskDate.getContext().getString(R.string.without_date);
+                break;
+            case DEADLINE:
+                text = textViewTaskDate.getContext().getString(R.string.before);
+            case FIXED:
+                Date date = task.getEndDate();
+                if (date != null) {
+                    String dateAsString = date.toString();
+                    text = text + SPACE + dateAsString;
+                }
+                break;
         }
+        textViewTaskDate.setText(text);
 
         if (mSelectedTasksPositions.contains(position)) {
             holder.mForegroundView.setBackgroundResource(R.color.colorItemSelectedBackground);

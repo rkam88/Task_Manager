@@ -31,8 +31,6 @@ import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 import net.rusnet.taskmanager.model.TasksRepository;
 
-import java.util.Calendar;
-
 public class EditTaskActivity extends AppCompatActivity
         implements EditTaskContract.View,
         DatePickerFragment.OnDatePickerDialogResultListener {
@@ -50,6 +48,7 @@ public class EditTaskActivity extends AppCompatActivity
     private static final String KEY_SELECTED_DATE_TYPE = "KEY_SELECTED_DATE_TYPE";
     private static final String KEY_DATE = "KEY_DATE";
     private static final int NO_SAVED_ID = -1;
+    private static final String SPACE = " ";
 
     private boolean mIsTaskNew;
     private long mTaskId;
@@ -61,6 +60,7 @@ public class EditTaskActivity extends AppCompatActivity
     private EditText mTaskNameEditText;
     private Spinner mTaskCategorySpinner;
     private TextView mTaskDateTextView;
+    private Date mSelectedDate;
     private RadioGroup mTaskDateRadioGroup;
     private int mCheckedRadioButtonId = NO_SAVED_ID;
 
@@ -82,8 +82,7 @@ public class EditTaskActivity extends AppCompatActivity
                     String name = mTaskNameEditText.getText().toString();
                     TaskType taskType = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
                     DateType dateType = (DateType) findViewById(mCheckedRadioButtonId).getTag();
-                    Date endDate = (dateType == DateType.NO_DATE) ? null :
-                            Date.parseString(mTaskDateTextView.getText().toString());
+                    Date endDate = (dateType == DateType.NO_DATE) ? null : mSelectedDate;
                     if (mIsTaskNew) {
                         mEditTaskPresenter.createNewTask(name, taskType, dateType, endDate);
                     } else {
@@ -121,17 +120,15 @@ public class EditTaskActivity extends AppCompatActivity
         mTaskCategorySpinner.setSelection(position);
         ((RadioButton) mTaskDateRadioGroup.findViewWithTag(mTask.getDateType())).setChecked(true);
         mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
-        if (mTask.getDateType() != DateType.NO_DATE) {
-            Date date = mTask.getEndDate();
-            if (date != null) mTaskDateTextView.setText(date.toString());
-        }
+        mSelectedDate = mTask.getEndDate();
+        updateDateTextView();
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Date date = new Date(true, year, month, dayOfMonth);
-        mTaskDateTextView.setText(date.toString());
         mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
+        mSelectedDate = new Date(true, year, month, dayOfMonth);
+        updateDateTextView();
     }
 
     public void onRadioButtonClicked(View view) {
@@ -140,18 +137,17 @@ public class EditTaskActivity extends AppCompatActivity
         if (((RadioButton) view).isChecked()) {
             switch (view.getId()) {
                 case R.id.radio_button_no_date:
-                    mTaskDateTextView.setText(R.string.without_date);
                     mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
+                    mSelectedDate = null;
+                    updateDateTextView();
                     break;
                 case R.id.radio_button_fixed_date:
                 case R.id.radio_button_deadline:
                     DatePickerFragment newFragment;
-                    String taskDate = mTaskDateTextView.getText().toString();
-                    if (taskDate.equals(getString(R.string.without_date))) {
+                    if (mSelectedDate == null) {
                         newFragment = DatePickerFragment.newInstance();
                     } else {
-                        Calendar currentDate = Date.parseString(taskDate).toCalendar();
-                        newFragment = DatePickerFragment.newInstance(currentDate);
+                        newFragment = DatePickerFragment.newInstance(mSelectedDate.toCalendar());
                     }
                     newFragment.show(getSupportFragmentManager(), DATE_PICKER_TAG);
                     break;
@@ -182,14 +178,8 @@ public class EditTaskActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(KEY_SELECTED_DATE_TYPE, mCheckedRadioButtonId);
-        outState.putString(KEY_DATE, mTaskDateTextView.getText().toString());
+        outState.putString(KEY_DATE, mSelectedDate.toString());
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        mCheckedRadioButtonId = savedInstanceState.getInt(KEY_SELECTED_DATE_TYPE);
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void initToolbar() {
@@ -223,8 +213,11 @@ public class EditTaskActivity extends AppCompatActivity
                 getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
             }
         } else if (savedInstanceState != null) {
+            mCheckedRadioButtonId = savedInstanceState.getInt(KEY_SELECTED_DATE_TYPE);
             mTaskDateRadioGroup.check(mCheckedRadioButtonId);
-            mTaskDateTextView.setText(savedInstanceState.getString(KEY_DATE));
+            String dateAsString = savedInstanceState.getString(KEY_DATE);
+            mSelectedDate = (dateAsString == null) ? null : Date.parseString(dateAsString);
+            updateDateTextView();
         } else {
             mEditTaskPresenter.loadTask(mTaskId);
         }
@@ -297,4 +290,19 @@ public class EditTaskActivity extends AppCompatActivity
         throw new IllegalArgumentException();
     }
 
+
+    private void updateDateTextView() {
+        String text = "";
+        switch ((DateType) findViewById(mCheckedRadioButtonId).getTag()) {
+            case NO_DATE:
+                text = mTaskDateTextView.getContext().getString(R.string.without_date);
+                break;
+            case DEADLINE:
+                text = mTaskDateTextView.getContext().getString(R.string.before);
+            case FIXED:
+                text = text + SPACE + mSelectedDate.toString();
+                break;
+        }
+        mTaskDateTextView.setText(text);
+    }
 }
