@@ -26,6 +26,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.model.Date;
+import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 import net.rusnet.taskmanager.model.TasksRepository;
@@ -80,11 +81,16 @@ public class EditTaskActivity extends AppCompatActivity
                 } else {
                     String name = mTaskNameEditText.getText().toString();
                     TaskType type = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
+                    DateType dateType = (DateType) findViewById(mCheckedRadioButtonId).getTag();
+                    Date endDate = (dateType == DateType.NO_DATE) ? null :
+                            Date.parseString(mTaskDateTextView.getText().toString());
                     if (mIsTaskNew) {
-                        mEditTaskPresenter.createNewTask(name, type);
+                        mEditTaskPresenter.createNewTask(name, type, dateType, endDate);
                     } else {
                         mTask.setName(name);
                         mTask.setType(type.toString());
+                        mTask.setDateType(dateType);
+                        mTask.setEndDate(endDate);
                         mEditTaskPresenter.updateTask(mTask);
                     }
                 }
@@ -113,6 +119,12 @@ public class EditTaskActivity extends AppCompatActivity
 
         int position = getSpinnerPosition(mTask.getType());
         mTaskCategorySpinner.setSelection(position);
+        ((RadioButton) mTaskDateRadioGroup.findViewWithTag(mTask.getDateType())).setChecked(true);
+        mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
+        if (mTask.getDateType() != DateType.NO_DATE) {
+            Date date = mTask.getEndDate();
+            if (date != null) mTaskDateTextView.setText(date.toString());
+        }
     }
 
     @Override
@@ -257,6 +269,9 @@ public class EditTaskActivity extends AppCompatActivity
         mTaskDateRadioGroup = findViewById(R.id.radio_group_date_type);
         if (mCheckedRadioButtonId == NO_SAVED_ID)
             mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
+        findViewById(R.id.radio_button_no_date).setTag(DateType.NO_DATE);
+        findViewById(R.id.radio_button_fixed_date).setTag(DateType.FIXED);
+        findViewById(R.id.radio_button_deadline).setTag(DateType.DEADLINE);
     }
 
     @NonNull

@@ -1,7 +1,10 @@
 package net.rusnet.taskmanager.edittask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import net.rusnet.taskmanager.model.Date;
+import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 
@@ -14,7 +17,10 @@ public interface EditTaskContract {
     }
 
     interface Presenter {
-        void createNewTask(@NonNull String name, @NonNull TaskType type);
+        void createNewTask(@NonNull String name,
+                           @NonNull TaskType type,
+                           @NonNull DateType dateType,
+                           @Nullable Date endDate);
 
         void loadTask(long taskId);
 

@@ -1,7 +1,10 @@
 package net.rusnet.taskmanager.edittask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import net.rusnet.taskmanager.model.Date;
+import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskDataSource;
 import net.rusnet.taskmanager.model.TaskType;
@@ -20,9 +23,9 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     }
 
     @Override
-    public void createNewTask(@NonNull String name, @NonNull TaskType type) {
+    public void createNewTask(@NonNull String name, @NonNull TaskType type, @NonNull DateType dateType, @Nullable Date endDate) {
         mTasksRepository.createNewTask(
-                new Task(name, type.getType()),
+                new Task(name, type.getType(), dateType, endDate),
                 new TaskDataSource.CreateNewTaskCallback() {
                     @Override
                     public void onTaskCreated() {
