@@ -178,7 +178,7 @@ public class EditTaskActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(KEY_SELECTED_DATE_TYPE, mCheckedRadioButtonId);
-        outState.putString(KEY_DATE, mSelectedDate.toString());
+        if (mSelectedDate != null) outState.putString(KEY_DATE, mSelectedDate.toString());
         super.onSaveInstanceState(outState);
     }
 
