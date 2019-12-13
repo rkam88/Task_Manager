@@ -1,114 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context=".edittask.EditTaskActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/edit_task_toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/edit_text_task_name"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_standard"
-        android:layout_marginTop="@dimen/margin_standard"
-        android:layout_marginEnd="@dimen/margin_standard"
-        android:hint="@string/enter_task_name"
-        android:inputType="textMultiLine"
-        android:textAppearance="@style/StandardTextAppearance"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/img_task_category"
-        android:layout_width="@dimen/edit_task_icon_size"
-        android:layout_height="@dimen/edit_task_icon_size"
-        android:src="@drawable/ic_folder_black"
-        app:layout_constraintBottom_toBottomOf="@id/spinner_task_category"
-        app:layout_constraintEnd_toStartOf="@id/spinner_task_category"
-        app:layout_constraintStart_toStartOf="@id/edit_text_task_name"
-        app:layout_constraintTop_toTopOf="@id/spinner_task_category" />
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/edit_task_toolbar" />
 
-    <Spinner
-        android:id="@+id/spinner_task_category"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/edit_task_margin_spinner_start"
-        android:layout_marginTop="@dimen/margin_standard"
-        android:entries="@array/task_categories"
-        app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
-        app:layout_constraintStart_toEndOf="@id/img_task_category"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_task_name" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <ImageView
-        android:id="@+id/img_task_date"
-        android:layout_width="@dimen/edit_task_icon_size"
-        android:layout_height="@dimen/edit_task_icon_size"
-        android:src="@drawable/ic_calendar_black"
-        app:layout_constraintBottom_toBottomOf="@id/text_view_task_date"
-        app:layout_constraintEnd_toStartOf="@id/text_view_task_date"
-        app:layout_constraintStart_toStartOf="@id/edit_text_task_name"
-        app:layout_constraintTop_toTopOf="@id/text_view_task_date" />
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/text_view_task_date"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_standard"
-        android:layout_marginTop="@dimen/margin_standard"
-        android:text="@string/without_date"
-        android:textAppearance="@style/StandardTextAppearance"
-        app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
-        app:layout_constraintStart_toEndOf="@id/img_task_date"
-        app:layout_constraintTop_toBottomOf="@id/spinner_task_category" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_main_contents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <RadioGroup
-        android:id="@+id/radio_group_date_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_half"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@id/text_view_task_date"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="@id/text_view_task_date"
-        app:layout_constraintTop_toBottomOf="@id/text_view_task_date">
+            <EditText
+                android:id="@+id/edit_text_task_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
+                android:layout_marginTop="@dimen/margin_standard"
+                android:layout_marginEnd="@dimen/margin_standard"
+                android:hint="@string/enter_task_name"
+                android:inputType="textMultiLine"
+                android:textAppearance="@style/StandardTextAppearance"
+                app:layout_constraintBottom_toTopOf="@id/spinner_task_category"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/radio_button_no_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:checked="true"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/without_date"
-            android:textAppearance="@style/EditTaskSubItemTextAppearance" />
+            <ImageView
+                android:id="@+id/img_task_category"
+                android:layout_width="@dimen/edit_task_icon_size"
+                android:layout_height="@dimen/edit_task_icon_size"
+                android:src="@drawable/ic_folder_black"
+                app:layout_constraintBottom_toBottomOf="@id/spinner_task_category"
+                app:layout_constraintEnd_toStartOf="@id/spinner_task_category"
+                app:layout_constraintStart_toStartOf="@id/edit_text_task_name"
+                app:layout_constraintTop_toTopOf="@id/spinner_task_category" />
 
-        <RadioButton
-            android:id="@+id/radio_button_fixed_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/fixed_date"
-            android:textAppearance="@style/EditTaskSubItemTextAppearance" />
+            <Spinner
+                android:id="@+id/spinner_task_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/edit_task_margin_spinner_start"
+                android:layout_marginTop="@dimen/margin_standard"
+                android:entries="@array/task_categories"
+                app:layout_constraintBottom_toTopOf="@id/text_view_task_date"
+                app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
+                app:layout_constraintStart_toEndOf="@id/img_task_category"
+                app:layout_constraintTop_toBottomOf="@id/edit_text_task_name" />
 
-        <RadioButton
-            android:id="@+id/radio_button_deadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/deadline"
-            android:textAppearance="@style/EditTaskSubItemTextAppearance" />
+            <ImageView
+                android:id="@+id/img_task_date"
+                android:layout_width="@dimen/edit_task_icon_size"
+                android:layout_height="@dimen/edit_task_icon_size"
+                android:src="@drawable/ic_calendar_black"
+                app:layout_constraintBottom_toBottomOf="@id/text_view_task_date"
+                app:layout_constraintEnd_toStartOf="@id/text_view_task_date"
+                app:layout_constraintStart_toStartOf="@id/edit_text_task_name"
+                app:layout_constraintTop_toTopOf="@id/text_view_task_date" />
 
-    </RadioGroup>
+            <TextView
+                android:id="@+id/text_view_task_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
+                android:layout_marginTop="@dimen/margin_standard"
+                android:text="@string/without_date"
+                android:textAppearance="@style/StandardTextAppearance"
+                app:layout_constraintBottom_toTopOf="@id/radio_group_date_type"
+                app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
+                app:layout_constraintStart_toEndOf="@id/img_task_date"
+                app:layout_constraintTop_toBottomOf="@id/spinner_task_category" />
 
+            <RadioGroup
+                android:id="@+id/radio_group_date_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_half"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/text_view_task_reminder"
+                app:layout_constraintEnd_toEndOf="@id/text_view_task_date"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/text_view_task_date"
+                app:layout_constraintTop_toBottomOf="@id/text_view_task_date">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <RadioButton
+                    android:id="@+id/radio_button_no_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:checked="true"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/without_date"
+                    android:textAppearance="@style/SubItemTextAppearance" />
+
+                <RadioButton
+                    android:id="@+id/radio_button_fixed_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/fixed_date"
+                    android:textAppearance="@style/SubItemTextAppearance" />
+
+                <RadioButton
+                    android:id="@+id/radio_button_deadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/deadline"
+                    android:textAppearance="@style/SubItemTextAppearance" />
+
+            </RadioGroup>
+
+            <ImageView
+                android:id="@+id/img_task_reminder"
+                android:layout_width="@dimen/edit_task_icon_size"
+                android:layout_height="@dimen/edit_task_icon_size"
+                android:src="@drawable/ic_alarm_black"
+                app:layout_constraintBottom_toBottomOf="@id/text_view_task_reminder"
+                app:layout_constraintEnd_toStartOf="@id/text_view_task_reminder"
+                app:layout_constraintStart_toStartOf="@id/edit_text_task_name"
+                app:layout_constraintTop_toTopOf="@id/text_view_task_reminder" />
+
+            <TextView
+                android:id="@+id/text_view_task_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_standard"
+                android:layout_marginTop="@dimen/margin_standard"
+                android:text="@string/no_reminders"
+                android:textAppearance="@style/StandardTextAppearance"
+                app:layout_constraintEnd_toStartOf="@id/button_remove_reminder"
+                app:layout_constraintStart_toEndOf="@id/img_task_reminder"
+                app:layout_constraintTop_toBottomOf="@id/radio_group_date_type" />
+
+            <Button
+                android:id="@+id/button_remove_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_half"
+                android:text="@string/delete"
+                android:textAppearance="@style/SubItemTextAppearance"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/text_view_task_reminder"
+                app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
+                app:layout_constraintStart_toEndOf="@id/text_view_task_reminder"
+                app:layout_constraintTop_toTopOf="@id/text_view_task_reminder"
+                tools:visibility="visible" />
+
+            <Button
+                android:id="@+id/button_set_reminder_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_half"
+                android:text="@string/set_date"
+                android:textAppearance="@style/SubItemTextAppearance"
+                app:layout_constraintEnd_toStartOf="@id/button_set_reminder_time"
+                app:layout_constraintStart_toStartOf="@id/text_view_task_reminder"
+                app:layout_constraintTop_toBottomOf="@id/text_view_task_reminder" />
+
+            <Button
+                android:id="@+id/button_set_reminder_time"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/margin_half"
+                android:text="@string/set_time"
+                android:textAppearance="@style/SubItemTextAppearance"
+                app:layout_constraintBottom_toBottomOf="@id/button_set_reminder_date"
+                app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
+                app:layout_constraintStart_toEndOf="@id/button_set_reminder_date"
+                app:layout_constraintTop_toTopOf="@id/button_set_reminder_date" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

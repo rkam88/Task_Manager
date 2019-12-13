@@ -34,6 +34,13 @@
     <string name="this_week">На этой неделе</string>
     <string name="all">Все</string>
 
+    <string name="no_reminders">Нет напоминаний</string>
+    <string name="set_date">Задать дату</string>
+    <string name="set_time">Задать время</string>
+    <string name="at">в</string>
+    <string name="please_enter_a_date_for_the_reminder">Пожайлуйста, укажите дату для напоминания!</string>
+    <string name="please_enter_the_time_for_the_reminder">Пожайлуйста, укажите время для напоминания!</string>
+
     <!--    <string name="discard_changes">Отменить изменения?</string>-->
 
 </resources>

@@ -1,22 +1,24 @@
 package net.rusnet.taskmanager.edittask;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,9 +33,13 @@ import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 import net.rusnet.taskmanager.model.TasksRepository;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class EditTaskActivity extends AppCompatActivity
         implements EditTaskContract.View,
-        DatePickerFragment.OnDatePickerDialogResultListener {
+        DatePickerFragment.OnDatePickerDialogResultListener,
+        TimePickerDialog.OnTimeSetListener {
 
     public static final String TAG = "TAG_EditTaskActivity";
 
@@ -45,10 +51,23 @@ public class EditTaskActivity extends AppCompatActivity
     private static final int SPINNER_POSITION_ACTIVE = 1;
     private static final int SPINNER_POSITION_POSTPONED = 2;
     private static final String DATE_PICKER_TAG = "datePicker";
+    public static final String TIME_PICKER_TAG = "timePicker";
     private static final String KEY_SELECTED_DATE_TYPE = "KEY_SELECTED_DATE_TYPE";
     private static final String KEY_DATE = "KEY_DATE";
+    private static final String KEY_TASK = "KEY_TASK";
+    private static final String KEY_REMINDER_DATE = "KEY_REMINDER_DATE";
+    private static final String KEY_REMINDER_DATE_SET = "KEY_REMINDER_DATE_SET";
+    private static final String KEY_REMINDER_TIME_SET = "KEY_REMINDER_TIME_SET";
+    private static final String KEY_REMOVE_REMINDER_BUTTON_VISIBILITY = "KEY_REMOVE_REMINDER_BUTTON_VISIBILITY";
+    private static final String KEY_WAITING_FOR_DATE = "KEY_WAITING_FOR_DATE";
     private static final int NO_SAVED_ID = -1;
     private static final String SPACE = " ";
+    private static final String UNKNOWN = "?";
+    private static final int DATE_NONE = 0;
+    private static final int DATE_FOR_TASK = 1;
+    private static final int DATE_FOR_REMINDER = 2;
+    private static final String PATTERN_TIME = "HH:mm";
+    private static final String PATTERN_DATE = "yyyy.MM.dd";
 
     private boolean mIsTaskNew;
     private long mTaskId;
@@ -60,9 +79,19 @@ public class EditTaskActivity extends AppCompatActivity
     private EditText mTaskNameEditText;
     private Spinner mTaskCategorySpinner;
     private TextView mTaskDateTextView;
-    private Date mSelectedDate;
+    private Date mSelectedTaskDate;
     private RadioGroup mTaskDateRadioGroup;
     private int mCheckedRadioButtonId = NO_SAVED_ID;
+
+    private int mWaitingForDate = DATE_NONE;
+
+    private TextView mTaskReminderTextView;
+    private Button mRemoveReminderButton;
+    private Button mSetReminderDateButton;
+    private Button mSetReminderTimeButton;
+    private Calendar mReminderDate;
+    private boolean mIsReminderDateSet = false;
+    private boolean mIsReminderTimeSet = false;
 
     private Task mTask;
 
@@ -76,22 +105,21 @@ public class EditTaskActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.miSave:
-                if (mTaskNameEditText.getText().toString().isEmpty()) {
-                    Toast.makeText(EditTaskActivity.this, R.string.please_enter_a_task_name, Toast.LENGTH_SHORT).show();
+                if (!dataIsFilled()) break;
+
+                String name = mTaskNameEditText.getText().toString();
+                TaskType taskType = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
+                DateType dateType = (DateType) findViewById(mCheckedRadioButtonId).getTag();
+                Date endDate = (dateType == DateType.NO_DATE) ? null : mSelectedTaskDate;
+                if (mIsTaskNew) {
+                    mEditTaskPresenter.createNewTask(name, taskType, dateType, endDate);
                 } else {
-                    String name = mTaskNameEditText.getText().toString();
-                    TaskType taskType = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
-                    DateType dateType = (DateType) findViewById(mCheckedRadioButtonId).getTag();
-                    Date endDate = (dateType == DateType.NO_DATE) ? null : mSelectedDate;
-                    if (mIsTaskNew) {
-                        mEditTaskPresenter.createNewTask(name, taskType, dateType, endDate);
-                    } else {
-                        mTask.setName(name);
-                        mTask.setTaskType(taskType);
-                        mTask.setDateType(dateType);
-                        mTask.setEndDate(endDate);
-                        mEditTaskPresenter.updateTask(mTask);
-                    }
+                    mTask.setName(name);
+                    mTask.setTaskType(taskType);
+                    mTask.setDateType(dateType);
+                    mTask.setEndDate(endDate);
+                    mEditTaskPresenter.updateTask(mTask);
+
                 }
                 return true;
         }
@@ -120,14 +148,7 @@ public class EditTaskActivity extends AppCompatActivity
         mTaskCategorySpinner.setSelection(position);
         ((RadioButton) mTaskDateRadioGroup.findViewWithTag(mTask.getDateType())).setChecked(true);
         mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
-        mSelectedDate = mTask.getEndDate();
-        updateDateTextView();
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
-        mSelectedDate = new Date(true, year, month, dayOfMonth);
+        mSelectedTaskDate = mTask.getEndDate();
         updateDateTextView();
     }
 
@@ -138,16 +159,17 @@ public class EditTaskActivity extends AppCompatActivity
             switch (view.getId()) {
                 case R.id.radio_button_no_date:
                     mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
-                    mSelectedDate = null;
+                    mSelectedTaskDate = null;
                     updateDateTextView();
                     break;
                 case R.id.radio_button_fixed_date:
                 case R.id.radio_button_deadline:
+                    mWaitingForDate = DATE_FOR_TASK;
                     DatePickerFragment newFragment;
-                    if (mSelectedDate == null) {
+                    if (mSelectedTaskDate == null) {
                         newFragment = DatePickerFragment.newInstance();
                     } else {
-                        newFragment = DatePickerFragment.newInstance(mSelectedDate.toCalendar());
+                        newFragment = DatePickerFragment.newInstance(mSelectedTaskDate.toCalendar());
                     }
                     newFragment.show(getSupportFragmentManager(), DATE_PICKER_TAG);
                     break;
@@ -156,8 +178,36 @@ public class EditTaskActivity extends AppCompatActivity
     }
 
     @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        switch (mWaitingForDate) {
+            case DATE_FOR_TASK:
+                mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
+                mSelectedTaskDate = new Date(true, year, month, dayOfMonth);
+                updateDateTextView();
+                break;
+            case DATE_FOR_REMINDER:
+                mRemoveReminderButton.setVisibility(View.VISIBLE);
+                mReminderDate.set(year, month, dayOfMonth);
+                mIsReminderDateSet = true;
+                updateReminderTextView();
+                break;
+        }
+        mWaitingForDate = DATE_NONE;
+    }
+
+    @Override
     public void onDatePickerDialogCancelClick() {
         mTaskDateRadioGroup.check(mCheckedRadioButtonId);
+        mWaitingForDate = DATE_NONE;
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        mRemoveReminderButton.setVisibility(View.VISIBLE);
+        mReminderDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        mReminderDate.set(Calendar.MINUTE, minute);
+        mIsReminderTimeSet = true;
+        updateReminderTextView();
     }
 
     @Override
@@ -178,7 +228,13 @@ public class EditTaskActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(KEY_SELECTED_DATE_TYPE, mCheckedRadioButtonId);
-        if (mSelectedDate != null) outState.putString(KEY_DATE, mSelectedDate.toString());
+        if (mSelectedTaskDate != null) outState.putString(KEY_DATE, mSelectedTaskDate.toString());
+        if (mTask != null) outState.putSerializable(KEY_TASK, mTask);
+        outState.putSerializable(KEY_REMINDER_DATE, mReminderDate);
+        outState.putBoolean(KEY_REMINDER_DATE_SET, mIsReminderDateSet);
+        outState.putBoolean(KEY_REMINDER_TIME_SET, mIsReminderTimeSet);
+        outState.putInt(KEY_REMOVE_REMINDER_BUTTON_VISIBILITY, mRemoveReminderButton.getVisibility());
+        outState.putInt(KEY_WAITING_FOR_DATE, mWaitingForDate);
         super.onSaveInstanceState(outState);
     }
 
@@ -208,16 +264,25 @@ public class EditTaskActivity extends AppCompatActivity
 
         initDatePickerInput();
 
+        initReminderInput();
+
         if (mIsTaskNew && savedInstanceState == null) {
-            if (mTaskNameEditText.requestFocus()) {
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }
+            mTaskNameEditText.requestFocus();
         } else if (savedInstanceState != null) {
             mCheckedRadioButtonId = savedInstanceState.getInt(KEY_SELECTED_DATE_TYPE);
             mTaskDateRadioGroup.check(mCheckedRadioButtonId);
             String dateAsString = savedInstanceState.getString(KEY_DATE);
-            mSelectedDate = (dateAsString == null) ? null : Date.parseString(dateAsString);
+            mSelectedTaskDate = (dateAsString == null) ? null : Date.parseString(dateAsString);
             updateDateTextView();
+
+            mTask = (Task) savedInstanceState.getSerializable(KEY_TASK);
+
+            mReminderDate = (Calendar) savedInstanceState.getSerializable(KEY_REMINDER_DATE);
+            mIsReminderDateSet = savedInstanceState.getBoolean(KEY_REMINDER_DATE_SET);
+            mIsReminderTimeSet = savedInstanceState.getBoolean(KEY_REMINDER_TIME_SET);
+            mRemoveReminderButton.setVisibility(savedInstanceState.getInt(KEY_REMOVE_REMINDER_BUTTON_VISIBILITY));
+            if (mIsReminderDateSet || mIsReminderTimeSet) updateReminderTextView();
+            mWaitingForDate = savedInstanceState.getInt(KEY_WAITING_FOR_DATE);
         } else {
             mEditTaskPresenter.loadTask(mTaskId);
         }
@@ -267,6 +332,53 @@ public class EditTaskActivity extends AppCompatActivity
         findViewById(R.id.radio_button_deadline).setTag(DateType.DEADLINE);
     }
 
+    private void initReminderInput() {
+        mTaskReminderTextView = findViewById(R.id.text_view_task_reminder);
+        mRemoveReminderButton = findViewById(R.id.button_remove_reminder);
+        mSetReminderDateButton = findViewById(R.id.button_set_reminder_date);
+        mSetReminderTimeButton = findViewById(R.id.button_set_reminder_time);
+        mReminderDate = Calendar.getInstance();
+
+        mRemoveReminderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mReminderDate = Calendar.getInstance();
+                mIsReminderDateSet = false;
+                mIsReminderTimeSet = false;
+                mTaskReminderTextView.setText(R.string.no_reminders);
+                mRemoveReminderButton.setVisibility(View.GONE);
+            }
+        });
+
+        mSetReminderDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mWaitingForDate = DATE_FOR_REMINDER;
+                DatePickerFragment newFragment;
+                if (mIsReminderDateSet) {
+                    newFragment = DatePickerFragment.newInstance(mReminderDate);
+                } else {
+                    newFragment = DatePickerFragment.newInstance();
+                }
+                newFragment.show(getSupportFragmentManager(), DATE_PICKER_TAG);
+            }
+        });
+
+        mSetReminderTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerFragment newFragment;
+                if (mIsReminderTimeSet) {
+                    newFragment = TimePickerFragment.newInstance(mReminderDate);
+                } else {
+                    newFragment = TimePickerFragment.newInstance();
+                }
+                newFragment.show(getSupportFragmentManager(), TIME_PICKER_TAG);
+            }
+        });
+
+    }
+
     @NonNull
     private TaskType getTaskType(String text) {
         if (text.equals(getString(R.string.inbox))) {
@@ -290,7 +402,6 @@ public class EditTaskActivity extends AppCompatActivity
         throw new IllegalArgumentException();
     }
 
-
     private void updateDateTextView() {
         String text = "";
         switch ((DateType) findViewById(mCheckedRadioButtonId).getTag()) {
@@ -300,9 +411,43 @@ public class EditTaskActivity extends AppCompatActivity
             case DEADLINE:
                 text = mTaskDateTextView.getContext().getString(R.string.before);
             case FIXED:
-                text = text + SPACE + mSelectedDate.toString();
+                text = text + SPACE + mSelectedTaskDate.toString();
                 break;
         }
         mTaskDateTextView.setText(text);
     }
+
+    private void updateReminderTextView() {
+        String text = (mIsReminderDateSet) ? getCalendarDateAsString(mReminderDate) : UNKNOWN;
+        text += SPACE + getString(R.string.at) + SPACE;
+        text += (mIsReminderTimeSet) ? getCalendarTimeAsString(mReminderDate) : UNKNOWN;
+        mTaskReminderTextView.setText(text);
+    }
+
+    private String getCalendarTimeAsString(Calendar calendar) {
+        SimpleDateFormat format = new SimpleDateFormat(PATTERN_TIME);
+        return format.format(calendar.getTime());
+    }
+
+    private String getCalendarDateAsString(Calendar calendar) {
+        SimpleDateFormat format = new SimpleDateFormat(PATTERN_DATE);
+        return format.format(calendar.getTime());
+    }
+
+    private boolean dataIsFilled() {
+        if (mTaskNameEditText.getText().toString().isEmpty()) {
+            Toast.makeText(EditTaskActivity.this, R.string.please_enter_a_task_name, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (mIsReminderDateSet && !mIsReminderTimeSet) {
+            Toast.makeText(EditTaskActivity.this, R.string.please_enter_the_time_for_the_reminder, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!mIsReminderDateSet && mIsReminderTimeSet) {
+            Toast.makeText(EditTaskActivity.this, R.string.please_enter_a_date_for_the_reminder, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
 }
