@@ -111,15 +111,16 @@ public class EditTaskActivity extends AppCompatActivity
                 TaskType taskType = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
                 DateType dateType = (DateType) findViewById(mCheckedRadioButtonId).getTag();
                 Date endDate = (dateType == DateType.NO_DATE) ? null : mSelectedTaskDate;
+                Calendar reminderDate = (mIsReminderDateSet && mIsReminderTimeSet) ? mReminderDate : null;
                 if (mIsTaskNew) {
-                    mEditTaskPresenter.createNewTask(name, taskType, dateType, endDate);
+                    mEditTaskPresenter.createNewTask(name, taskType, dateType, endDate, reminderDate);
                 } else {
                     mTask.setName(name);
                     mTask.setTaskType(taskType);
                     mTask.setDateType(dateType);
                     mTask.setEndDate(endDate);
+                    mTask.setReminderDate(reminderDate);
                     mEditTaskPresenter.updateTask(mTask);
-
                 }
                 return true;
         }
@@ -150,6 +151,14 @@ public class EditTaskActivity extends AppCompatActivity
         mCheckedRadioButtonId = mTaskDateRadioGroup.getCheckedRadioButtonId();
         mSelectedTaskDate = mTask.getEndDate();
         updateDateTextView();
+
+        if (mTask.getReminderDate() != null) {
+            mRemoveReminderButton.setVisibility(View.VISIBLE);
+            mIsReminderDateSet = true;
+            mIsReminderTimeSet = true;
+            mReminderDate = mTask.getReminderDate();
+            updateReminderTextView();
+        }
     }
 
     public void onRadioButtonClicked(View view) {

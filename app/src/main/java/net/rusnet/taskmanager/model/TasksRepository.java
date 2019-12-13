@@ -150,7 +150,7 @@ public class TasksRepository implements TaskDataSource {
         }
     }
 
-    private static class CreateNewTaskAsyncTask extends AsyncTask<Task, Void, Void> {
+    private static class CreateNewTaskAsyncTask extends AsyncTask<Task, Void, Long> {
         private TaskDao mTaskDao;
         private CreateNewTaskCallback mCallback;
 
@@ -160,14 +160,13 @@ public class TasksRepository implements TaskDataSource {
         }
 
         @Override
-        protected Void doInBackground(Task... tasks) {
-            mTaskDao.insertTask(tasks[0]);
-            return null;
+        protected Long doInBackground(Task... tasks) {
+            return mTaskDao.insertTask(tasks[0]);
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            mCallback.onTaskCreated();
+        protected void onPostExecute(Long newTaskId) {
+            mCallback.onTaskCreated(newTaskId);
         }
     }
 

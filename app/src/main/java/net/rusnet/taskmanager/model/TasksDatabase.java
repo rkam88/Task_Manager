@@ -56,13 +56,13 @@ public abstract class TasksDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
             if (dao.getAllTasks().length < 1) {
-                dao.insertTask(new Task("INBOX incomplete 1", TaskType.INBOX, DateType.NO_DATE, null));
-                dao.insertTask(new Task("ACTIVE 1", TaskType.ACTIVE, DateType.NO_DATE, null));
-                dao.insertTask(new Task("ACTIVE 2", TaskType.ACTIVE, DateType.FIXED, Date.today()));
-                dao.insertTask(new Task("ACTIVE 3", TaskType.ACTIVE, DateType.FIXED, Date.today()));
-                dao.insertTask(new Task("ACTIVE 4", TaskType.ACTIVE, DateType.DEADLINE, Date.aWeekFromToday()));
+                dao.insertTask(new Task("INBOX incomplete 1", TaskType.INBOX, DateType.NO_DATE, null, null));
+                dao.insertTask(new Task("ACTIVE 1", TaskType.ACTIVE, DateType.NO_DATE, null, null));
+                dao.insertTask(new Task("ACTIVE 2", TaskType.ACTIVE, DateType.FIXED, Date.today(), null));
+                dao.insertTask(new Task("ACTIVE 3", TaskType.ACTIVE, DateType.FIXED, Date.today(), null));
+                dao.insertTask(new Task("ACTIVE 4", TaskType.ACTIVE, DateType.DEADLINE, Date.aWeekFromToday(), null));
                 for (int i = 1; i <= 100; i++) {
-                    dao.insertTask(new Task("POSTPONED incomplete " + i, TaskType.POSTPONED, DateType.NO_DATE, null));
+                    dao.insertTask(new Task("POSTPONED incomplete " + i, TaskType.POSTPONED, DateType.NO_DATE, null, null));
                 }
             }
             return null;

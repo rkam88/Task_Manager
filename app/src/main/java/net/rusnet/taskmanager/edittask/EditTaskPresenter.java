@@ -10,6 +10,7 @@ import net.rusnet.taskmanager.model.TaskDataSource;
 import net.rusnet.taskmanager.model.TaskType;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 
 public class EditTaskPresenter implements EditTaskContract.Presenter {
 
@@ -23,18 +24,20 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     }
 
     @Override
-    public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate) {
+    public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Calendar reminderDate) {
         mTasksRepository.createNewTask(
-                new Task(name, taskType, dateType, endDate),
+                new Task(name, taskType, dateType, endDate, reminderDate),
                 new TaskDataSource.CreateNewTaskCallback() {
                     @Override
-                    public void onTaskCreated() {
+                    public void onTaskCreated(long newTaskId) {
                         EditTaskContract.View view = mEditTaskViewWeakReference.get();
                         if (view != null) {
                             view.onTaskSavingFinished();
                         }
+                        setAlarm(newTaskId);
                     }
                 });
+
     }
 
     @Override
@@ -61,5 +64,23 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
                 }
             }
         });
+
+        setAlarm(task);
     }
+
+    private void setAlarm(long taskId) {
+        mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
+            @Override
+            public void onTaskLoaded(Task task) {
+                setAlarm(task);
+            }
+        });
+    }
+
+    private void setAlarm(@NonNull Task task) {
+        if (task.getReminderDate() != null) {
+            //TODO: set alarm for task
+        }
+    }
+
 }

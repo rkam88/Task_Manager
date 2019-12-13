@@ -8,6 +8,8 @@ import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 
+import java.util.Calendar;
+
 public interface EditTaskContract {
 
     interface View {
@@ -20,7 +22,8 @@ public interface EditTaskContract {
         void createNewTask(@NonNull String name,
                            @NonNull TaskType taskType,
                            @NonNull DateType dateType,
-                           @Nullable Date endDate);
+                           @Nullable Date endDate,
+                           @Nullable Calendar reminderDate);
 
         void loadTask(long taskId);
 

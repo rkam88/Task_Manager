@@ -16,7 +16,7 @@ public interface TaskDataSource {
     }
 
     interface CreateNewTaskCallback {
-        void onTaskCreated();
+        void onTaskCreated(long newTaskId);
     }
 
     interface LoadTaskCallback {
