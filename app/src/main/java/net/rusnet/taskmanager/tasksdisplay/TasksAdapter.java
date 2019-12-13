@@ -15,6 +15,7 @@ import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.model.Date;
 import net.rusnet.taskmanager.model.Task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.Set;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
+    private static final String PATTERN_TIME = "HH:mm";
+    private static final String PATTERN_DATE = "yyyy.MM.dd";
     private static final String SPACE = " ";
     private OnItemClickListener mClickListener;
     private OnItemLongClickListener mLongClickListener;
@@ -45,6 +48,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTaskNameTextView;
         TextView mTaskDateTextView;
+        TextView mTaskReminderTextView;
         ConstraintLayout mForegroundView, mBackgroundView;
 
         ViewHolder(View itemView) {
@@ -52,6 +56,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
             mTaskNameTextView = itemView.findViewById(R.id.text_view_task_name);
             mTaskDateTextView = itemView.findViewById(R.id.text_view_task_date);
+            mTaskReminderTextView = itemView.findViewById(R.id.text_view_task_reminder);
             mBackgroundView = itemView.findViewById(R.id.view_background);
             mForegroundView = itemView.findViewById(R.id.view_foreground);
 
@@ -111,22 +116,32 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         textViewTaskName.setText(task.getName());
 
         TextView textViewTaskDate = holder.mTaskDateTextView;
-        String text = "";
+        String dateText = "";
         switch (task.getDateType()) {
             case NO_DATE:
-                text = textViewTaskDate.getContext().getString(R.string.without_date);
+                dateText = textViewTaskDate.getContext().getString(R.string.without_date);
                 break;
             case DEADLINE:
-                text = textViewTaskDate.getContext().getString(R.string.before);
+                dateText = textViewTaskDate.getContext().getString(R.string.before);
             case FIXED:
                 Date date = task.getEndDate();
                 if (date != null) {
                     String dateAsString = date.toString();
-                    text = text + SPACE + dateAsString;
+                    dateText = dateText + SPACE + dateAsString;
                 }
                 break;
         }
-        textViewTaskDate.setText(text);
+        textViewTaskDate.setText(dateText);
+
+        TextView reminderTextView = holder.mTaskReminderTextView;
+        if (task.getReminderDate() == null) {
+            reminderTextView.setText(R.string.no_reminders);
+        } else {
+            String date = (new SimpleDateFormat(PATTERN_DATE)).format(task.getReminderDate().getTime());
+            String time = (new SimpleDateFormat(PATTERN_TIME)).format(task.getReminderDate().getTime());
+            String reminderText = date + SPACE + textViewTaskDate.getContext().getString(R.string.at) + SPACE + time;
+            reminderTextView.setText(reminderText);
+        }
 
         if (mSelectedTasksPositions.contains(position)) {
             holder.mForegroundView.setBackgroundResource(R.color.colorItemSelectedBackground);

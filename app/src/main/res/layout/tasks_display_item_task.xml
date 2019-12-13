@@ -70,26 +70,47 @@
             android:id="@+id/img_task_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_standard"
             android:layout_marginTop="@dimen/margin_half"
-            android:layout_marginBottom="@dimen/margin_standard"
             android:src="@drawable/ic_calendar_black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/text_view_task_date"
+            app:layout_constraintStart_toStartOf="@id/text_view_task_name"
             app:layout_constraintTop_toBottomOf="@id/text_view_task_name" />
 
         <TextView
             android:id="@+id/text_view_task_date"
             android:layout_width="0dp"
-            android:layout_marginStart="@dimen/margin_half"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_half"
             android:text="@string/without_date"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constraintBottom_toBottomOf="@id/img_task_date"
+            app:layout_constraintEnd_toEndOf="@id/text_view_task_name"
             app:layout_constraintStart_toEndOf="@id/img_task_date"
-            app:layout_constraintTop_toTopOf="@id/img_task_date"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/img_task_date" />
 
+        <ImageView
+            android:id="@+id/img_task_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_half"
+            android:layout_marginBottom="@dimen/margin_standard"
+            android:src="@drawable/ic_alarm_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/text_view_task_reminder"
+            app:layout_constraintStart_toStartOf="@id/text_view_task_name"
+            app:layout_constraintTop_toBottomOf="@id/img_task_date" />
+
+        <TextView
+            android:id="@+id/text_view_task_reminder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_half"
+            android:text="@string/no_reminders"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            app:layout_constraintBottom_toBottomOf="@id/img_task_reminder"
+            app:layout_constraintEnd_toEndOf="@id/text_view_task_name"
+            app:layout_constraintStart_toEndOf="@id/img_task_reminder"
+            app:layout_constraintTop_toTopOf="@id/img_task_reminder" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
