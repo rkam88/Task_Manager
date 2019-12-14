@@ -41,6 +41,11 @@
     <string name="please_enter_a_date_for_the_reminder">Пожайлуйста, укажите дату для напоминания!</string>
     <string name="please_enter_the_time_for_the_reminder">Пожайлуйста, укажите время для напоминания!</string>
 
+    <string name="task_alarm_channel_name">Task Manager</string>
+    <string name="task_alarm_channel_description">Уведомления для приложения Task Manager</string>
+    <string name="reminder">Напоминание:</string>
+    <string name="task_alarm_task_description">- %s (%s)</string>
+
     <!--    <string name="discard_changes">Отменить изменения?</string>-->
 
 </resources>
