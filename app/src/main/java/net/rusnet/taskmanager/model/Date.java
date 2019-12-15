@@ -8,6 +8,7 @@ public class Date {
 
     private static final int CALENDAR_MONTH_OFFSET = 1;
     private static final String DOT = ".";
+    private static final String ZERO = "0";
     private static final String DELIMITER = "\\.";
 
     private static final int REQUIRED_LENGTH = 3;
@@ -48,7 +49,11 @@ public class Date {
     @NonNull
     @Override
     public String toString() {
-        return mYear + DOT + mMonth + DOT + mDay;
+        return mYear
+                + DOT
+                + ((mMonth >= 10) ? mMonth : ZERO + mMonth)
+                + DOT
+                + ((mDay >= 10) ? mDay : ZERO + mDay);
     }
 
     @NonNull

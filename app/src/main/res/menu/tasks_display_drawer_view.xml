@@ -4,7 +4,6 @@
 
     <item
         android:id="@+id/nav_inbox"
-        android:icon="@drawable/ic_folder_black"
         android:title="@string/inbox"
         app:actionLayout="@layout/tasks_display_drawer_task_count" />
 
@@ -13,17 +12,14 @@
             <group android:id="@+id/group_active">
                 <item
                     android:id="@+id/nav_active_today"
-                    android:icon="@drawable/ic_folder_black"
                     android:title="@string/today"
                     app:actionLayout="@layout/tasks_display_drawer_task_count" />
                 <item
                     android:id="@+id/nav_active_this_week"
-                    android:icon="@drawable/ic_folder_black"
                     android:title="@string/this_week"
                     app:actionLayout="@layout/tasks_display_drawer_task_count" />
                 <item
                     android:id="@+id/nav_active_all"
-                    android:icon="@drawable/ic_folder_black"
                     android:title="@string/all"
                     app:actionLayout="@layout/tasks_display_drawer_task_count" />
             </group>
@@ -33,12 +29,10 @@
     <group android:id="@+id/group_other">
         <item
             android:id="@+id/nav_postponed"
-            android:icon="@drawable/ic_folder_black"
             android:title="@string/postponed"
             app:actionLayout="@layout/tasks_display_drawer_task_count" />
         <item
             android:id="@+id/nav_completed"
-            android:icon="@drawable/ic_folder_black"
             android:title="@string/completed"
             app:actionLayout="@layout/tasks_display_drawer_task_count" />
     </group>

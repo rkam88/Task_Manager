@@ -11,12 +11,12 @@
     </style>
 
     <style name="StandardTextAppearance">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@color/colorTextBlack</item>
         <item name="android:textSize">22sp</item>
     </style>
 
     <style name="SubItemTextAppearance">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@color/colorTextBlack</item>
         <item name="android:textSize">18sp</item>
     </style>
 

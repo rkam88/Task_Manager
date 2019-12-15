@@ -37,7 +37,8 @@ public interface TaskDao {
             "FROM task_table " +
             "WHERE (task_type = :taskType OR :taskType = 'ANY') " +
             "AND is_completed = :isCompleted " +
-            "AND ((:useDateRange = 0) OR (end_date BETWEEN :dateRangeStart AND :dateRangeEnd))")
+            "AND ((:useDateRange = 0) OR (end_date BETWEEN :dateRangeStart AND :dateRangeEnd))" +
+            "ORDER BY end_date IS NULL, end_date, task_id ASC")
     Task[] getTasks(String taskType, boolean isCompleted, boolean useDateRange, Date dateRangeStart, Date dateRangeEnd);
 
     @Query("SELECT COUNT(*) " +

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.model.Date;
+import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 
 import java.text.SimpleDateFormat;
@@ -148,10 +149,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
                     || task.isCompleted()) {
                 reminderTextView.setPaintFlags(
                         reminderTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-
             }
         }
+
+        int color;
+        if (!task.isCompleted()
+                && (task.getDateType() == DateType.FIXED || task.getDateType() == DateType.DEADLINE)
+                && task.getEndDate().toCalendar().getTimeInMillis() < System.currentTimeMillis()) {
+            color = textViewTaskDate.getContext().getResources().getColor(R.color.colorTextDelayedItem);
+        } else {
+            color = textViewTaskDate.getContext().getResources().getColor(R.color.colorTextBlack);
+        }
+        textViewTaskDate.setTextColor(color);
 
         if (mSelectedTasksPositions.contains(position)) {
             holder.mForegroundView.setBackgroundResource(R.color.colorItemSelectedBackground);
