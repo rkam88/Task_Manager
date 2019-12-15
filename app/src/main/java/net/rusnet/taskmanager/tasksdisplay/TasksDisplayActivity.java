@@ -28,6 +28,7 @@ import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.edittask.EditTaskActivity;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TasksRepository;
+import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,6 +94,13 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     public void updateTaskCount(@NonNull TaskViewType type, @NonNull String newCount) {
         //noinspection ConstantConditions
         mTaskCountMap.get(type).setText(newCount);
+    }
+
+    @Override
+    public void removeTaskAlarms(long taskId) {
+        Intent workIntent = new Intent(TaskAlarmService.ACTION_REMOVE);
+        workIntent.putExtra(TaskAlarmService.EXTRA_TASK_ID, taskId);
+        TaskAlarmService.enqueueWork(this, workIntent);
     }
 
     @Override

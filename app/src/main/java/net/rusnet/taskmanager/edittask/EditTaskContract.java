@@ -16,6 +16,8 @@ public interface EditTaskContract {
         void onTaskSavingFinished();
 
         void updateView(Task task);
+
+        void updateTaskAlarm(long taskId);
     }
 
     interface Presenter {

@@ -32,12 +32,11 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
                     public void onTaskCreated(long newTaskId) {
                         EditTaskContract.View view = mEditTaskViewWeakReference.get();
                         if (view != null) {
+                            view.updateTaskAlarm(newTaskId);
                             view.onTaskSavingFinished();
                         }
-                        setAlarm(newTaskId);
                     }
                 });
-
     }
 
     @Override
@@ -54,33 +53,17 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     }
 
     @Override
-    public void updateTask(@NonNull Task task) {
+    public void updateTask(@NonNull final Task task) {
         mTasksRepository.updateTask(task, new TaskDataSource.UpdateTaskCallback() {
             @Override
             public void onTaskUpdated() {
                 EditTaskContract.View view = mEditTaskViewWeakReference.get();
                 if (view != null) {
+                    view.updateTaskAlarm(task.getId());
                     view.onTaskSavingFinished();
                 }
             }
         });
-
-        setAlarm(task);
-    }
-
-    private void setAlarm(long taskId) {
-        mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
-            @Override
-            public void onTaskLoaded(Task task) {
-                setAlarm(task);
-            }
-        });
-    }
-
-    private void setAlarm(@NonNull Task task) {
-        if (task.getReminderDate() != null) {
-            //TODO: set alarm for task
-        }
     }
 
 }

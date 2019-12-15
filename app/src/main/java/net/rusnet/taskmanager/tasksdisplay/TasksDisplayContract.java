@@ -15,6 +15,8 @@ public interface TasksDisplayContract {
         void updateTaskList(@Nullable List<Task> taskList);
 
         void updateTaskCount(@NonNull TaskViewType type, @NonNull String newCount);
+
+        void removeTaskAlarms(long taskId);
     }
 
     interface Presenter {

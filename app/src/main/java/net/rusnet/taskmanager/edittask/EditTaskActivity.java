@@ -2,6 +2,7 @@ package net.rusnet.taskmanager.edittask;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import net.rusnet.taskmanager.model.DateType;
 import net.rusnet.taskmanager.model.Task;
 import net.rusnet.taskmanager.model.TaskType;
 import net.rusnet.taskmanager.model.TasksRepository;
+import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -159,6 +161,13 @@ public class EditTaskActivity extends AppCompatActivity
             mReminderDate = mTask.getReminderDate();
             updateReminderTextView();
         }
+    }
+
+    @Override
+    public void updateTaskAlarm(long taskId) {
+        Intent workIntent = new Intent(TaskAlarmService.ACTION_UPDATE_ONE);
+        workIntent.putExtra(TaskAlarmService.EXTRA_TASK_ID, taskId);
+        TaskAlarmService.enqueueWork(this, workIntent);
     }
 
     public void onRadioButtonClicked(View view) {

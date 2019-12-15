@@ -8,6 +8,7 @@ import net.rusnet.taskmanager.model.TaskDataSource;
 import net.rusnet.taskmanager.model.TaskType;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
@@ -103,6 +104,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void markTaskAsCompleted(@NonNull Task task) {
+        removeTaskAlarms(task);
         task.setCompleted(true);
         mTasksRepository.updateTask(
                 task,
@@ -117,6 +119,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void deleteTasks(@NonNull List<Task> tasks) {
+        removeTaskAlarms(tasks);
         mTasksRepository.deleteTasks(tasks, new TaskDataSource.DeleteTasksCallback() {
             @Override
             public void onTasksDeleted() {
@@ -166,6 +169,21 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
         if (view != null) {
             String countAsString = count < 100 ? String.valueOf(count) : COUNT_99_PLUS;
             view.updateTaskCount(taskViewType, countAsString);
+        }
+    }
+
+    private void removeTaskAlarms(Task task) {
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(task);
+        removeTaskAlarms(tasks);
+    }
+
+    private void removeTaskAlarms(List<Task> tasks) {
+        TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
+        if (view != null) {
+            for (Task task : tasks) {
+                view.removeTaskAlarms(task.getId());
+            }
         }
     }
 }

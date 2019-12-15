@@ -1,6 +1,7 @@
 package net.rusnet.taskmanager.tasksdisplay;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,6 +135,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         textViewTaskDate.setText(dateText);
 
         TextView reminderTextView = holder.mTaskReminderTextView;
+        reminderTextView.setPaintFlags(
+                reminderTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         if (task.getReminderDate() == null) {
             reminderTextView.setText(R.string.no_reminders);
         } else {
@@ -141,6 +144,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
             String time = (new SimpleDateFormat(PATTERN_TIME)).format(task.getReminderDate().getTime());
             String reminderText = date + SPACE + textViewTaskDate.getContext().getString(R.string.at) + SPACE + time;
             reminderTextView.setText(reminderText);
+            if (task.getReminderDate().getTimeInMillis() < System.currentTimeMillis()
+                    || task.isCompleted()) {
+                reminderTextView.setPaintFlags(
+                        reminderTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+
+            }
         }
 
         if (mSelectedTasksPositions.contains(position)) {
