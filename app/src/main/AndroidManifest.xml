@@ -36,6 +36,14 @@
             android:name=".taskalarm.TaskAlarmService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
+        <receiver
+            android:name=".taskalarm.InitAlarmBootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
