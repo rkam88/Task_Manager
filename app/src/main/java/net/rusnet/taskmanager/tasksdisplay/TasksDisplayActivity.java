@@ -25,9 +25,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import net.rusnet.taskmanager.R;
+import net.rusnet.taskmanager.commons.ConfirmationDialogFragment;
+import net.rusnet.taskmanager.commons.model.Task;
+import net.rusnet.taskmanager.commons.model.TasksRepository;
 import net.rusnet.taskmanager.edittask.EditTaskActivity;
-import net.rusnet.taskmanager.model.Task;
-import net.rusnet.taskmanager.model.TasksRepository;
 import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.util.ArrayList;
@@ -37,10 +38,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TasksDisplayActivity extends AppCompatActivity implements TasksDisplayContract.View {
+public class TasksDisplayActivity extends AppCompatActivity
+        implements TasksDisplayContract.View,
+        ConfirmationDialogFragment.ConfirmationDialogListener {
 
-    public static final String TAG = "TAG_TasksDisplay";
-
+    private static final String CONFIRMATION_DIALOG_TAG = "CONFIRMATION_DIALOG_TAG";
     private static final String KEY_TASK_VIEW_TYPE = "KEY_TASK_VIEW_TYPE";
     private static final String KEY_SELECTED_TASKS_POSITIONS_LIST = "KEY_SELECTED_TASKS_POSITIONS_LIST";
     public static final String KEY_LAYOUT_MANAGER_STATE = "KEY_LAYOUT_MANAGER_STATE";
@@ -113,6 +115,16 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     @Override
     public void hideLoadingScreen() {
         mLoadingFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onPositiveResponse() {
+        List<Task> tasksToDelete = new ArrayList<>();
+        for (Integer position : mSelectedTasksPositions) {
+            tasksToDelete.add(mTasksAdapter.getTaskAtPosition(position));
+        }
+        mTaskDisplayPresenter.deleteTasks(tasksToDelete);
+        mCurrentActionMode.finish();
     }
 
     @Override
@@ -421,12 +433,15 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_delete:
-                        List<Task> tasksToDelete = new ArrayList<>();
-                        for (Integer position : mSelectedTasksPositions) {
-                            tasksToDelete.add(mTasksAdapter.getTaskAtPosition(position));
+                        String dialogText;
+                        if (mSelectedTasksPositions.size() == 1) {
+                            dialogText = getString(R.string.delete_selected_task);
+                        } else {
+                            dialogText = getString(R.string.delete_selected_tasks);
                         }
-                        mTaskDisplayPresenter.deleteTasks(tasksToDelete);
-                        mode.finish();
+                        ConfirmationDialogFragment newFragment;
+                        newFragment = ConfirmationDialogFragment.newInstance(dialogText);
+                        newFragment.show(getSupportFragmentManager(), CONFIRMATION_DIALOG_TAG);
                         return true;
                     default:
                         return false;
@@ -460,4 +475,5 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
             }
         }
     }
+
 }

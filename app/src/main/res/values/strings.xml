@@ -46,6 +46,10 @@
     <string name="reminder">Напоминание:</string>
     <string name="task_alarm_task_description">- %s (%s)</string>
 
-    <!--    <string name="discard_changes">Отменить изменения?</string>-->
+    <string name="exit_without_saving">Вы уверены, что хотите выйте без сохранения?</string>
+    <string name="delete_selected_task">Вы уверены, что хотите удалить задачу?</string>
+    <string name="delete_selected_tasks">Вы уверены, что хотите удалить задачи?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 
 </resources>

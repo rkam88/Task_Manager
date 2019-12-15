@@ -13,9 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.model.Date;
-import net.rusnet.taskmanager.model.DateType;
-import net.rusnet.taskmanager.model.Task;
+import net.rusnet.taskmanager.commons.model.Date;
+import net.rusnet.taskmanager.commons.model.DateType;
+import net.rusnet.taskmanager.commons.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

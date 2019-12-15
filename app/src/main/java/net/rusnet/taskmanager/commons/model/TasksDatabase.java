@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.model;
+package net.rusnet.taskmanager.commons.model;
 
 import android.content.Context;
 import android.os.AsyncTask;

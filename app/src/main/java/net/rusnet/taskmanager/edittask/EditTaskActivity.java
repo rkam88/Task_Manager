@@ -28,11 +28,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.model.Date;
-import net.rusnet.taskmanager.model.DateType;
-import net.rusnet.taskmanager.model.Task;
-import net.rusnet.taskmanager.model.TaskType;
-import net.rusnet.taskmanager.model.TasksRepository;
+import net.rusnet.taskmanager.commons.ConfirmationDialogFragment;
+import net.rusnet.taskmanager.commons.model.Date;
+import net.rusnet.taskmanager.commons.model.DateType;
+import net.rusnet.taskmanager.commons.model.Task;
+import net.rusnet.taskmanager.commons.model.TaskType;
+import net.rusnet.taskmanager.commons.model.TasksRepository;
 import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.text.SimpleDateFormat;
@@ -41,9 +42,8 @@ import java.util.Calendar;
 public class EditTaskActivity extends AppCompatActivity
         implements EditTaskContract.View,
         DatePickerFragment.OnDatePickerDialogResultListener,
-        TimePickerDialog.OnTimeSetListener {
-
-    public static final String TAG = "TAG_EditTaskActivity";
+        TimePickerDialog.OnTimeSetListener,
+        ConfirmationDialogFragment.ConfirmationDialogListener {
 
     public static final String EXTRA_IS_TASK_NEW = "net.rusnet.taskmanager.AddTaskActivity.IsTaskNew";
     public static final String EXTRA_TASK_ID = "net.rusnet.taskmanager.AddTaskActivity.TaskId";
@@ -54,6 +54,7 @@ public class EditTaskActivity extends AppCompatActivity
     private static final int SPINNER_POSITION_POSTPONED = 2;
     private static final String DATE_PICKER_TAG = "datePicker";
     public static final String TIME_PICKER_TAG = "timePicker";
+    private static final String CONFIRMATION_DIALOG_TAG = "CONFIRMATION_DIALOG_TAG";
     private static final String KEY_SELECTED_DATE_TYPE = "KEY_SELECTED_DATE_TYPE";
     private static final String KEY_DATE = "KEY_DATE";
     private static final String KEY_TASK = "KEY_TASK";
@@ -133,8 +134,10 @@ public class EditTaskActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        //todo: show dialog for confirmation ("discard changes?") if user started editing
-        super.onBackPressed();
+        String dialogText = getString(R.string.exit_without_saving);
+        ConfirmationDialogFragment newFragment;
+        newFragment = ConfirmationDialogFragment.newInstance(dialogText);
+        newFragment.show(getSupportFragmentManager(), CONFIRMATION_DIALOG_TAG);
     }
 
     @Override
@@ -238,6 +241,11 @@ public class EditTaskActivity extends AppCompatActivity
         mReminderDate.set(Calendar.MINUTE, minute);
         mIsReminderTimeSet = true;
         updateReminderTextView();
+    }
+
+    @Override
+    public void onPositiveResponse() {
+        super.onBackPressed();
     }
 
     @Override

@@ -3,7 +3,7 @@ package net.rusnet.taskmanager.tasksdisplay;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.rusnet.taskmanager.model.Task;
+import net.rusnet.taskmanager.commons.model.Task;
 
 import java.util.List;
 

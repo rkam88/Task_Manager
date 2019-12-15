@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.model.TaskType;
+import net.rusnet.taskmanager.commons.model.TaskType;
 
 public enum TaskViewType {
 

@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.model;
+package net.rusnet.taskmanager.commons.model;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

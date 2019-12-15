@@ -3,10 +3,10 @@ package net.rusnet.taskmanager.edittask;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.rusnet.taskmanager.model.Date;
-import net.rusnet.taskmanager.model.DateType;
-import net.rusnet.taskmanager.model.Task;
-import net.rusnet.taskmanager.model.TaskType;
+import net.rusnet.taskmanager.commons.model.Date;
+import net.rusnet.taskmanager.commons.model.DateType;
+import net.rusnet.taskmanager.commons.model.Task;
+import net.rusnet.taskmanager.commons.model.TaskType;
 
 import java.util.Calendar;
 
