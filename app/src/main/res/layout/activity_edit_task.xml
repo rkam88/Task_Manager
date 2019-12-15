@@ -172,21 +172,22 @@
                 android:layout_marginTop="@dimen/margin_half"
                 android:text="@string/set_date"
                 android:textAppearance="@style/SubItemTextAppearance"
-                app:layout_constraintEnd_toStartOf="@id/button_set_reminder_time"
+                app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
                 app:layout_constraintStart_toStartOf="@id/text_view_task_reminder"
                 app:layout_constraintTop_toBottomOf="@id/text_view_task_reminder" />
 
             <Button
                 android:id="@+id/button_set_reminder_time"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="@dimen/margin_half"
+                android:layout_height="wrap_content"
+
+                android:layout_marginBottom="@dimen/margin_standard"
                 android:text="@string/set_time"
                 android:textAppearance="@style/SubItemTextAppearance"
-                app:layout_constraintBottom_toBottomOf="@id/button_set_reminder_date"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/edit_text_task_name"
-                app:layout_constraintStart_toEndOf="@id/button_set_reminder_date"
-                app:layout_constraintTop_toTopOf="@id/button_set_reminder_date" />
+                app:layout_constraintStart_toStartOf="@id/text_view_task_reminder"
+                app:layout_constraintTop_toBottomOf="@id/button_set_reminder_date" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
