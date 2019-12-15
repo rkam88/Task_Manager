@@ -27,11 +27,12 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void setTasksViewType(@NonNull TaskViewType taskViewType) {
-        //todo: show loading screen
+        showLoadingScreen(true);
         mTaskViewType = taskViewType;
 
         TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
         if (view != null) {
+            view.showLoadingScreen();
             view.updateTasksViewType(taskViewType);
         }
 
@@ -104,6 +105,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void markTaskAsCompleted(@NonNull Task task) {
+        showLoadingScreen(true);
         removeTaskAlarms(task);
         task.setCompleted(true);
         mTasksRepository.updateTask(
@@ -111,6 +113,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 new TaskDataSource.UpdateTaskCallback() {
                     @Override
                     public void onTaskUpdated() {
+                        showLoadingScreen(false);
                         updateAllTaskCount();
                         loadTasks(mTaskViewType);
                     }
@@ -119,10 +122,12 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void deleteTasks(@NonNull List<Task> tasks) {
+        showLoadingScreen(true);
         removeTaskAlarms(tasks);
         mTasksRepository.deleteTasks(tasks, new TaskDataSource.DeleteTasksCallback() {
             @Override
             public void onTasksDeleted() {
+                showLoadingScreen(false);
                 updateAllTaskCount();
                 loadTasks(mTaskViewType);
             }
@@ -149,6 +154,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 new TaskDataSource.LoadTasksCallback() {
                     @Override
                     public void onTasksLoaded(List<Task> tasks) {
+                        showLoadingScreen(false);
                         updateView(tasks);
                     }
                 }
@@ -158,8 +164,6 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     private void updateView(@NonNull List<Task> tasks) {
         TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
         if (view != null) {
-            //todo: hide loading screen
-            //todo: add an if statement to update recycler or show "no tasks" screen
             view.updateTaskList(tasks);
         }
     }
@@ -184,6 +188,14 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
             for (Task task : tasks) {
                 view.removeTaskAlarms(task.getId());
             }
+        }
+    }
+
+    private void showLoadingScreen(boolean showLoadingScreen) {
+        TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
+        if (view != null) {
+            if (showLoadingScreen) view.showLoadingScreen();
+            else view.hideLoadingScreen();
         }
     }
 }

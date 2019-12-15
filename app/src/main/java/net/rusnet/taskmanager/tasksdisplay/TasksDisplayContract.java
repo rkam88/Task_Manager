@@ -17,6 +17,10 @@ public interface TasksDisplayContract {
         void updateTaskCount(@NonNull TaskViewType type, @NonNull String newCount);
 
         void removeTaskAlarms(long taskId);
+
+        void showLoadingScreen();
+
+        void hideLoadingScreen();
     }
 
     interface Presenter {

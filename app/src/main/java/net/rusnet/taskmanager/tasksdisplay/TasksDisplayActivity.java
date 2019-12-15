@@ -70,6 +70,8 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
     private Parcelable mLayoutManagerSavedState;
 
+    private View mLoadingFrameLayout;
+
     @Override
     public void updateTasksViewType(@NonNull TaskViewType type) {
         mTaskViewType = type;
@@ -104,6 +106,16 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
     }
 
     @Override
+    public void showLoadingScreen() {
+        mLoadingFrameLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingScreen() {
+        mLoadingFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -120,10 +132,12 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
 
         initToolbar();
         initNavigationDrawer();
+        initLoadingScreen();
         initRecycler();
         initPresenter(savedInstanceState);
         initFAB();
         initContextualMenu(savedInstanceState);
+
 
     }
 
@@ -228,6 +242,10 @@ public class TasksDisplayActivity extends AppCompatActivity implements TasksDisp
         MenuItem menuItem = menu.findItem(menuItemId);
         View actionView = menuItem.getActionView();
         return actionView.findViewById(R.id.text_view_task_count);
+    }
+
+    private void initLoadingScreen() {
+        mLoadingFrameLayout = findViewById(R.id.loading_frame_layout);
     }
 
     private void initRecycler() {

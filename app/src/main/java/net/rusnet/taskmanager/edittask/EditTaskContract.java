@@ -18,6 +18,10 @@ public interface EditTaskContract {
         void updateView(Task task);
 
         void updateTaskAlarm(long taskId);
+
+        void showLoadingScreen();
+
+        void hideLoadingScreen();
     }
 
     interface Presenter {

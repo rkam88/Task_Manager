@@ -94,6 +94,7 @@ public class EditTaskActivity extends AppCompatActivity
     private Calendar mReminderDate;
     private boolean mIsReminderDateSet = false;
     private boolean mIsReminderTimeSet = false;
+    private View mLoadingFrameLayout;
 
     private Task mTask;
 
@@ -108,6 +109,7 @@ public class EditTaskActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.miSave:
                 if (!dataIsFilled()) break;
+                mTaskNameEditText.clearFocus();
 
                 String name = mTaskNameEditText.getText().toString();
                 TaskType taskType = getTaskType(mTaskCategorySpinner.getSelectedItem().toString());
@@ -168,6 +170,16 @@ public class EditTaskActivity extends AppCompatActivity
         Intent workIntent = new Intent(TaskAlarmService.ACTION_UPDATE_ONE);
         workIntent.putExtra(TaskAlarmService.EXTRA_TASK_ID, taskId);
         TaskAlarmService.enqueueWork(this, workIntent);
+    }
+
+    @Override
+    public void showLoadingScreen() {
+        mLoadingFrameLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoadingScreen() {
+        mLoadingFrameLayout.setVisibility(View.GONE);
     }
 
     public void onRadioButtonClicked(View view) {
@@ -239,6 +251,7 @@ public class EditTaskActivity extends AppCompatActivity
 
         initToolbar();
         initPresenter();
+        initLoadingScreen();
         initViews(savedInstanceState);
 
     }
@@ -273,6 +286,10 @@ public class EditTaskActivity extends AppCompatActivity
         mEditTaskPresenter = new EditTaskPresenter(
                 this,
                 TasksRepository.getRepository(getApplication()));
+    }
+
+    private void initLoadingScreen() {
+        mLoadingFrameLayout = findViewById(R.id.loading_frame_layout);
     }
 
     private void initViews(@Nullable Bundle savedInstanceState) {

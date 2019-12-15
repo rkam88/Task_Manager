@@ -25,6 +25,7 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     @Override
     public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Calendar reminderDate) {
+        showLoadingScreen(true);
         mTasksRepository.createNewTask(
                 new Task(name, taskType, dateType, endDate, reminderDate),
                 new TaskDataSource.CreateNewTaskCallback() {
@@ -41,12 +42,14 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     @Override
     public void loadTask(long taskId) {
+        showLoadingScreen(true);
         mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
             @Override
             public void onTaskLoaded(Task task) {
                 EditTaskContract.View view = mEditTaskViewWeakReference.get();
                 if (view != null) {
                     view.updateView(task);
+                    showLoadingScreen(false);
                 }
             }
         });
@@ -54,6 +57,7 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     @Override
     public void updateTask(@NonNull final Task task) {
+        showLoadingScreen(true);
         mTasksRepository.updateTask(task, new TaskDataSource.UpdateTaskCallback() {
             @Override
             public void onTaskUpdated() {
@@ -64,6 +68,14 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
                 }
             }
         });
+    }
+
+    private void showLoadingScreen(boolean showLoadingScreen) {
+        EditTaskContract.View view = mEditTaskViewWeakReference.get();
+        if (view != null) {
+            if (showLoadingScreen) view.showLoadingScreen();
+            else view.hideLoadingScreen();
+        }
     }
 
 }
