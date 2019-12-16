@@ -2,6 +2,7 @@ package net.rusnet.taskmanager.tasksdisplay;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import net.rusnet.taskmanager.commons.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,12 +126,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
                 dateText = textViewTaskDate.getContext().getString(R.string.without_date);
                 break;
             case DEADLINE:
-                dateText = textViewTaskDate.getContext().getString(R.string.before);
+                dateText = textViewTaskDate.getContext().getString(R.string.before) + SPACE;
             case FIXED:
                 Date date = task.getEndDate();
                 if (date != null) {
                     String dateAsString = date.toString();
-                    dateText = dateText + SPACE + dateAsString;
+                    dateText = dateText + dateAsString;
                 }
                 break;
         }
@@ -155,7 +157,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         int color;
         if (!task.isCompleted()
                 && (task.getDateType() == DateType.FIXED || task.getDateType() == DateType.DEADLINE)
-                && task.getEndDate().toCalendar().getTimeInMillis() < System.currentTimeMillis()) {
+                && task.getEndDate().toCalendar().before(Calendar.getInstance())
+                && !DateUtils.isToday(task.getEndDate().toCalendar().getTimeInMillis())) {
             color = textViewTaskDate.getContext().getResources().getColor(R.color.colorTextDelayedItem);
         } else {
             color = textViewTaskDate.getContext().getResources().getColor(R.color.colorTextBlack);
