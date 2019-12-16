@@ -1,6 +1,8 @@
 package net.rusnet.taskmanager.tasksdisplay;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -26,12 +28,16 @@ import com.google.android.material.navigation.NavigationView;
 
 import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.commons.ConfirmationDialogFragment;
+import net.rusnet.taskmanager.commons.model.Date;
+import net.rusnet.taskmanager.commons.model.DateType;
 import net.rusnet.taskmanager.commons.model.Task;
+import net.rusnet.taskmanager.commons.model.TaskType;
 import net.rusnet.taskmanager.commons.model.TasksRepository;
 import net.rusnet.taskmanager.edittask.EditTaskActivity;
 import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +51,9 @@ public class TasksDisplayActivity extends AppCompatActivity
     private static final String CONFIRMATION_DIALOG_TAG = "CONFIRMATION_DIALOG_TAG";
     private static final String KEY_TASK_VIEW_TYPE = "KEY_TASK_VIEW_TYPE";
     private static final String KEY_SELECTED_TASKS_POSITIONS_LIST = "KEY_SELECTED_TASKS_POSITIONS_LIST";
-    public static final String KEY_LAYOUT_MANAGER_STATE = "KEY_LAYOUT_MANAGER_STATE";
+    private static final String KEY_LAYOUT_MANAGER_STATE = "KEY_LAYOUT_MANAGER_STATE";
+    private static final String PREFERENCES_NAME = "Settings";
+    private static final String KEY_FIRST_LAUNCH = "firstLaunch";
     private static final TaskViewType DEFAULT_TASK_VIEW_TYPE = TaskViewType.INBOX;
     private static final int REQUEST_CODE_ADD_NEW_TASK = 1;
     private static final int REQUEST_CODE_EDIT_TASK = 2;
@@ -118,6 +126,13 @@ public class TasksDisplayActivity extends AppCompatActivity
     }
 
     @Override
+    public void updateTaskAlarm(long taskId) {
+        Intent workIntent = new Intent(TaskAlarmService.ACTION_UPDATE_ONE);
+        workIntent.putExtra(TaskAlarmService.EXTRA_TASK_ID, taskId);
+        TaskAlarmService.enqueueWork(this, workIntent);
+    }
+
+    @Override
     public void onPositiveResponse() {
         List<Task> tasksToDelete = new ArrayList<>();
         for (Integer position : mSelectedTasksPositions) {
@@ -150,6 +165,7 @@ public class TasksDisplayActivity extends AppCompatActivity
         initFAB();
         initContextualMenu(savedInstanceState);
 
+        setupOnFirstLaunch();
 
     }
 
@@ -476,4 +492,36 @@ public class TasksDisplayActivity extends AppCompatActivity
         }
     }
 
+    private void setupOnFirstLaunch() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        boolean isFirstLaunch = sharedPreferences.getBoolean(KEY_FIRST_LAUNCH, true);
+        if (isFirstLaunch) {
+            List<Task> tasks = new ArrayList<>();
+
+            Calendar yesterday = Calendar.getInstance();
+            yesterday.add(Calendar.DAY_OF_MONTH, -1);
+
+            Calendar tomorrow = Calendar.getInstance();
+            tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+
+            Calendar inTenMinutes = Calendar.getInstance();
+            inTenMinutes.add(Calendar.MINUTE, 10);
+
+            tasks.add(new Task(getString(R.string.tutorial_task_1), TaskType.INBOX, DateType.NO_DATE, null, null));
+            tasks.add(new Task(getString(R.string.tutorial_task_2), TaskType.INBOX, DateType.NO_DATE, null, null));
+            tasks.add(new Task(getString(R.string.tutorial_task_3), TaskType.INBOX, DateType.NO_DATE, null, null));
+            tasks.add(new Task(getString(R.string.tutorial_task_4), TaskType.POSTPONED, DateType.FIXED, new Date(yesterday), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_5), TaskType.POSTPONED, DateType.FIXED, new Date(tomorrow), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_6), TaskType.POSTPONED, DateType.DEADLINE, new Date(tomorrow), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_7), TaskType.POSTPONED, DateType.NO_DATE, null, inTenMinutes));
+            tasks.add(new Task(getString(R.string.tutorial_task_8), TaskType.POSTPONED, DateType.NO_DATE, null, null));
+
+            mTaskDisplayPresenter.createFirstLaunchTasks(tasks);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(KEY_FIRST_LAUNCH, false);
+            editor.apply();
+        }
+
+    }
 }

@@ -21,6 +21,8 @@ public interface TasksDisplayContract {
         void showLoadingScreen();
 
         void hideLoadingScreen();
+
+        void updateTaskAlarm(long taskId);
     }
 
     interface Presenter {
@@ -31,5 +33,7 @@ public interface TasksDisplayContract {
         void markTaskAsCompleted(@NonNull Task task);
 
         void deleteTasks(@NonNull List<Task> tasks);
+
+        void createFirstLaunchTasks(@NonNull List<Task> tasks);
     }
 }

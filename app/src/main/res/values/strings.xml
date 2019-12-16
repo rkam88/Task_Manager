@@ -46,10 +46,20 @@
     <string name="reminder">Напоминание:</string>
     <string name="task_alarm_task_description">- %s (%s)</string>
 
-    <string name="exit_without_saving">Вы уверены, что хотите выйте без сохранения?</string>
+    <string name="exit_without_saving">Вы уверены, что хотите выйти без сохранения?</string>
     <string name="delete_selected_task">Вы уверены, что хотите удалить задачу?</string>
     <string name="delete_selected_tasks">Вы уверены, что хотите удалить задачи?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+
+    <string name="tutorial_task_1">Добро пожаловать! Сдвиньте эту задачу налево, чтобы отметить ее как завершенную</string>
+    <string name="tutorial_task_2">Сейчас мы в разделе «Входящие». Сюда попадают все новые задачи по умолчанию. Попробуйте создать новую задачу, нажав на знак + в правом нижнем углу</string>
+    <string name="tutorial_task_3">Чтобы редактировать задачу (перенести в другую категорию, установить для нее дату выполнения или напоминание) просто нажмите на нее. Попробуйте перенести эту задачу в категорию «Отложенные»: там представлены примеры отображения разных задач</string>
+    <string name="tutorial_task_4">Это пример просроченной задачи</string>
+    <string name="tutorial_task_5">Это задача с фиксированным сроком</string>
+    <string name="tutorial_task_6">Это задача с дедлайном</string>
+    <string name="tutorial_task_7">Для этой задачи установлено напоминание. Срок устанавливать не обязательно</string>
+    <string name="tutorial_task_8">Это пример задачи без срока. Чтобы удалить задачу – нажмите на нее и удерживайте палец до появления меню удаления. Чтобы выбрать дополнительные задачи – просто нажмите на них после открытия меню</string>
+
 
 </resources>

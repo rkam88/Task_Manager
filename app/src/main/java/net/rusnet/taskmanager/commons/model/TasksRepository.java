@@ -67,6 +67,11 @@ public class TasksRepository implements TaskDataSource {
         new DeleteTasksAsyncTask(mTaskDao, tasks, callback).execute();
     }
 
+    @Override
+    public void createTasks(@NonNull List<Task> tasks, @NonNull CreateTasksCallback callback) {
+        new CreateTasksAsyncTask(mTaskDao, tasks, callback).execute();
+    }
+
     private static class LoadTasksAsyncTask extends AsyncTask<Void, Void, List<Task>> {
         private TaskDao mTaskDao;
         private TaskType mTaskType;
@@ -232,6 +237,29 @@ public class TasksRepository implements TaskDataSource {
         @Override
         protected void onPostExecute(Void aVoid) {
             mCallback.onTasksDeleted();
+        }
+    }
+
+    private static class CreateTasksAsyncTask extends AsyncTask<Void, Void, Void> {
+        private TaskDao mTaskDao;
+        private List<Task> mTasks;
+        private CreateTasksCallback mCallback;
+
+        CreateTasksAsyncTask(TaskDao taskDao, List<Task> tasks, CreateTasksCallback callback) {
+            mTaskDao = taskDao;
+            mTasks = tasks;
+            mCallback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mTaskDao.insertTasks(mTasks);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mCallback.onTasksCreated();
         }
     }
 

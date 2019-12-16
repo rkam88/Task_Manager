@@ -31,6 +31,10 @@ public interface TaskDataSource {
         void onTasksDeleted();
     }
 
+    interface CreateTasksCallback {
+        void onTasksCreated();
+    }
+
     void loadTasks(
             @Nullable final TaskType taskType,
             final boolean isCompleted,
@@ -72,5 +76,9 @@ public interface TaskDataSource {
     void deleteTasks(
             @NonNull final List<Task> tasks,
             @NonNull final DeleteTasksCallback callback);
+
+    void createTasks(
+            @NonNull final List<Task> tasks,
+            @NonNull final CreateTasksCallback callback);
 
 }

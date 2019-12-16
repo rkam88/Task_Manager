@@ -32,7 +32,6 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
         TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
         if (view != null) {
-            view.showLoadingScreen();
             view.updateTasksViewType(taskViewType);
         }
 
@@ -130,6 +129,32 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 showLoadingScreen(false);
                 updateAllTaskCount();
                 loadTasks(mTaskViewType);
+            }
+        });
+    }
+
+    @Override
+    public void createFirstLaunchTasks(@NonNull final List<Task> tasks) {
+        showLoadingScreen(true);
+        mTasksRepository.createTasks(tasks, new TaskDataSource.CreateTasksCallback() {
+            @Override
+            public void onTasksCreated() {
+                mTasksRepository.loadTasks(TaskType.ANY, false, new TaskDataSource.LoadTasksCallback() {
+                    @Override
+                    public void onTasksLoaded(List<Task> tasks) {
+                        for (Task task : tasks) {
+                            if (task.getReminderDate() != null) {
+                                TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
+                                if (view != null) {
+                                    view.updateTaskAlarm(task.getId());
+                                }
+                            }
+                        }
+                    }
+                });
+
+                loadTasks(mTaskViewType);
+                updateAllTaskCount();
             }
         });
     }
