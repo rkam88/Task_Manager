@@ -3,6 +3,7 @@ package net.rusnet.taskmanager.commons.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TaskDataSource {

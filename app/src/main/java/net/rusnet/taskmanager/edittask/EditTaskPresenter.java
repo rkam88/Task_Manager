@@ -3,14 +3,13 @@ package net.rusnet.taskmanager.edittask;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.rusnet.taskmanager.commons.model.Date;
 import net.rusnet.taskmanager.commons.model.DateType;
 import net.rusnet.taskmanager.commons.model.Task;
 import net.rusnet.taskmanager.commons.model.TaskDataSource;
 import net.rusnet.taskmanager.commons.model.TaskType;
 
 import java.lang.ref.WeakReference;
-import java.util.Calendar;
+import java.util.Date;
 
 public class EditTaskPresenter implements EditTaskContract.Presenter {
 
@@ -24,7 +23,7 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     }
 
     @Override
-    public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Calendar reminderDate) {
+    public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Date reminderDate) {
         showLoadingScreen(true);
         mTasksRepository.createNewTask(
                 new Task(name, taskType, dateType, endDate, reminderDate),

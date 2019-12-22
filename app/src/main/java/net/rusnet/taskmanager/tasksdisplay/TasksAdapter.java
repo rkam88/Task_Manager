@@ -14,13 +14,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.model.Date;
 import net.rusnet.taskmanager.commons.model.DateType;
 import net.rusnet.taskmanager.commons.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,7 +129,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
             case FIXED:
                 Date date = task.getEndDate();
                 if (date != null) {
-                    String dateAsString = date.toString();
+                    String dateAsString = (new SimpleDateFormat(PATTERN_DATE)).format(date);
                     dateText = dateText + dateAsString;
                 }
                 break;
@@ -147,7 +146,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
             String time = (new SimpleDateFormat(PATTERN_TIME)).format(task.getReminderDate().getTime());
             String reminderText = date + SPACE + textViewTaskDate.getContext().getString(R.string.at) + SPACE + time;
             reminderTextView.setText(reminderText);
-            if (task.getReminderDate().getTimeInMillis() < System.currentTimeMillis()
+            if (task.getReminderDate().getTime() < System.currentTimeMillis()
                     || task.isCompleted()) {
                 reminderTextView.setPaintFlags(
                         reminderTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -157,8 +156,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         int color;
         if (!task.isCompleted()
                 && (task.getDateType() == DateType.FIXED || task.getDateType() == DateType.DEADLINE)
-                && task.getEndDate().toCalendar().before(Calendar.getInstance())
-                && !DateUtils.isToday(task.getEndDate().toCalendar().getTimeInMillis())) {
+                && task.getEndDate().before(new Date(System.currentTimeMillis()))
+                && !DateUtils.isToday(task.getEndDate().getTime())) {
             color = textViewTaskDate.getContext().getResources().getColor(R.color.colorTextDelayedItem);
         } else {
             color = textViewTaskDate.getContext().getResources().getColor(R.color.colorTextBlack);

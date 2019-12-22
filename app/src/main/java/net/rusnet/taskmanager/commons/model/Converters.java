@@ -2,11 +2,9 @@ package net.rusnet.taskmanager.commons.model;
 
 import androidx.room.TypeConverter;
 
-import java.util.Calendar;
+import java.util.Date;
 
 public final class Converters {
-
-    private static final int CALENDAR_AS_LONG_NULL_VALUE = -1;
 
     @TypeConverter
     public static String fromTaskType(TaskType taskType) {
@@ -29,29 +27,15 @@ public final class Converters {
     }
 
     @TypeConverter
-    public static String fromDate(Date date) {
-        if (date != null) return date.toString();
+    public static Long fromDate(Date date) {
+        if (date != null) return date.getTime();
         return null;
     }
 
     @TypeConverter
-    public static Date toDate(String date) {
-        if (date != null) return Date.parseString(date);
+    public static Date toDate(Long date) {
+        if (date != null) return new Date(date);
         return null;
-    }
-
-    @TypeConverter
-    public static long fromCalendar(Calendar calendar) {
-        if (calendar == null) return CALENDAR_AS_LONG_NULL_VALUE;
-        return calendar.getTime().getTime();
-    }
-
-    @TypeConverter
-    public static Calendar toCalendar(long calendarAsLong) {
-        if (calendarAsLong == CALENDAR_AS_LONG_NULL_VALUE) return null;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(calendarAsLong);
-        return calendar;
     }
 
 }

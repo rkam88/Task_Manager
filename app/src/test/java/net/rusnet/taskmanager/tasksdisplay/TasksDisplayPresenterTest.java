@@ -1,6 +1,5 @@
 package net.rusnet.taskmanager.tasksdisplay;
 
-import net.rusnet.taskmanager.commons.model.Date;
 import net.rusnet.taskmanager.commons.model.DateType;
 import net.rusnet.taskmanager.commons.model.Task;
 import net.rusnet.taskmanager.commons.model.TaskDataSource;
@@ -20,6 +19,7 @@ import org.mockito.stubbing.Answer;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +34,7 @@ import static org.mockito.Mockito.verify;
 public class TasksDisplayPresenterTest {
 
     private static final int WANTED_NUMBER_OF_INVOCATIONS = 6;
+    private static final long DATE_A_WEEK_FROM_TODAY = 604800000;
 
     @Mock
     private TasksDisplayContract.View mTasksDisplayView;
@@ -69,7 +70,7 @@ public class TasksDisplayPresenterTest {
         TaskType taskType = TaskType.ANY;
         boolean isCompleted = false;
         boolean useDateRange = false;
-        Date startDate = Date.START_DATE;
+        Date startDate = new Date(0);
         Date endDate = null;
         switch (type) {
             case INBOX:
@@ -81,13 +82,13 @@ public class TasksDisplayPresenterTest {
                 taskType = TaskType.ACTIVE;
                 isCompleted = false;
                 useDateRange = true;
-                endDate = Date.today();
+                endDate = new Date(System.currentTimeMillis());
                 break;
             case THIS_WEEK:
                 taskType = TaskType.ACTIVE;
                 isCompleted = false;
                 useDateRange = true;
-                endDate = Date.aWeekFromToday();
+                endDate = new Date(System.currentTimeMillis() + DATE_A_WEEK_FROM_TODAY);
                 break;
             case ACTIVE_ALL:
                 taskType = TaskType.ACTIVE;
@@ -300,22 +301,6 @@ public class TasksDisplayPresenterTest {
                 any(Date.class),
                 any(TaskDataSource.LoadTasksCountCallback.class));
 
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) {
-                TaskDataSource.LoadTasksCallback loadTasksCallback =
-                        (TaskDataSource.LoadTasksCallback) invocation.getArguments()[5];
-                loadTasksCallback.onTasksLoaded(mTestTasks);
-                return null;
-            }
-        }).when(mTasksRepository).loadTasks(
-                any(TaskType.class),
-                anyBoolean(),
-                anyBoolean(),
-                any(Date.class),
-                any(Date.class),
-                any(TaskDataSource.LoadTasksCallback.class));
-
         mTasksDisplayPresenter.createFirstLaunchTasks(tasks);
 
         verify(mTasksDisplayView, atLeastOnce()).showLoadingScreen();
@@ -341,10 +326,10 @@ public class TasksDisplayPresenterTest {
         tasks.add(new Task(1, "1", TaskType.INBOX, DateType.NO_DATE, null, false, null));
         tasks.add(new Task(2, "2", TaskType.INBOX, DateType.NO_DATE, null, false, null));
         tasks.add(new Task(3, "3", TaskType.INBOX, DateType.NO_DATE, null, false, null));
-        tasks.add(new Task(4, "4", TaskType.POSTPONED, DateType.FIXED, new Date(yesterday), false, null));
-        tasks.add(new Task(5, "5", TaskType.POSTPONED, DateType.FIXED, new Date(tomorrow), false, null));
-        tasks.add(new Task(6, "6", TaskType.POSTPONED, DateType.DEADLINE, new Date(tomorrow), false, null));
-        tasks.add(new Task(7, "7", TaskType.POSTPONED, DateType.NO_DATE, null, false, inTenMinutes));
+        tasks.add(new Task(4, "4", TaskType.POSTPONED, DateType.FIXED, new Date(yesterday.getTimeInMillis()), false, null));
+        tasks.add(new Task(5, "5", TaskType.POSTPONED, DateType.FIXED, new Date(tomorrow.getTimeInMillis()), false, null));
+        tasks.add(new Task(6, "6", TaskType.POSTPONED, DateType.DEADLINE, new Date(tomorrow.getTimeInMillis()), false, null));
+        tasks.add(new Task(7, "7", TaskType.POSTPONED, DateType.NO_DATE, null, false, new Date(inTenMinutes.getTimeInMillis())));
         tasks.add(new Task(8, "8", TaskType.POSTPONED, DateType.NO_DATE, null, false, null));
 
         return tasks;

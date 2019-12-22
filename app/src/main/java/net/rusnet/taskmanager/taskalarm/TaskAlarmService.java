@@ -10,12 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.model.Date;
 import net.rusnet.taskmanager.commons.model.Task;
 import net.rusnet.taskmanager.commons.model.TaskDataSource;
 import net.rusnet.taskmanager.commons.model.TaskType;
 import net.rusnet.taskmanager.commons.model.TasksRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public class TaskAlarmService extends JobIntentService {
@@ -89,8 +89,8 @@ public class TaskAlarmService extends JobIntentService {
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
         if (task.getReminderDate() != null
-                && task.getReminderDate().getTimeInMillis() > System.currentTimeMillis()) {
-            long triggerAtMillis = task.getReminderDate().getTimeInMillis();
+                && task.getReminderDate().getTime() > System.currentTimeMillis()) {
+            long triggerAtMillis = task.getReminderDate().getTime();
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);

@@ -8,7 +8,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Date;
 
 @Entity(tableName = "task_table")
 public class Task implements Serializable {
@@ -38,9 +38,9 @@ public class Task implements Serializable {
 
     @Nullable
     @ColumnInfo(name = "reminder_date")
-    private Calendar mReminderDate;
+    private Date mReminderDate;
 
-    public Task(long id, @NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, boolean isCompleted, @Nullable Calendar reminderDate) {
+    public Task(long id, @NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, boolean isCompleted, @Nullable Date reminderDate) {
         mId = id;
         mName = name;
         mTaskType = taskType;
@@ -51,7 +51,7 @@ public class Task implements Serializable {
     }
 
     @Ignore
-    public Task(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Calendar reminderDate) {
+    public Task(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Date reminderDate) {
         mName = name;
         mTaskType = taskType;
         mDateType = dateType;
@@ -109,11 +109,11 @@ public class Task implements Serializable {
     }
 
     @Nullable
-    public Calendar getReminderDate() {
+    public Date getReminderDate() {
         return mReminderDate;
     }
 
-    public void setReminderDate(@Nullable Calendar reminderDate) {
+    public void setReminderDate(@Nullable Date reminderDate) {
         mReminderDate = reminderDate;
     }
 }

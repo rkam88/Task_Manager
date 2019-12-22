@@ -2,18 +2,19 @@ package net.rusnet.taskmanager.tasksdisplay;
 
 import androidx.annotation.NonNull;
 
-import net.rusnet.taskmanager.commons.model.Date;
 import net.rusnet.taskmanager.commons.model.Task;
 import net.rusnet.taskmanager.commons.model.TaskDataSource;
 import net.rusnet.taskmanager.commons.model.TaskType;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     private static final String COUNT_99_PLUS = "99+";
+    private static final long DATE_A_WEEK_FROM_TODAY = 604800000;
 
     private WeakReference<TasksDisplayContract.View> mTasksDisplayViewWeakReference;
     private TaskDataSource mTasksRepository;
@@ -53,8 +54,8 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 TaskType.ACTIVE,
                 false,
                 true,
-                Date.START_DATE,
-                Date.today(),
+                new Date(0),
+                new Date(System.currentTimeMillis()),
                 new TaskDataSource.LoadTasksCountCallback() {
                     @Override
                     public void onTasksCountLoaded(int tasksCount) {
@@ -65,8 +66,8 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
                 TaskType.ACTIVE,
                 false,
                 true,
-                Date.START_DATE,
-                Date.aWeekFromToday(),
+                new Date(0),
+                new Date(System.currentTimeMillis() + DATE_A_WEEK_FROM_TODAY),
                 new TaskDataSource.LoadTasksCountCallback() {
                     @Override
                     public void onTasksCountLoaded(int tasksCount) {
@@ -161,14 +162,14 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     private void loadTasks(@NonNull TaskViewType taskViewType) {
         boolean useDateRange = false;
-        Date startDate = Date.START_DATE;
+        Date startDate = new Date(0);
         Date endDate = null;
         if (taskViewType == TaskViewType.TODAY) {
             useDateRange = true;
-            endDate = Date.today();
+            endDate = new Date(System.currentTimeMillis());
         } else if (taskViewType == TaskViewType.THIS_WEEK) {
             useDateRange = true;
-            endDate = Date.aWeekFromToday();
+            endDate = new Date(System.currentTimeMillis() + DATE_A_WEEK_FROM_TODAY);
         }
         mTasksRepository.loadTasks(
                 TaskViewType.getTaskType(taskViewType),

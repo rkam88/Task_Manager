@@ -28,7 +28,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import net.rusnet.taskmanager.R;
 import net.rusnet.taskmanager.commons.ConfirmationDialogFragment;
-import net.rusnet.taskmanager.commons.model.Date;
 import net.rusnet.taskmanager.commons.model.DateType;
 import net.rusnet.taskmanager.commons.model.Task;
 import net.rusnet.taskmanager.commons.model.TaskType;
@@ -38,6 +37,7 @@ import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -510,10 +510,10 @@ public class TasksDisplayActivity extends AppCompatActivity
             tasks.add(new Task(getString(R.string.tutorial_task_1), TaskType.INBOX, DateType.NO_DATE, null, null));
             tasks.add(new Task(getString(R.string.tutorial_task_2), TaskType.INBOX, DateType.NO_DATE, null, null));
             tasks.add(new Task(getString(R.string.tutorial_task_3), TaskType.INBOX, DateType.NO_DATE, null, null));
-            tasks.add(new Task(getString(R.string.tutorial_task_4), TaskType.POSTPONED, DateType.FIXED, new Date(yesterday), null));
-            tasks.add(new Task(getString(R.string.tutorial_task_5), TaskType.POSTPONED, DateType.FIXED, new Date(tomorrow), null));
-            tasks.add(new Task(getString(R.string.tutorial_task_6), TaskType.POSTPONED, DateType.DEADLINE, new Date(tomorrow), null));
-            tasks.add(new Task(getString(R.string.tutorial_task_7), TaskType.POSTPONED, DateType.NO_DATE, null, inTenMinutes));
+            tasks.add(new Task(getString(R.string.tutorial_task_4), TaskType.POSTPONED, DateType.FIXED, new Date(yesterday.getTimeInMillis()), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_5), TaskType.POSTPONED, DateType.FIXED, new Date(tomorrow.getTimeInMillis()), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_6), TaskType.POSTPONED, DateType.DEADLINE, new Date(tomorrow.getTimeInMillis()), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_7), TaskType.POSTPONED, DateType.NO_DATE, null, new Date(inTenMinutes.getTimeInMillis())));
             tasks.add(new Task(getString(R.string.tutorial_task_8), TaskType.POSTPONED, DateType.NO_DATE, null, null));
 
             mTaskDisplayPresenter.createFirstLaunchTasks(tasks);

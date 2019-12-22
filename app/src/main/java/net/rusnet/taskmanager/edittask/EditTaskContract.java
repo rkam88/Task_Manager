@@ -3,12 +3,11 @@ package net.rusnet.taskmanager.edittask;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.rusnet.taskmanager.commons.model.Date;
 import net.rusnet.taskmanager.commons.model.DateType;
 import net.rusnet.taskmanager.commons.model.Task;
 import net.rusnet.taskmanager.commons.model.TaskType;
 
-import java.util.Calendar;
+import java.util.Date;
 
 public interface EditTaskContract {
 
@@ -29,7 +28,7 @@ public interface EditTaskContract {
                            @NonNull TaskType taskType,
                            @NonNull DateType dateType,
                            @Nullable Date endDate,
-                           @Nullable Calendar reminderDate);
+                           @Nullable Date reminderDate);
 
         void loadTask(long taskId);
 
