@@ -1,12 +1,12 @@
-package net.rusnet.taskmanager.edittask;
+package net.rusnet.taskmanager.edittask.presentation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.rusnet.taskmanager.commons.model.DateType;
-import net.rusnet.taskmanager.commons.model.Task;
-import net.rusnet.taskmanager.commons.model.TaskDataSource;
-import net.rusnet.taskmanager.commons.model.TaskType;
+import net.rusnet.taskmanager.commons.domain.model.DateType;
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;

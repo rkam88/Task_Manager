@@ -1,7 +1,10 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.data.source;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
 
 import java.util.Date;
 import java.util.List;

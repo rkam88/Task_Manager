@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.domain.model;
 
 import androidx.annotation.NonNull;
 
@@ -21,7 +21,7 @@ public enum TaskType {
     }
 
     @NonNull
-    static TaskType getTaskTypeByString(@NonNull String type) {
+    public static TaskType getTaskTypeByString(@NonNull String type) {
         if (type.equals(INBOX.getTypeAsString())) return INBOX;
         if (type.equals(ACTIVE.getTypeAsString())) return ACTIVE;
         if (type.equals(POSTPONED.getTypeAsString())) return POSTPONED;

@@ -1,6 +1,9 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.data.source.local;
 
 import androidx.room.TypeConverter;
+
+import net.rusnet.taskmanager.commons.domain.model.DateType;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
 
 import java.util.Date;
 

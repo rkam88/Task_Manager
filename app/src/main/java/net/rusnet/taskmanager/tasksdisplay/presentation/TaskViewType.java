@@ -1,10 +1,10 @@
-package net.rusnet.taskmanager.tasksdisplay;
+package net.rusnet.taskmanager.tasksdisplay.presentation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.model.TaskType;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
 
 public enum TaskViewType {
 

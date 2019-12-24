@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.data.source.local;
 
 import android.content.Context;
 
@@ -6,6 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+
+import net.rusnet.taskmanager.commons.domain.model.Task;
 
 @Database(entities = {Task.class}, version = 1)
 @TypeConverters({Converters.class})

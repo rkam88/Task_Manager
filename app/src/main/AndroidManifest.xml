@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".tasksdisplay.TasksDisplayActivity">
+        <activity android:name=".tasksdisplay.presentation.TasksDisplayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
         </activity>
 
         <activity
-            android:name=".edittask.EditTaskActivity"
+            android:name=".edittask.presentation.EditTaskActivity"
             android:windowSoftInputMode="stateVisible" />
 
         <receiver

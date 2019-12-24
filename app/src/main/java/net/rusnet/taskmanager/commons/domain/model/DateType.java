@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.domain.model;
 
 import androidx.annotation.NonNull;
 
@@ -20,7 +20,7 @@ public enum DateType {
     }
 
     @NonNull
-    static DateType getDateTypeByString(@NonNull String type) {
+    public static DateType getDateTypeByString(@NonNull String type) {
         if (type.equals(NO_DATE.getTypeAsString())) return NO_DATE;
         if (type.equals(FIXED.getTypeAsString())) return FIXED;
         if (type.equals(DEADLINE.getTypeAsString())) return DEADLINE;

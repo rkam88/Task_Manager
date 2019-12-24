@@ -10,10 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.model.Task;
-import net.rusnet.taskmanager.commons.model.TaskDataSource;
-import net.rusnet.taskmanager.commons.model.TaskType;
-import net.rusnet.taskmanager.commons.model.TasksRepository;
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
+import net.rusnet.taskmanager.commons.data.source.TasksRepository;
 
 import java.util.Date;
 import java.util.List;

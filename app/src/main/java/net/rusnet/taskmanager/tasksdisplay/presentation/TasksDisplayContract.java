@@ -1,9 +1,9 @@
-package net.rusnet.taskmanager.tasksdisplay;
+package net.rusnet.taskmanager.tasksdisplay.presentation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.rusnet.taskmanager.commons.model.Task;
+import net.rusnet.taskmanager.commons.domain.model.Task;
 
 import java.util.List;
 

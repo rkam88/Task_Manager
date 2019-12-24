@@ -1,10 +1,15 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.data.source;
 
 import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import net.rusnet.taskmanager.commons.data.source.local.TaskDao;
+import net.rusnet.taskmanager.commons.data.source.local.TasksDatabase;
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
 
 import java.util.Arrays;
 import java.util.Date;

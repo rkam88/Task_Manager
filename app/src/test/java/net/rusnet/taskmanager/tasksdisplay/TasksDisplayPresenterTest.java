@@ -1,9 +1,12 @@
 package net.rusnet.taskmanager.tasksdisplay;
 
-import net.rusnet.taskmanager.commons.model.DateType;
-import net.rusnet.taskmanager.commons.model.Task;
-import net.rusnet.taskmanager.commons.model.TaskDataSource;
-import net.rusnet.taskmanager.commons.model.TaskType;
+import net.rusnet.taskmanager.commons.domain.model.DateType;
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
+import net.rusnet.taskmanager.tasksdisplay.presentation.TaskViewType;
+import net.rusnet.taskmanager.tasksdisplay.presentation.TasksDisplayContract;
+import net.rusnet.taskmanager.tasksdisplay.presentation.TasksDisplayPresenter;
 
 import org.junit.Assert;
 import org.junit.Before;

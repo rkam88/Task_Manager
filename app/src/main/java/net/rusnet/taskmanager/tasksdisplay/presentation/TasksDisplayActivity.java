@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.tasksdisplay;
+package net.rusnet.taskmanager.tasksdisplay.presentation;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,12 +27,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.ConfirmationDialogFragment;
-import net.rusnet.taskmanager.commons.model.DateType;
-import net.rusnet.taskmanager.commons.model.Task;
-import net.rusnet.taskmanager.commons.model.TaskType;
-import net.rusnet.taskmanager.commons.model.TasksRepository;
-import net.rusnet.taskmanager.edittask.EditTaskActivity;
+import net.rusnet.taskmanager.commons.presentation.ConfirmationDialogFragment;
+import net.rusnet.taskmanager.commons.domain.model.DateType;
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
+import net.rusnet.taskmanager.commons.data.source.TasksRepository;
+import net.rusnet.taskmanager.edittask.presentation.EditTaskActivity;
 import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.data.source.local;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,6 +6,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import net.rusnet.taskmanager.commons.domain.model.Task;
 
 import java.util.Date;
 import java.util.List;

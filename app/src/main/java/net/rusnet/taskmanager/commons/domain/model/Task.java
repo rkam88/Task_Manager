@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.commons.model;
+package net.rusnet.taskmanager.commons.domain.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

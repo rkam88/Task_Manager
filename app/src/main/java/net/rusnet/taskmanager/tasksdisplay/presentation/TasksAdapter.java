@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.tasksdisplay;
+package net.rusnet.taskmanager.tasksdisplay.presentation;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -14,8 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.model.DateType;
-import net.rusnet.taskmanager.commons.model.Task;
+import net.rusnet.taskmanager.commons.domain.model.DateType;
+import net.rusnet.taskmanager.commons.domain.model.Task;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.commons;
+package net.rusnet.taskmanager.commons.presentation;
 
 import android.app.Dialog;
 import android.content.Context;

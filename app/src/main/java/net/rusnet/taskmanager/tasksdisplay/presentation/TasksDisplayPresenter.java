@@ -1,10 +1,10 @@
-package net.rusnet.taskmanager.tasksdisplay;
+package net.rusnet.taskmanager.tasksdisplay.presentation;
 
 import androidx.annotation.NonNull;
 
-import net.rusnet.taskmanager.commons.model.Task;
-import net.rusnet.taskmanager.commons.model.TaskDataSource;
-import net.rusnet.taskmanager.commons.model.TaskType;
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
+import net.rusnet.taskmanager.commons.domain.model.TaskType;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

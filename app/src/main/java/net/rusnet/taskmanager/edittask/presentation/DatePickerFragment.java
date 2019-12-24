@@ -1,4 +1,4 @@
-package net.rusnet.taskmanager.edittask;
+package net.rusnet.taskmanager.edittask.presentation;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
