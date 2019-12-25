@@ -3,9 +3,9 @@ package net.rusnet.taskmanager.edittask.presentation;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
 import net.rusnet.taskmanager.commons.domain.model.DateType;
 import net.rusnet.taskmanager.commons.domain.model.Task;
-import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
 
 import java.lang.ref.WeakReference;
@@ -24,49 +24,49 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     @Override
     public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Date reminderDate) {
-        showLoadingScreen(true);
-        mTasksRepository.createNewTask(
-                new Task(name, taskType, dateType, endDate, reminderDate),
-                new TaskDataSource.CreateNewTaskCallback() {
-                    @Override
-                    public void onTaskCreated(long newTaskId) {
-                        EditTaskContract.View view = mEditTaskViewWeakReference.get();
-                        if (view != null) {
-                            view.updateTaskAlarm(newTaskId);
-                            view.onTaskSavingFinished();
-                        }
-                    }
-                });
+//        showLoadingScreen(true);
+//        mTasksRepository.createNewTask(
+//                new Task(name, taskType, dateType, endDate, reminderDate),
+//                new TaskDataSource.CreateNewTaskCallback() {
+//                    @Override
+//                    public void onTaskCreated(long newTaskId) {
+//                        EditTaskContract.View view = mEditTaskViewWeakReference.get();
+//                        if (view != null) {
+//                            view.updateTaskAlarm(newTaskId);
+//                            view.onTaskSavingFinished();
+//                        }
+//                    }
+//                });
     }
 
     @Override
     public void loadTask(long taskId) {
-        showLoadingScreen(true);
-        mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
-            @Override
-            public void onTaskLoaded(Task task) {
-                EditTaskContract.View view = mEditTaskViewWeakReference.get();
-                if (view != null) {
-                    view.updateView(task);
-                    showLoadingScreen(false);
-                }
-            }
-        });
+//        showLoadingScreen(true);
+//        mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
+//            @Override
+//            public void onTaskLoaded(Task task) {
+//                EditTaskContract.View view = mEditTaskViewWeakReference.get();
+//                if (view != null) {
+//                    view.updateView(task);
+//                    showLoadingScreen(false);
+//                }
+//            }
+//        });
     }
 
     @Override
     public void updateTask(@NonNull final Task task) {
-        showLoadingScreen(true);
-        mTasksRepository.updateTask(task, new TaskDataSource.UpdateTaskCallback() {
-            @Override
-            public void onTaskUpdated() {
-                EditTaskContract.View view = mEditTaskViewWeakReference.get();
-                if (view != null) {
-                    view.updateTaskAlarm(task.getId());
-                    view.onTaskSavingFinished();
-                }
-            }
-        });
+//        showLoadingScreen(true);
+//        mTasksRepository.updateTask(task, new TaskDataSource.UpdateTaskCallback() {
+//            @Override
+//            public void onTaskUpdated() {
+//                EditTaskContract.View view = mEditTaskViewWeakReference.get();
+//                if (view != null) {
+//                    view.updateTaskAlarm(task.getId());
+//                    view.onTaskSavingFinished();
+//                }
+//            }
+//        });
     }
 
     private void showLoadingScreen(boolean showLoadingScreen) {

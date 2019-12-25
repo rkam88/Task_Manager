@@ -28,11 +28,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.presentation.ConfirmationDialogFragment;
 import net.rusnet.taskmanager.commons.domain.model.DateType;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
-import net.rusnet.taskmanager.commons.data.source.TasksRepository;
+import net.rusnet.taskmanager.commons.presentation.ConfirmationDialogFragment;
+import net.rusnet.taskmanager.commons.utils.Injection;
 import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
 import java.text.SimpleDateFormat;
@@ -226,7 +226,6 @@ public class EditTaskActivity extends AppCompatActivity
                 break;
             case DATE_FOR_REMINDER:
                 mRemoveReminderButton.setVisibility(View.VISIBLE);
-                ;
                 calendar.set(year, month, dayOfMonth);
                 mReminderDate.setTime(calendar.getTimeInMillis());
                 mIsReminderDateSet = true;
@@ -304,7 +303,7 @@ public class EditTaskActivity extends AppCompatActivity
     private void initPresenter() {
         mEditTaskPresenter = new EditTaskPresenter(
                 this,
-                TasksRepository.getRepository(getApplication()));
+                Injection.provideTasksRepository(getApplicationContext()));
     }
 
     private void initLoadingScreen() {

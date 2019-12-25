@@ -27,11 +27,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.presentation.ConfirmationDialogFragment;
 import net.rusnet.taskmanager.commons.domain.model.DateType;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
-import net.rusnet.taskmanager.commons.data.source.TasksRepository;
+import net.rusnet.taskmanager.commons.presentation.ConfirmationDialogFragment;
+import net.rusnet.taskmanager.commons.utils.Injection;
 import net.rusnet.taskmanager.edittask.presentation.EditTaskActivity;
 import net.rusnet.taskmanager.taskalarm.TaskAlarmService;
 
@@ -407,7 +407,7 @@ public class TasksDisplayActivity extends AppCompatActivity
 
         mTaskDisplayPresenter = new TasksDisplayPresenter(
                 this,
-                TasksRepository.getRepository(getApplication()));
+                Injection.provideLoadTasksUseCase(getApplicationContext()));
 
         mTaskDisplayPresenter.setTasksViewType(type);
         mTaskDisplayPresenter.updateAllTaskCount();

@@ -10,13 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
 import net.rusnet.taskmanager.R;
-import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
-import net.rusnet.taskmanager.commons.domain.model.TaskType;
-import net.rusnet.taskmanager.commons.data.source.TasksRepository;
+import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.utils.Injection;
 
 import java.util.Date;
-import java.util.List;
 
 public class TaskAlarmService extends JobIntentService {
 
@@ -39,39 +37,39 @@ public class TaskAlarmService extends JobIntentService {
     public void onCreate() {
         super.onCreate();
 
-        mTasksRepository = TasksRepository.getRepository(getApplication());
+        mTasksRepository = Injection.provideTasksRepository(getApplicationContext());
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        String action = intent.getAction();
-        if (action == null) return;
-        switch (action) {
-            case ACTION_UPDATE_ONE:
-                long taskId = intent.getLongExtra(EXTRA_TASK_ID, NO_TASK_ID);
-                if (taskId == NO_TASK_ID) return;
-                mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
-                    @Override
-                    public void onTaskLoaded(Task task) {
-                        updateTaskAlarm(task);
-                    }
-                });
-                break;
-            case ACTION_UPDATE_ALL:
-                mTasksRepository.loadTasks(TaskType.ANY, false, new TaskDataSource.LoadTasksCallback() {
-                    @Override
-                    public void onTasksLoaded(List<Task> tasks) {
-                        for (Task task : tasks) {
-                            if (task.getReminderDate() != null) updateTaskAlarm(task);
-                        }
-                    }
-                });
-                break;
-            case ACTION_REMOVE:
-                long taskIdToRemove = intent.getLongExtra(EXTRA_TASK_ID, NO_TASK_ID);
-                if (taskIdToRemove != NO_TASK_ID) removeTaskAlarms(taskIdToRemove);
-                break;
-        }
+//        String action = intent.getAction();
+//        if (action == null) return;
+//        switch (action) {
+//            case ACTION_UPDATE_ONE:
+//                long taskId = intent.getLongExtra(EXTRA_TASK_ID, NO_TASK_ID);
+//                if (taskId == NO_TASK_ID) return;
+//                mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
+//                    @Override
+//                    public void onTaskLoaded(Task task) {
+//                        updateTaskAlarm(task);
+//                    }
+//                });
+//                break;
+//            case ACTION_UPDATE_ALL:
+//                mTasksRepository.loadTasks(TaskType.ANY, false, new TaskDataSource.LoadTasksCallback() {
+//                    @Override
+//                    public void onTasksLoaded(List<Task> tasks) {
+//                        for (Task task : tasks) {
+//                            if (task.getReminderDate() != null) updateTaskAlarm(task);
+//                        }
+//                    }
+//                });
+//                break;
+//            case ACTION_REMOVE:
+//                long taskIdToRemove = intent.getLongExtra(EXTRA_TASK_ID, NO_TASK_ID);
+//                if (taskIdToRemove != NO_TASK_ID) removeTaskAlarms(taskIdToRemove);
+//                break;
+//        }
     }
 
     private void updateTaskAlarm(Task task) {
