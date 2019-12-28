@@ -161,16 +161,13 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     private void loadTasks(@NonNull TaskViewType taskViewType) {
         TaskFilter filter = new TaskFilter(taskViewType);
-        LoadTasks.RequestValues requestValues = new LoadTasks.RequestValues(filter);
 
-        mLoadTasks.execute(requestValues, new UseCase.Callback<LoadTasks.Result>() {
+        mLoadTasks.execute(filter, new UseCase.Callback<List<Task>>() {
             @Override
-            public void onResult(@NonNull LoadTasks.Result result) {
-                List<Task> taskList = result.getTasks();
-                updateView(taskList);
+            public void onResult(@NonNull List<Task> result) {
+                updateView(result);
             }
         });
-
 
 //        boolean useDateRange = false;
 //        Date startDate = new Date(0);

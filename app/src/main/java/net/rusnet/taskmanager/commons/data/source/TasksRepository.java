@@ -11,19 +11,10 @@ import java.util.List;
 
 public class TasksRepository implements TaskDataSource {
 
-    private static TasksRepository INSTANCE = null;
-
     private TaskDao mTaskDao;
 
-    private TasksRepository(TaskDao taskDao) {
+    public TasksRepository(TaskDao taskDao) {
         mTaskDao = taskDao;
-    }
-
-    public static TasksRepository getRepository(TaskDao taskDao) {
-        if (INSTANCE == null) {
-            INSTANCE = new TasksRepository(taskDao);
-        }
-        return INSTANCE;
     }
 
     @Override

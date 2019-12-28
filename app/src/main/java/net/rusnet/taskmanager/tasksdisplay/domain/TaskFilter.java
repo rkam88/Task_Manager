@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public final class TaskFilter {
+public class TaskFilter {
 
     private final TaskType mTaskType;
     private final Date mEndDate;
