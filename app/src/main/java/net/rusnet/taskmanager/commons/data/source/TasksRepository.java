@@ -6,21 +6,42 @@ import net.rusnet.taskmanager.commons.data.source.local.TaskDao;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.tasksdisplay.domain.TaskFilter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class TasksRepository implements TaskDataSource {
 
     private TaskDao mTaskDao;
+    private List<Task> mTaskListCache;
+    private boolean mCacheIsDirty;
 
-    public TasksRepository(TaskDao taskDao) {
+    public TasksRepository(@NonNull TaskDao taskDao) {
         mTaskDao = taskDao;
+        mTaskListCache = new ArrayList<>();
+        mCacheIsDirty = true;
     }
 
     @Override
     public List<Task> loadTasks(@NonNull TaskFilter taskFilter) {
-        List<Task> taskList = Arrays.asList(mTaskDao.getAllTasks());
+        List<Task> taskList;
+        if (mCacheIsDirty) {
+            taskList = Arrays.asList(mTaskDao.getAllTasks());
+            updateCache(taskList);
+        } else {
+            taskList = getCachedTasks();
+        }
         return taskFilter.filter(taskList);
+    }
+
+    private void updateCache(@NonNull List<Task> taskList) {
+        mTaskListCache = new ArrayList<>(taskList);
+        mCacheIsDirty = false;
+    }
+
+    @NonNull
+    private List<Task> getCachedTasks() {
+        return new ArrayList<>(mTaskListCache);
     }
 
 //    @Override
