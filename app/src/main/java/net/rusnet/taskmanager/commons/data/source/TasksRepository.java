@@ -55,16 +55,6 @@ public class TasksRepository implements TaskDataSource {
 //    }
 //
 //    @Override
-//    public void loadTasksCount(@Nullable TaskType taskType, boolean isCompleted, @NonNull LoadTasksCountCallback callback) {
-//        loadTasksCount(taskType, isCompleted, false, null, null, callback);
-//    }
-//
-//    @Override
-//    public void loadTasksCount(@Nullable TaskType taskType, boolean isCompleted, boolean useDateRange, Date startDate, Date endDate, @NonNull LoadTasksCountCallback callback) {
-//        new LoadTasksCountAsyncTask(mTaskDao, taskType, isCompleted, useDateRange, startDate, endDate, callback).execute();
-//    }
-//
-//    @Override
 //    public void createNewTask(@NonNull Task task, @NonNull CreateNewTaskCallback callback) {
 //        new CreateNewTaskAsyncTask(mTaskDao, callback).execute(task);
 //    }
@@ -130,47 +120,6 @@ public class TasksRepository implements TaskDataSource {
 //        }
 //    }
 //
-//    private static class LoadTasksCountAsyncTask extends AsyncTask<Void, Void, Integer> {
-//        private TaskDao mTaskDao;
-//        private TaskType mTaskType;
-//        private boolean mIsCompleted;
-//        private boolean mUseDateRange;
-//        private Date mStartDate;
-//        private Date mEndDate;
-//        private LoadTasksCountCallback mCallback;
-//
-//        LoadTasksCountAsyncTask(TaskDao taskDao,
-//                                TaskType taskType,
-//                                boolean isCompleted,
-//                                boolean useDateRange,
-//                                Date startDate,
-//                                Date endDate,
-//                                LoadTasksCountCallback callback) {
-//            mTaskDao = taskDao;
-//            mTaskType = taskType;
-//            mIsCompleted = isCompleted;
-//            mUseDateRange = useDateRange;
-//            mStartDate = startDate;
-//            mEndDate = endDate;
-//            mCallback = callback;
-//        }
-//
-//        @Override
-//        protected Integer doInBackground(Void... voids) {
-//            return mTaskDao.getTasksCount(
-//                    mTaskType.getTypeAsString(),
-//                    mIsCompleted,
-//                    mUseDateRange,
-//                    mStartDate,
-//                    mEndDate
-//            );
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Integer tasksCount) {
-//            mCallback.onTasksCountLoaded(tasksCount);
-//        }
-//    }
 //
 //    private static class CreateNewTaskAsyncTask extends AsyncTask<Task, Void, Long> {
 //        private TaskDao mTaskDao;

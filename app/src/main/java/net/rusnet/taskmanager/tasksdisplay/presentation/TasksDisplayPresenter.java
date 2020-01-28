@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
 import net.rusnet.taskmanager.tasksdisplay.domain.TaskFilter;
+import net.rusnet.taskmanager.tasksdisplay.domain.usecase.GetTaskCount;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.LoadTasks;
 
 import java.lang.ref.WeakReference;
@@ -15,19 +16,22 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     private static final String COUNT_99_PLUS = "99+";
 
+    private TaskViewType mTaskViewType;
     private WeakReference<TasksDisplayContract.View> mTasksDisplayViewWeakReference;
     private LoadTasks mLoadTasks;
-    private TaskViewType mTaskViewType;
+    private GetTaskCount mGetTaskCount;
 
     public TasksDisplayPresenter(@NonNull TasksDisplayContract.View tasksDisplayView,
-                                 @NonNull LoadTasks loadTasks) {
+                                 @NonNull LoadTasks loadTasks,
+                                 @NonNull GetTaskCount getTaskCount) {
         mTasksDisplayViewWeakReference = new WeakReference<>(tasksDisplayView);
         mLoadTasks = loadTasks;
+        mGetTaskCount = getTaskCount;
     }
 
     @Override
     public void setTasksViewType(@NonNull TaskViewType taskViewType) {
-        //showLoadingScreen(true);
+        showLoadingScreen(true);
         mTaskViewType = taskViewType;
 
         TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
@@ -40,66 +44,15 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void updateAllTaskCount() {
-//        mTasksRepository.loadTasksCount(
-//                TaskType.INBOX,
-//                false,
-//                new TaskDataSource.LoadTasksCountCallback() {
-//                    @Override
-//                    public void onTasksCountLoaded(int tasksCount) {
-//                        updateTasksCountInView(TaskViewType.INBOX, tasksCount);
-//                    }
-//                });
-//        mTasksRepository.loadTasksCount(
-//                TaskType.ACTIVE,
-//                false,
-//                true,
-//                new Date(0),
-//                new Date(System.currentTimeMillis()),
-//                new TaskDataSource.LoadTasksCountCallback() {
-//                    @Override
-//                    public void onTasksCountLoaded(int tasksCount) {
-//                        updateTasksCountInView(TaskViewType.TODAY, tasksCount);
-//                    }
-//                });
-//        mTasksRepository.loadTasksCount(
-//                TaskType.ACTIVE,
-//                false,
-//                true,
-//                new Date(0),
-//                DateUtil.getDateInAWeek(),
-//                new TaskDataSource.LoadTasksCountCallback() {
-//                    @Override
-//                    public void onTasksCountLoaded(int tasksCount) {
-//                        updateTasksCountInView(TaskViewType.THIS_WEEK, tasksCount);
-//                    }
-//                });
-//        mTasksRepository.loadTasksCount(
-//                TaskType.ACTIVE,
-//                false,
-//                new TaskDataSource.LoadTasksCountCallback() {
-//                    @Override
-//                    public void onTasksCountLoaded(int tasksCount) {
-//                        updateTasksCountInView(TaskViewType.ACTIVE_ALL, tasksCount);
-//                    }
-//                });
-//        mTasksRepository.loadTasksCount(
-//                TaskType.POSTPONED,
-//                false,
-//                new TaskDataSource.LoadTasksCountCallback() {
-//                    @Override
-//                    public void onTasksCountLoaded(int tasksCount) {
-//                        updateTasksCountInView(TaskViewType.POSTPONED, tasksCount);
-//                    }
-//                });
-//        mTasksRepository.loadTasksCount(
-//                TaskType.ANY,
-//                true,
-//                new TaskDataSource.LoadTasksCountCallback() {
-//                    @Override
-//                    public void onTasksCountLoaded(int tasksCount) {
-//                        updateTasksCountInView(TaskViewType.COMPLETED, tasksCount);
-//                    }
-//                });
+        for (final TaskViewType taskViewType : TaskViewType.values()) {
+            TaskFilter taskFilter = new TaskFilter(taskViewType);
+            mGetTaskCount.execute(taskFilter, new UseCase.Callback<Integer>() {
+                @Override
+                public void onResult(@NonNull Integer result) {
+                    updateTasksCountInView(taskViewType, result);
+                }
+            });
+        }
     }
 
     @Override
@@ -169,30 +122,7 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
             }
         });
 
-//        boolean useDateRange = false;
-//        Date startDate = new Date(0);
-//        Date endDate = null;
-//        if (taskViewType == TaskViewType.TODAY) {
-//            useDateRange = true;
-//            endDate = new Date(System.currentTimeMillis());
-//        } else if (taskViewType == TaskViewType.THIS_WEEK) {
-//            useDateRange = true;
-//            endDate = DateUtil.getDateInAWeek();
-//        }
-//        mTasksRepository.loadTasks(
-//                TaskViewType.getTaskType(taskViewType),
-//                (taskViewType.equals(TaskViewType.COMPLETED)),
-//                useDateRange,
-//                startDate,
-//                endDate,
-//                new TaskDataSource.LoadTasksCallback() {
-//                    @Override
-//                    public void onTasksLoaded(List<Task> tasks) {
-//                        showLoadingScreen(false);
-//                        updateView(tasks);
-//                    }
-//                }
-//        );
+        showLoadingScreen(false);
     }
 
     private void updateView(@NonNull List<Task> tasks) {
