@@ -15,6 +15,8 @@ public interface TaskDataSource {
 
     Void updateTask(@NonNull Task taskToUpdate);
 
+    Task loadTask(long taskId);
+
 //
 //    void createNewTask(
 //            @NonNull final Task task);

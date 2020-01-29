@@ -303,7 +303,7 @@ public class EditTaskActivity extends AppCompatActivity
     private void initPresenter() {
         mEditTaskPresenter = new EditTaskPresenter(
                 this,
-                Injection.provideTasksRepository(getApplicationContext()));
+                Injection.provideLoadTaskUseCase(getApplicationContext()));
     }
 
     private void initLoadingScreen() {

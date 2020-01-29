@@ -3,10 +3,11 @@ package net.rusnet.taskmanager.edittask.presentation;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
 import net.rusnet.taskmanager.commons.domain.model.DateType;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
+import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
+import net.rusnet.taskmanager.edittask.domain.LoadTask;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
@@ -14,12 +15,12 @@ import java.util.Date;
 public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     private WeakReference<EditTaskContract.View> mEditTaskViewWeakReference;
-    private TaskDataSource mTasksRepository;
+    private LoadTask mLoadTask;
 
     public EditTaskPresenter(@NonNull EditTaskContract.View editTaskView,
-                             @NonNull TaskDataSource tasksRepository) {
+                             @NonNull LoadTask loadTask) {
         mEditTaskViewWeakReference = new WeakReference<>(editTaskView);
-        mTasksRepository = tasksRepository;
+        mLoadTask = loadTask;
     }
 
     @Override
@@ -41,17 +42,17 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     @Override
     public void loadTask(long taskId) {
-//        showLoadingScreen(true);
-//        mTasksRepository.loadTask(taskId, new TaskDataSource.LoadTaskCallback() {
-//            @Override
-//            public void onTaskLoaded(Task task) {
-//                EditTaskContract.View view = mEditTaskViewWeakReference.get();
-//                if (view != null) {
-//                    view.updateView(task);
-//                    showLoadingScreen(false);
-//                }
-//            }
-//        });
+        showLoadingScreen(true);
+        mLoadTask.execute(taskId, new UseCase.Callback<Task>() {
+            @Override
+            public void onResult(@NonNull Task result) {
+                EditTaskContract.View view = mEditTaskViewWeakReference.get();
+                if (view != null) {
+                    view.updateView(result);
+                    showLoadingScreen(false);
+                }
+            }
+        });
     }
 
     @Override
