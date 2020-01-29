@@ -3,12 +3,12 @@ package net.rusnet.taskmanager.tasksdisplay.presentation;
 import androidx.annotation.NonNull;
 
 import net.rusnet.taskmanager.commons.domain.model.Task;
+import net.rusnet.taskmanager.commons.domain.usecase.LoadTasks;
 import net.rusnet.taskmanager.commons.domain.usecase.UpdateTask;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
 import net.rusnet.taskmanager.tasksdisplay.domain.TaskFilter;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.DeleteTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.GetTaskCount;
-import net.rusnet.taskmanager.tasksdisplay.domain.usecase.LoadTasks;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

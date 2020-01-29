@@ -1,10 +1,9 @@
-package net.rusnet.taskmanager.tasksdisplay.domain.usecase;
+package net.rusnet.taskmanager.commons.domain.usecase;
 
 import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
 import net.rusnet.taskmanager.commons.domain.model.DateType;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
-import net.rusnet.taskmanager.commons.domain.usecase.UseCaseExecutor;
 import net.rusnet.taskmanager.tasksdisplay.domain.TaskFilter;
 
 import org.junit.Before;

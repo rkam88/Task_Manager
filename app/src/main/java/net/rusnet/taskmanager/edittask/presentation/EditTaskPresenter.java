@@ -6,10 +6,10 @@ import androidx.annotation.Nullable;
 import net.rusnet.taskmanager.commons.domain.model.DateType;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
+import net.rusnet.taskmanager.commons.domain.usecase.LoadTask;
 import net.rusnet.taskmanager.commons.domain.usecase.UpdateTask;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
 import net.rusnet.taskmanager.edittask.domain.CreateTask;
-import net.rusnet.taskmanager.edittask.domain.LoadTask;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;

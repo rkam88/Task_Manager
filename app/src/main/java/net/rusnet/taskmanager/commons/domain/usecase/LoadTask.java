@@ -1,11 +1,9 @@
-package net.rusnet.taskmanager.edittask.domain;
+package net.rusnet.taskmanager.commons.domain.usecase;
 
 import androidx.annotation.NonNull;
 
 import net.rusnet.taskmanager.commons.data.source.TaskDataSource;
 import net.rusnet.taskmanager.commons.domain.model.Task;
-import net.rusnet.taskmanager.commons.domain.usecase.DBUseCase;
-import net.rusnet.taskmanager.commons.domain.usecase.UseCaseExecutor;
 
 public class LoadTask extends DBUseCase<Long, Task> {
 
