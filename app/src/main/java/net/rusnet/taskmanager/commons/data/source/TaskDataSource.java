@@ -11,6 +11,8 @@ public interface TaskDataSource {
 
     List<Task> loadTasks(@NonNull TaskFilter taskFilter);
 
+    Void deleteTasks(@NonNull List<Task> tasksToDelete);
+
 //    void loadTasks(
 //            @Nullable final TaskType taskType,
 //            final boolean isCompleted);

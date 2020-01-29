@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
 import net.rusnet.taskmanager.tasksdisplay.domain.TaskFilter;
+import net.rusnet.taskmanager.tasksdisplay.domain.usecase.DeleteTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.GetTaskCount;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.LoadTasks;
 
@@ -20,13 +21,16 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     private WeakReference<TasksDisplayContract.View> mTasksDisplayViewWeakReference;
     private LoadTasks mLoadTasks;
     private GetTaskCount mGetTaskCount;
+    private DeleteTasks mDeleteTasks;
 
     public TasksDisplayPresenter(@NonNull TasksDisplayContract.View tasksDisplayView,
                                  @NonNull LoadTasks loadTasks,
-                                 @NonNull GetTaskCount getTaskCount) {
+                                 @NonNull GetTaskCount getTaskCount,
+                                 @NonNull DeleteTasks deleteTasks) {
         mTasksDisplayViewWeakReference = new WeakReference<>(tasksDisplayView);
         mLoadTasks = loadTasks;
         mGetTaskCount = getTaskCount;
+        mDeleteTasks = deleteTasks;
     }
 
     @Override
@@ -74,16 +78,16 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void deleteTasks(@NonNull List<Task> tasks) {
-//        showLoadingScreen(true);
-//        removeTaskAlarms(tasks);
-//        mTasksRepository.deleteTasks(tasks, new TaskDataSource.DeleteTasksCallback() {
-//            @Override
-//            public void onTasksDeleted() {
-//                showLoadingScreen(false);
-//                updateAllTaskCount();
-//                loadTasks(mTaskViewType);
-//            }
-//        });
+        showLoadingScreen(true);
+        removeTaskAlarms(tasks);
+        mDeleteTasks.execute(tasks, new UseCase.Callback<Void>() {
+            @Override
+            public void onResult(@NonNull Void result) {
+                showLoadingScreen(false);
+                loadTasks(mTaskViewType);
+                updateAllTaskCount();
+            }
+        });
     }
 
     @Override
