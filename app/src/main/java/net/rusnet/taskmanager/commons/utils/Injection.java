@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import net.rusnet.taskmanager.commons.data.source.TasksRepository;
 import net.rusnet.taskmanager.commons.data.source.local.TasksDatabase;
+import net.rusnet.taskmanager.commons.domain.usecase.UpdateTask;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCaseExecutor;
 import net.rusnet.taskmanager.commons.utils.executors.DiskIOThreadExecutor;
 import net.rusnet.taskmanager.commons.utils.executors.MainThreadExecutor;
@@ -13,7 +14,6 @@ import net.rusnet.taskmanager.edittask.domain.LoadTask;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.DeleteTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.GetTaskCount;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.LoadTasks;
-import net.rusnet.taskmanager.tasksdisplay.domain.usecase.UpdateTask;
 
 public class Injection {
 

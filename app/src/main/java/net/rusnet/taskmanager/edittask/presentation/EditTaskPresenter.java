@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import net.rusnet.taskmanager.commons.domain.model.DateType;
 import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
+import net.rusnet.taskmanager.commons.domain.usecase.UpdateTask;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
 import net.rusnet.taskmanager.edittask.domain.LoadTask;
 
@@ -16,11 +17,14 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     private WeakReference<EditTaskContract.View> mEditTaskViewWeakReference;
     private LoadTask mLoadTask;
+    private UpdateTask mUpdateTask;
 
     public EditTaskPresenter(@NonNull EditTaskContract.View editTaskView,
-                             @NonNull LoadTask loadTask) {
+                             @NonNull LoadTask loadTask,
+                             @NonNull UpdateTask updateTask) {
         mEditTaskViewWeakReference = new WeakReference<>(editTaskView);
         mLoadTask = loadTask;
+        mUpdateTask = updateTask;
     }
 
     @Override
@@ -57,17 +61,17 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
 
     @Override
     public void updateTask(@NonNull final Task task) {
-//        showLoadingScreen(true);
-//        mTasksRepository.updateTask(task, new TaskDataSource.UpdateTaskCallback() {
-//            @Override
-//            public void onTaskUpdated() {
-//                EditTaskContract.View view = mEditTaskViewWeakReference.get();
-//                if (view != null) {
-//                    view.updateTaskAlarm(task.getId());
-//                    view.onTaskSavingFinished();
-//                }
-//            }
-//        });
+        showLoadingScreen(true);
+        mUpdateTask.execute(task, new UseCase.Callback<Void>() {
+            @Override
+            public void onResult(@NonNull Void result) {
+                EditTaskContract.View view = mEditTaskViewWeakReference.get();
+                if (view != null) {
+                    view.updateTaskAlarm(task.getId());
+                    view.onTaskSavingFinished();
+                }
+            }
+        });
     }
 
     private void showLoadingScreen(boolean showLoadingScreen) {
