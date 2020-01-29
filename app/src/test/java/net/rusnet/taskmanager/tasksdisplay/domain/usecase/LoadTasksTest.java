@@ -40,7 +40,7 @@ public class LoadTasksTest {
         mMocks = new Object[]{
                 mUseCaseExecutor,
                 mTaskDataSource,
-                mTaskDataSource};
+                mTaskFilter};
 
         mLoadTasks = new LoadTasks(mUseCaseExecutor, mTaskDataSource);
 
