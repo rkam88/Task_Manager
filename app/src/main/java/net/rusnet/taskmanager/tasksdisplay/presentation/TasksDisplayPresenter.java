@@ -8,6 +8,7 @@ import net.rusnet.taskmanager.tasksdisplay.domain.TaskFilter;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.DeleteTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.GetTaskCount;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.LoadTasks;
+import net.rusnet.taskmanager.tasksdisplay.domain.usecase.UpdateTask;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,15 +23,18 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     private LoadTasks mLoadTasks;
     private GetTaskCount mGetTaskCount;
     private DeleteTasks mDeleteTasks;
+    private UpdateTask mUpdateTask;
 
     public TasksDisplayPresenter(@NonNull TasksDisplayContract.View tasksDisplayView,
                                  @NonNull LoadTasks loadTasks,
                                  @NonNull GetTaskCount getTaskCount,
-                                 @NonNull DeleteTasks deleteTasks) {
+                                 @NonNull DeleteTasks deleteTasks,
+                                 @NonNull UpdateTask updateTask) {
         mTasksDisplayViewWeakReference = new WeakReference<>(tasksDisplayView);
         mLoadTasks = loadTasks;
         mGetTaskCount = getTaskCount;
         mDeleteTasks = deleteTasks;
+        mUpdateTask = updateTask;
     }
 
     @Override
@@ -61,19 +65,17 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void markTaskAsCompleted(@NonNull Task task) {
-//        showLoadingScreen(true);
-//        removeTaskAlarms(task);
-//        task.setCompleted(true);
-//        mTasksRepository.updateTask(
-//                task,
-//                new TaskDataSource.UpdateTaskCallback() {
-//                    @Override
-//                    public void onTaskUpdated() {
-//                        showLoadingScreen(false);
-//                        updateAllTaskCount();
-//                        loadTasks(mTaskViewType);
-//                    }
-//                });
+        showLoadingScreen(true);
+        removeTaskAlarms(task);
+        task.setCompleted(true);
+        mUpdateTask.execute(task, new UseCase.Callback<Void>() {
+            @Override
+            public void onResult(@NonNull Void result) {
+                showLoadingScreen(false);
+                loadTasks(mTaskViewType);
+                updateAllTaskCount();
+            }
+        });
     }
 
     @Override

@@ -409,7 +409,8 @@ public class TasksDisplayActivity extends AppCompatActivity
                 this,
                 Injection.provideLoadTasksUseCase(getApplicationContext()),
                 Injection.provideGetTaskCountUseCase(getApplicationContext()),
-                Injection.provideDeleteTasksUseCase(getApplicationContext()));
+                Injection.provideDeleteTasksUseCase(getApplicationContext()),
+                Injection.provideUpdateTaskUseCase(getApplicationContext()));
 
         mTaskDisplayPresenter.setTasksViewType(type);
         mTaskDisplayPresenter.updateAllTaskCount();

@@ -13,27 +13,8 @@ public interface TaskDataSource {
 
     Void deleteTasks(@NonNull List<Task> tasksToDelete);
 
-//    void loadTasks(
-//            @Nullable final TaskType taskType,
-//            final boolean isCompleted);
-//
-//    void loadTasks(
-//            @Nullable final TaskType taskType,
-//            final boolean isCompleted,
-//            final boolean useDateRange,
-//            final Date startDate,
-//            final Date endDate);
-//
-//    void loadTasksCount(
-//            @Nullable final TaskType taskType,
-//            final boolean isCompleted);
-//
-//    void loadTasksCount(
-//            @Nullable final TaskType taskType,
-//            final boolean isCompleted,
-//            final boolean useDateRange,
-//            final Date startDate,
-//            final Date endDate);
+    Void updateTask(@NonNull Task taskToUpdate);
+
 //
 //    void createNewTask(
 //            @NonNull final Task task);
@@ -41,11 +22,6 @@ public interface TaskDataSource {
 //    void loadTask(
 //            final long taskId);
 //
-//    void updateTask(
-//            @NonNull final Task task);
-//
-//    void deleteTasks(
-//            @NonNull final List<Task> tasks);
 //
 //    void createTasks(
 //            @NonNull final List<Task> tasks);

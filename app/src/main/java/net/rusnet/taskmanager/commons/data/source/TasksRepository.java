@@ -41,6 +41,13 @@ public class TasksRepository implements TaskDataSource {
         return null;
     }
 
+    @Override
+    public Void updateTask(@NonNull Task taskToUpdate) {
+        mTaskDao.updateTask(taskToUpdate);
+        mCacheIsDirty = true;
+        return null;
+    }
+
     private void updateCache(@NonNull List<Task> taskList) {
         mTaskListCache = new ArrayList<>(taskList);
         mCacheIsDirty = false;
@@ -62,10 +69,6 @@ public class TasksRepository implements TaskDataSource {
 //        new LoadTaskAsyncTask(mTaskDao, callback).execute(taskId);
 //    }
 //
-//    @Override
-//    public void updateTask(@NonNull Task task, @NonNull UpdateTaskCallback callback) {
-//        new UpdateTaskAsyncTask(mTaskDao, callback).execute(task);
-//    }
 //
 //
 //    @Override
@@ -114,27 +117,6 @@ public class TasksRepository implements TaskDataSource {
 //            mCallback.onTaskLoaded(task);
 //        }
 //
-//    }
-//
-//    private static class UpdateTaskAsyncTask extends AsyncTask<Task, Void, Void> {
-//        private TaskDao mTaskDao;
-//        private UpdateTaskCallback mCallback;
-//
-//        UpdateTaskAsyncTask(TaskDao taskDao, UpdateTaskCallback callback) {
-//            mTaskDao = taskDao;
-//            mCallback = callback;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Task... tasks) {
-//            mTaskDao.updateTask(tasks[0]);
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            mCallback.onTaskUpdated();
-//        }
 //    }
 //
 //
