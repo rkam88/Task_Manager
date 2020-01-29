@@ -304,7 +304,8 @@ public class EditTaskActivity extends AppCompatActivity
         mEditTaskPresenter = new EditTaskPresenter(
                 this,
                 Injection.provideLoadTaskUseCase(getApplicationContext()),
-                Injection.provideUpdateTaskUseCase(getApplicationContext()));
+                Injection.provideUpdateTaskUseCase(getApplicationContext()),
+                Injection.provideCreateTaskUseCase(getApplicationContext()));
     }
 
     private void initLoadingScreen() {

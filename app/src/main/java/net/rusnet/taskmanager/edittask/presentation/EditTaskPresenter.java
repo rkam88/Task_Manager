@@ -8,6 +8,7 @@ import net.rusnet.taskmanager.commons.domain.model.Task;
 import net.rusnet.taskmanager.commons.domain.model.TaskType;
 import net.rusnet.taskmanager.commons.domain.usecase.UpdateTask;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
+import net.rusnet.taskmanager.edittask.domain.CreateTask;
 import net.rusnet.taskmanager.edittask.domain.LoadTask;
 
 import java.lang.ref.WeakReference;
@@ -18,30 +19,32 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     private WeakReference<EditTaskContract.View> mEditTaskViewWeakReference;
     private LoadTask mLoadTask;
     private UpdateTask mUpdateTask;
+    private CreateTask mCreateTask;
 
     public EditTaskPresenter(@NonNull EditTaskContract.View editTaskView,
                              @NonNull LoadTask loadTask,
-                             @NonNull UpdateTask updateTask) {
+                             @NonNull UpdateTask updateTask,
+                             @NonNull CreateTask createTask) {
         mEditTaskViewWeakReference = new WeakReference<>(editTaskView);
         mLoadTask = loadTask;
         mUpdateTask = updateTask;
+        mCreateTask = createTask;
     }
 
     @Override
     public void createNewTask(@NonNull String name, @NonNull TaskType taskType, @NonNull DateType dateType, @Nullable Date endDate, @Nullable Date reminderDate) {
-//        showLoadingScreen(true);
-//        mTasksRepository.createNewTask(
-//                new Task(name, taskType, dateType, endDate, reminderDate),
-//                new TaskDataSource.CreateNewTaskCallback() {
-//                    @Override
-//                    public void onTaskCreated(long newTaskId) {
-//                        EditTaskContract.View view = mEditTaskViewWeakReference.get();
-//                        if (view != null) {
-//                            view.updateTaskAlarm(newTaskId);
-//                            view.onTaskSavingFinished();
-//                        }
-//                    }
-//                });
+        showLoadingScreen(true);
+        Task taskToCreate = new Task(name, taskType, dateType, endDate, reminderDate);
+        mCreateTask.execute(taskToCreate, new UseCase.Callback<Long>() {
+            @Override
+            public void onResult(@NonNull Long result) {
+                EditTaskContract.View view = mEditTaskViewWeakReference.get();
+                if (view != null) {
+                    view.updateTaskAlarm(result);
+                    view.onTaskSavingFinished();
+                }
+            }
+        });
     }
 
     @Override

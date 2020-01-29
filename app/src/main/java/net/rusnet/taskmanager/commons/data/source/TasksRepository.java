@@ -53,6 +53,13 @@ public class TasksRepository implements TaskDataSource {
         return mTaskDao.getById(taskId);
     }
 
+    @Override
+    public long createNewTask(@NonNull Task task) {
+        long newTaskId = mTaskDao.insertTask(task);
+        mCacheIsDirty = true;
+        return newTaskId;
+    }
+
     private void updateCache(@NonNull List<Task> taskList) {
         mTaskListCache = new ArrayList<>(taskList);
         mCacheIsDirty = false;
@@ -65,41 +72,9 @@ public class TasksRepository implements TaskDataSource {
 
 
 //    @Override
-//    public void createNewTask(@NonNull Task task, @NonNull CreateNewTaskCallback callback) {
-//        new CreateNewTaskAsyncTask(mTaskDao, callback).execute(task);
-//    }
-//
-//
-//
-//
-//    @Override
 //    public void createTasks(@NonNull List<Task> tasks, @NonNull CreateTasksCallback callback) {
 //        new CreateTasksAsyncTask(mTaskDao, tasks, callback).execute();
 //    }
-//
-//
-//
-//    private static class CreateNewTaskAsyncTask extends AsyncTask<Task, Void, Long> {
-//        private TaskDao mTaskDao;
-//        private CreateNewTaskCallback mCallback;
-//
-//        CreateNewTaskAsyncTask(TaskDao taskDao, CreateNewTaskCallback callback) {
-//            mTaskDao = taskDao;
-//            mCallback = callback;
-//        }
-//
-//        @Override
-//        protected Long doInBackground(Task... tasks) {
-//            return mTaskDao.insertTask(tasks[0]);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Long newTaskId) {
-//            mCallback.onTaskCreated(newTaskId);
-//        }
-//    }
-//
-//
 //
 //    private static class CreateTasksAsyncTask extends AsyncTask<Void, Void, Void> {
 //        private TaskDao mTaskDao;

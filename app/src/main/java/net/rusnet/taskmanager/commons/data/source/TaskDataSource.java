@@ -17,14 +17,9 @@ public interface TaskDataSource {
 
     Task loadTask(long taskId);
 
-//
-//    void createNewTask(
-//            @NonNull final Task task);
-//
-//    void loadTask(
-//            final long taskId);
-//
-//
+    long createNewTask(@NonNull Task task);
+
+
 //    void createTasks(
 //            @NonNull final List<Task> tasks);
 
