@@ -133,6 +133,13 @@ public class TasksDisplayActivity extends AppCompatActivity
     }
 
     @Override
+    public void updateAllTaskAlarms() {
+        Intent workIntent = new Intent(TaskAlarmService.ACTION_UPDATE_ALL);
+        TaskAlarmService.enqueueWork(this, workIntent);
+    }
+
+
+    @Override
     public void onPositiveResponse() {
         List<Task> tasksToDelete = new ArrayList<>();
         for (Integer position : mSelectedTasksPositions) {
@@ -410,7 +417,8 @@ public class TasksDisplayActivity extends AppCompatActivity
                 Injection.provideLoadTasksUseCase(getApplicationContext()),
                 Injection.provideGetTaskCountUseCase(getApplicationContext()),
                 Injection.provideDeleteTasksUseCase(getApplicationContext()),
-                Injection.provideUpdateTaskUseCase(getApplicationContext()));
+                Injection.provideUpdateTaskUseCase(getApplicationContext()),
+                Injection.provideCreateTasksUseCase(getApplicationContext()));
 
         mTaskDisplayPresenter.setTasksViewType(type);
         mTaskDisplayPresenter.updateAllTaskCount();
@@ -513,11 +521,12 @@ public class TasksDisplayActivity extends AppCompatActivity
             tasks.add(new Task(getString(R.string.tutorial_task_1), TaskType.INBOX, DateType.NO_DATE, null, null));
             tasks.add(new Task(getString(R.string.tutorial_task_2), TaskType.INBOX, DateType.NO_DATE, null, null));
             tasks.add(new Task(getString(R.string.tutorial_task_3), TaskType.INBOX, DateType.NO_DATE, null, null));
-            tasks.add(new Task(getString(R.string.tutorial_task_4), TaskType.POSTPONED, DateType.FIXED, new Date(yesterday.getTimeInMillis()), null));
-            tasks.add(new Task(getString(R.string.tutorial_task_5), TaskType.POSTPONED, DateType.FIXED, new Date(tomorrow.getTimeInMillis()), null));
-            tasks.add(new Task(getString(R.string.tutorial_task_6), TaskType.POSTPONED, DateType.DEADLINE, new Date(tomorrow.getTimeInMillis()), null));
-            tasks.add(new Task(getString(R.string.tutorial_task_7), TaskType.POSTPONED, DateType.NO_DATE, null, new Date(inTenMinutes.getTimeInMillis())));
-            tasks.add(new Task(getString(R.string.tutorial_task_8), TaskType.POSTPONED, DateType.NO_DATE, null, null));
+            tasks.add(new Task(getString(R.string.tutorial_task_4), TaskType.ACTIVE, DateType.FIXED, new Date(yesterday.getTimeInMillis()), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_5), TaskType.ACTIVE, DateType.FIXED, new Date(tomorrow.getTimeInMillis()), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_6), TaskType.ACTIVE, DateType.DEADLINE, new Date(tomorrow.getTimeInMillis()), null));
+            tasks.add(new Task(getString(R.string.tutorial_task_7), TaskType.ACTIVE, DateType.NO_DATE, null, new Date(inTenMinutes.getTimeInMillis())));
+            tasks.add(new Task(getString(R.string.tutorial_task_8), TaskType.ACTIVE, DateType.NO_DATE, null, null));
+            tasks.add(new Task(getString(R.string.tutorial_task_9), TaskType.POSTPONED, DateType.NO_DATE, null, null));
 
             mTaskDisplayPresenter.createFirstLaunchTasks(tasks);
 

@@ -13,6 +13,7 @@ import net.rusnet.taskmanager.commons.domain.usecase.UseCaseExecutor;
 import net.rusnet.taskmanager.commons.utils.executors.DiskIOThreadExecutor;
 import net.rusnet.taskmanager.commons.utils.executors.MainThreadExecutor;
 import net.rusnet.taskmanager.edittask.domain.CreateTask;
+import net.rusnet.taskmanager.tasksdisplay.domain.usecase.CreateTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.DeleteTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.GetTaskCount;
 
@@ -28,6 +29,7 @@ public class Injection {
     private static UpdateTask UPDATE_TASK_INSTANCE;
     private static LoadTask LOAD_TASK_INSTANCE;
     private static CreateTask CREATE_TASK_INSTANCE;
+    private static CreateTasks CREATE_TASKS_INSTANCE;
 
     public static MainThreadExecutor provideMainThreadExecutor() {
         if (MAIN_THREAD_EXECUTOR_INSTANCE == null) {
@@ -117,5 +119,15 @@ public class Injection {
             );
         }
         return CREATE_TASK_INSTANCE;
+    }
+
+    public static CreateTasks provideCreateTasksUseCase(@NonNull Context context) {
+        if (CREATE_TASKS_INSTANCE == null) {
+            CREATE_TASKS_INSTANCE = new CreateTasks(
+                    provideUseCaseExecutor(),
+                    provideTasksRepository(context)
+            );
+        }
+        return CREATE_TASKS_INSTANCE;
     }
 }

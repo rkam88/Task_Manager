@@ -19,8 +19,6 @@ public interface TaskDataSource {
 
     long createNewTask(@NonNull Task task);
 
-
-//    void createTasks(
-//            @NonNull final List<Task> tasks);
+    Void createTasks(@NonNull List<Task> tasks);
 
 }

@@ -23,6 +23,8 @@ public interface TasksDisplayContract {
         void hideLoadingScreen();
 
         void updateTaskAlarm(long taskId);
+
+        void updateAllTaskAlarms();
     }
 
     interface Presenter {

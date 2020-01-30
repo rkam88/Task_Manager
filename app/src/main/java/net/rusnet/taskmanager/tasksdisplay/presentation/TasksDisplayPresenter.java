@@ -7,6 +7,7 @@ import net.rusnet.taskmanager.commons.domain.usecase.LoadTasks;
 import net.rusnet.taskmanager.commons.domain.usecase.UpdateTask;
 import net.rusnet.taskmanager.commons.domain.usecase.UseCase;
 import net.rusnet.taskmanager.tasksdisplay.domain.TaskFilter;
+import net.rusnet.taskmanager.tasksdisplay.domain.usecase.CreateTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.DeleteTasks;
 import net.rusnet.taskmanager.tasksdisplay.domain.usecase.GetTaskCount;
 
@@ -24,17 +25,20 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
     private GetTaskCount mGetTaskCount;
     private DeleteTasks mDeleteTasks;
     private UpdateTask mUpdateTask;
+    private CreateTasks mCreateTasks;
 
     public TasksDisplayPresenter(@NonNull TasksDisplayContract.View tasksDisplayView,
                                  @NonNull LoadTasks loadTasks,
                                  @NonNull GetTaskCount getTaskCount,
                                  @NonNull DeleteTasks deleteTasks,
-                                 @NonNull UpdateTask updateTask) {
+                                 @NonNull UpdateTask updateTask,
+                                 @NonNull CreateTasks createTasks) {
         mTasksDisplayViewWeakReference = new WeakReference<>(tasksDisplayView);
         mLoadTasks = loadTasks;
         mGetTaskCount = getTaskCount;
         mDeleteTasks = deleteTasks;
         mUpdateTask = updateTask;
+        mCreateTasks = createTasks;
     }
 
     @Override
@@ -94,28 +98,19 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
 
     @Override
     public void createFirstLaunchTasks(@NonNull final List<Task> tasks) {
-//        showLoadingScreen(true);
-//        mTasksRepository.createTasks(tasks, new TaskDataSource.CreateTasksCallback() {
-//            @Override
-//            public void onTasksCreated() {
-//                mTasksRepository.loadTasks(TaskType.ANY, false, new TaskDataSource.LoadTasksCallback() {
-//                    @Override
-//                    public void onTasksLoaded(List<Task> tasks) {
-//                        for (Task task : tasks) {
-//                            if (task.getReminderDate() != null) {
-//                                TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
-//                                if (view != null) {
-//                                    view.updateTaskAlarm(task.getId());
-//                                }
-//                            }
-//                        }
-//                    }
-//                });
-//
-//                loadTasks(mTaskViewType);
-//                updateAllTaskCount();
-//            }
-//        });
+        showLoadingScreen(true);
+        mCreateTasks.execute(tasks, new UseCase.Callback<Void>() {
+            @Override
+            public void onResult(@NonNull Void result) {
+                TasksDisplayContract.View view = mTasksDisplayViewWeakReference.get();
+                if (view != null) {
+                    view.updateAllTaskAlarms();
+                }
+
+                loadTasks(mTaskViewType);
+                updateAllTaskCount();
+            }
+        });
     }
 
     private void loadTasks(@NonNull TaskViewType taskViewType) {
@@ -169,6 +164,5 @@ public class TasksDisplayPresenter implements TasksDisplayContract.Presenter {
         }
 
     }
-
 
 }
