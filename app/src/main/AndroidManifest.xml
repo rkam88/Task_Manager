@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.rusnet.taskmanager">
+    package="net.rusnet.taskmanager_old">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".tasksdisplay.presentation.TasksDisplayActivity">
+        <activity android:name="net.rusnet.taskmanager_old.tasksdisplay.presentation.TasksDisplayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,20 +24,20 @@
         </activity>
 
         <activity
-            android:name=".edittask.presentation.EditTaskActivity"
+            android:name="net.rusnet.taskmanager_old.edittask.presentation.EditTaskActivity"
             android:windowSoftInputMode="stateVisible" />
 
         <receiver
-            android:name=".taskalarm.TaskAlarmReceiver"
+            android:name="net.rusnet.taskmanager_old.taskalarm.TaskAlarmReceiver"
             android:process=":remote"
             android:enabled="true" />
 
         <service
-            android:name=".taskalarm.TaskAlarmService"
+            android:name="net.rusnet.taskmanager_old.taskalarm.TaskAlarmService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
-            android:name=".taskalarm.InitAlarmBootReceiver"
+            android:name="net.rusnet.taskmanager_old.taskalarm.InitAlarmBootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
